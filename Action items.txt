@@ -1,0 +1,5 @@
+Things to think about:
+
+* Do we need to make the distinction between data and MC?
+
+* How much of the two Z analyses do we want them to do themselves?
