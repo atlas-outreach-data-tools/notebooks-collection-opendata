@@ -1,0 +1,4 @@
+uproot
+pandas
+numpy
+matplotlib
