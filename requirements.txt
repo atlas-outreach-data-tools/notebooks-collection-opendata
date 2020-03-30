@@ -1,5 +1,0 @@
-uproot
-pandas
-numpy
-matplotlib
-lmfit
