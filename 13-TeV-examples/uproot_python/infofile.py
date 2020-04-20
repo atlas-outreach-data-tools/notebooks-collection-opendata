@@ -924,60 +924,6 @@ infos = {
             'sumw'    :997974.838867,
             'xsec'    :0.144568326},
 
- 'WWlvlv': {'DSID'    : 361600,
-            'events'  : 5926000,
-            'red_eff' : 1,
-            'sumw'    : 63036317.0092,
-            'xsec'    : 10.636},
-
- 'WWlvqq': {'DSID'    : 361606,
-            'events'  : 4343000,
-            'red_eff' : 1,
-            'sumw'    : 191873538.831,
-            'xsec'    : 44.177},
-
- 'ZZllll': {'DSID'    : 361603,
-            'events'  : 3920000,
-            'red_eff' : 1,
-            'sumw'    : 4969006.30392,
-            'xsec'    : 1.2668},
-
- 'ZZvvll': {'DSID'    : 361604,
-            'events'  : 981000,
-            'red_eff' : 1,
-            'sumw'    : 900478.506074,
-            'xsec'    : 0.92303},
- 
- 'ZZqqll': {'DSID'    : 361610,
-            'events'  : 3933000,
-            'red_eff' : 1,
-            'sumw'    : 8927335.64006,
-            'xsec'    : 2.2761},
-
- 'WZlvll': {'DSID'    : 361601,
-            'events'  : 9875000,
-            'red_eff' : 1,
-            'sumw'    : 44460904.1913,
-            'xsec'    : 4.5105},
-
- 'WZlvvv': {'DSID'    : 361602,
-            'events'  : 982600,
-            'red_eff' : 1,
-            'sumw'    : 2729482.37882,
-            'xsec'    : 2.7781},
-
- 'WZqqll': {'DSID'    : 361607,
-            'events'  : 1469000,
-            'red_eff' : 1,
-            'sumw'    : 4814628.76491,
-            'xsec'    : 3.2882},
-
- 'WZlvqq': {'DSID'    : 361609,
-            'events'  : 9693000,
-            'red_eff' : 1,
-            'sumw'    : 97765296.6598,
-            'xsec'    : 10.095},
-
  'ZqqZll' : {'DSID'             : 363356,
              'events'           : 5317000,
              'red_eff'          : 1,
@@ -1010,13 +956,13 @@ infos = {
 
  'llll' : {'DSID':363490,
              'events':17825300,
-             'red_eff'          : 0.2,
+             'red_eff'          : 1,
              'sumw'             : 7538705.8077,
              'xsec'             : 1.2578},
 
  'lllv' : {'DSID':363491,
              'events':15772084,
-             'red_eff'          : 0.2,
+             'red_eff'          : 1,
              'sumw'             : 5441475.00407,
              'xsec'             : 4.6049},
 
