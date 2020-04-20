@@ -129,31 +129,31 @@ infos = {
 
   # Graviton
 
-  'Graviton200_ZZ4lep': {'DSID'    : 307431,
+  'RS_G_ZZ_llll_c10_m0200': {'DSID'    : 307431,
                   'events'  : 29000,
                   'red_eff' : 1,
                   'sumw'    : 29000,
                   'xsec'    : 1.86},
 
-  'Graviton500_ZZ4lep': {'DSID'    : 307434,
+  'RS_G_ZZ_llll_c10_m0500': {'DSID'    : 307434,
                   'events'  : 27000,
                   'red_eff' : 1,
                   'sumw'    : 27000,
                   'xsec'    : 0.02373},
 
-  'Graviton1000_ZZ4lep': {'DSID'    : 303329,
+  'RS_G_ZZ_llll_c10_m1000': {'DSID'    : 303329,
                    'events'  : 3000,
                    'red_eff' : 1,
                    'sumw'    : 3000,
                    'xsec'    : 0.0004122},
 
-  'Graviton1500_ZZ4lep': {'DSID'    : 307439,
+  'RS_G_ZZ_llll_c10_m1500': {'DSID'    : 307439,
                    'events'  : 30000,
                    'red_eff' : 1,
                    'sumw'    : 30000,
                    'xsec'    : 0.00003702},
 
-  'Graviton2000_ZZ4lep': {'DSID'    : 303334,
+  'RS_G_ZZ_llll_c10_m2000': {'DSID'    : 303334,
                    'events'  : 5000,
                    'red_eff' : 1,
                    'sumw'    : 5000,
