@@ -42,4 +42,4 @@ Click on the green "<span style="color:green">Commit changes</span>" at the bott
 
 Point your students to your forked code (the webpage you're on right now), rather than the [ATLAS code](https://github.com/atlas-outreach-data-tools/notebooks-collection-opendata/tree/master/13-TeV-examples/uproot_python)  
 
-![Hyy Feynman diagram](Hyy_feynman.png)
+![Hyy Feynman diagram](images/feynman_diagrams/Hyy_feynman.png)
