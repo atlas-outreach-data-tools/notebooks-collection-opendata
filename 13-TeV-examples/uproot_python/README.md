@@ -3,23 +3,43 @@
 ------
 
 ## Get Started (online)
-Click on this link ---> [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atlas-outreach-data-tools/notebooks-collection-opendata/master)
-
-Navigate to 13-TeV-examples/uproot_python
+Click on this link ---> [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atlas-outreach-data-tools/notebooks-collection-opendata/master?filepath=13-TeV-examples/uproot_python)
 
 Click on one of the files Analysis.ipynb
 
 
 ## Get Started (on your own laptop)
-On a terminal type "git clone https://github.com/meevans1/notebooks-collection-opendata.git"
+Click on this link to [download the code](https://github.com/atlas-outreach-data-tools/notebooks-collection-opendata/archive/master.zip)
+
+Once downloaded, unzip the file.
 
 Open a [Jupyter notebook](https://jupyter.org) using your favourite [Python](https://www.python.org) (3.6 or above) environment (ours is [Anaconda](https://www.anaconda.com/distribution/))
 
-Navigate to 13-TeV-examples/uproot_python
+Navigate to Downloads/notebooks-collection-opendata/13-TeV-examples/uproot_python
 
 Click on one of the files Analysis.ipynb
 
 
-![HZZ Feynman diagram](HZZ_feynman.png)
+## Develop the code for your use case
+
+[Create a GitHub account](https://github.com/join), if you don't have one already.
+
+Click on "Fork" in the top right corner of [this screen](https://github.com/atlas-outreach-data-tools/notebooks-collection-opendata/tree/master/13-TeV-examples/uproot_python)
+
+![](images/screenshots/fork.png)
+
+Click to navigate to the file you want to edit, e.g. 13-TeV-examples/uproot_python/HZZAnalysis.ipynb
+
+Click on the pencil "Edit this file"
+
+![](images/screenshots/edit.png)
+
+Make your desired change.
+
+Click on the green "<span style="color:green">Commit changes</span>" at the bottom of the edit page.
+
+![](images/screenshots/commit.png)
+
+Point your students to your forked code (the webpage you're on right now), rather than the [ATLAS code](https://github.com/atlas-outreach-data-tools/notebooks-collection-opendata/tree/master/13-TeV-examples/uproot_python)  
 
 ![Hyy Feynman diagram](Hyy_feynman.png)
