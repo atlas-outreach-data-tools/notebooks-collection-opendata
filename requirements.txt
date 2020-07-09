@@ -1,0 +1,6 @@
+uproot
+pandas
+numpy
+matplotlib
+lmfit
+scikit-learn
