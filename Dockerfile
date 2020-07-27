@@ -23,6 +23,7 @@ RUN pip install --no-cache-dir -q --upgrade pip && \
 				  lmfit \
 				  scikit-learn \
     				  wget && \
+    # Jupyter config commands don't seem to work on GitHub workflows :(
     #jupyter notebook --generate-config && \
     #sed -i -e "/allow_root/ a c.NotebookApp.allow_root = True" ~/.jupyter/jupyter_notebook_config.py && \
     #sed -i -e "/custom_display_url/ a c.NotebookApp.custom_display_url = \'http://localhost:8888\'" ~/.jupyter/jupyter_notebook_config.py && \
