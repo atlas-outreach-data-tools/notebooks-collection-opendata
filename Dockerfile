@@ -4,7 +4,7 @@
 FROM python:3.7-slim
 
 
-# Copy this ttZ-2lOS-preFit directory to a new directory within the docker image
+# Copy this notebooks-collection-opendata directory to a new directory within the docker image
 COPY . /notebooks-collection-opendata/
 
 
