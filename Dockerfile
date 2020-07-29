@@ -3,13 +3,11 @@
 # Specify the base image that we're building the image on top of
 FROM python:3.7-slim
 
-
 # Copy this ttZ-2lOS-preFit directory to a new directory within the docker image
 COPY . /notebooks-collection-opendata/
 
-
 # Change directory to save input MC files
-WORKDIR /notebooks-collection-opendata/13-TeV-examples/uproot_python/Input/4lep/MC/ 
+WORKDIR /notebooks-collection-opendata/13-TeV-examples/uproot_python/Input/4lep/MC/
 
 # Update pip, 
 # Run some commands to install packages, 
@@ -30,7 +28,6 @@ RUN pip install --no-cache-dir -q --upgrade pip && \
     sed -i -e "/custom_display_url/ a c.NotebookApp.custom_display_url = \'http://localhost:8888\'" ~/.jupyter/jupyter_notebook_config.py && \
     sed -i -e "/c.NotebookApp.ip/ a c.NotebookApp.ip = '0.0.0.0'" ~/.jupyter/jupyter_notebook_config.py && \
     sed -i -e "/open_browser/ a c.NotebookApp.open_browser = False" ~/.jupyter/jupyter_notebook_config.py && \
-    #RUN git clone https://github.com/atlas-outreach-data-tools/atlas-outreach-Python-uproot-framework-13tev
     python -m wget https://atlas-opendata.web.cern.ch/atlas-opendata/samples/2020/4lep/MC/mc_361106.Zee.4lep.root && \
     python -m wget https://atlas-opendata.web.cern.ch/atlas-opendata/samples/2020/4lep/MC/mc_361107.Zmumu.4lep.root && \
     python -m wget https://atlas-opendata.web.cern.ch/atlas-opendata/samples/2020/4lep/MC/mc_341947.ZH125_ZZ4lep.4lep.root && \
@@ -72,3 +69,6 @@ ENV TINI_VERSION v0.6.0
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /usr/bin/tini
 RUN chmod +x /usr/bin/tini
 ENTRYPOINT ["/usr/bin/tini", "--"]
+
+# Start Jupyter notebook
+CMD ["jupyter", "notebook"]
