@@ -3,7 +3,7 @@
 # Specify the base image that we're building the image on top of
 FROM python:3.7-slim
 
-# Copy this ttZ-2lOS-preFit directory to a new directory within the docker image
+# Copy this notebooks-collection-opendata directory to a new directory within the docker image
 COPY . /notebooks-collection-opendata/
 
 # Change directory to save input MC files
@@ -22,7 +22,6 @@ RUN pip install --no-cache-dir -q --upgrade pip && \
 				  lmfit \
 				  scikit-learn \
     				  wget && \
-    # Jupyter config commands don't seem to work on GitHub workflows :(
     jupyter notebook --generate-config && \
     sed -i -e "/allow_root/ a c.NotebookApp.allow_root = True" ~/.jupyter/jupyter_notebook_config.py && \
     sed -i -e "/custom_display_url/ a c.NotebookApp.custom_display_url = \'http://localhost:8888\'" ~/.jupyter/jupyter_notebook_config.py && \
