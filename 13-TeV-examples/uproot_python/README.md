@@ -3,7 +3,7 @@
 ------
 
 ## Get Started (online)
-Click on this link ---> [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atlas-outreach-data-tools/notebooks-collection-opendata/master?filepath=13-TeV-examples/uproot_python)
+Click on this link ---> [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atlas-outreach-data-tools/notebooks-collection-opendata/no-root?filepath=13-TeV-examples/uproot_python)
 
 Click on one of the files Analysis.ipynb
 
