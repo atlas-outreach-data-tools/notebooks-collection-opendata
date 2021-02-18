@@ -4,7 +4,7 @@ on:
   push:
   pull_request:
   schedule:
-    - cron: '* * 1 * *'
+    - cron: '* * 1 * *' # runs CI on 1st day of each month
 
 jobs:
 
