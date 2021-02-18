@@ -1,0 +1,22 @@
+name: Python package
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.x 
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.8'
+    - name: Install dependencies
+      run: |
+        pip install pandas sklearn
+    - name: Ensure Clean Notebook
+      uses: ResearchSoftwareActions/EnsureCleanNotebooksAction@1.1
+      with:
+        disable-checks: outputs,execution_count
