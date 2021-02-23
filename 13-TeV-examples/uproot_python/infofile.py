@@ -1,3 +1,5 @@
+"""This module contains DSID, number of events, reduction efficiency, sum of weights and cross-section for each process."""
+
 infos = {
 
     # ZPrime -> ee
