@@ -400,7 +400,7 @@ infos = {
                                            'red_eff' : 1,
                                            'sumw'    : 26095.2892522,
                                            'xsec'    : 0.438382903},
-  
+
     'C1C1_SlepSnu_x0p50_200p0_150p0_2L8': {'DSID'    : 392502,
                                            'events'  : 14000,
                                            'red_eff' : 1,
@@ -469,7 +469,7 @@ infos = {
                                       'red_eff' : 1,
                                       'sumw'    : 9384.14328927,
                                       'xsec'    : 0.06466635},
-  
+
     'SlepSlep_direct_300p5_1p0_2L8': {'DSID'    : 392920,
                                       'events'  : 10000,
                                       'red_eff' : 1,
@@ -972,7 +972,7 @@ infos = {
                          'events'  : 4986200,
                          'red_eff' : 1,
                          'sumw'    : 0.218165148808,
-                        'xsec'    : 44.152},
+                         'xsec'    : 44.152},
 
     'single_antitop_tchan': {'DSID'    : 410012,
                              'events'  : 4989800,
@@ -996,7 +996,7 @@ infos = {
                           'events'  : 4985800,
                           'red_eff' : 1,
                           'sumw'    : 4865800,
-                         'xsec'    : 35.845486},
+                          'xsec'    : 35.845486},
 
     'single_antitop_wtchan': {'DSID'    : 410014,
                               'events'  : 4985600,
@@ -1132,7 +1132,7 @@ infos = {
                                    'events' : 9879000,
                                    'red_eff': 1,
                                    'sumw'   : 6159276.028,
-                                  'xsec'   : 197.343129},
+                                   'xsec'   : 197.343129},
 
     'Wenu_PTV280_500_BFilter': {'DSID'    : 364181,
                                 'events'  : 2958000,
@@ -1175,7 +1175,7 @@ infos = {
                                    'red_eff' : 1,
                                    'sumw'    : 5643599.11526,
                                    'xsec'    : 2431.204019},
-                    
+
     'Wmunu_PTV0_70_CVetoBVeto': {'DSID'    : 364156,
                                  'events'  : 24723000,
                                  'red_eff' : 1,
@@ -1259,7 +1259,7 @@ infos = {
                                     'red_eff' : 1,
                                     'sumw'    : 5671521.55269,
                                     'xsec'    : 2443.425881},
-                     
+
     'Wtaunu_PTV0_70_CVetoBVeto': {'DSID'    : 364184,
                                   'events'  : 24784000,
                                   'red_eff' : 1,
@@ -1415,7 +1415,7 @@ infos = {
                                       'red_eff':1,
                                       'sumw':1994000,
                                       'xsec':35.824406},
- 
+
     'single_top_schan_1lep1tau':{'DSID':410025,
                                  'events':997800,
                                  'red_eff':1,
