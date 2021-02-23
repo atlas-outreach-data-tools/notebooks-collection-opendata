@@ -20,12 +20,12 @@ jobs:
       with:
         disable-checks: outputs,execution_count
 
-  codacy-analysis-cli:
-    name: Codacy Analysis CLI
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@master
-
-      - name: Run Codacy Analysis CLI
-        uses: codacy/codacy-analysis-cli-action@master
+#  codacy-analysis-cli:
+#    name: Codacy Analysis CLI
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@master
+#
+#      - name: Run Codacy Analysis CLI
+#        uses: codacy/codacy-analysis-cli-action@master
