@@ -1,6 +1,6 @@
 infos = {
 
-  # ZPrime -> ee
+    # ZPrime -> ee
 
     'ZPrime2000_ee': {'DSID'    : 301215,
                       'events'  : 19800,
@@ -27,7 +27,7 @@ infos = {
                       'xsec'    :0.000018319},
 
 
-  # ZPrime -> mumu 2lep
+    # ZPrime -> mumu 2lep
 
     'ZPrime2000_mumu': {'DSID'    : 301220,
                         'events'  : 983000,
@@ -54,7 +54,7 @@ infos = {
                         'xsec'    :0.000018334},
 
 
-  # ZPrime -> tt
+    # ZPrime -> tt
 
     'ZPrime400_tt': {'DSID'    : 301322,
                      'events'  : 199200,
@@ -129,7 +129,7 @@ infos = {
                       'xsec'    : 0.0050843},
 
 
-  # Graviton
+    # Graviton
 
     'RS_G_ZZ_llll_c10_m0200': {'DSID'    : 307431,
                                'events'  : 29000,
@@ -162,7 +162,7 @@ infos = {
                                'xsec'    : 0.0000057},
 
 
-  # Mono Z
+    # Mono Z
 
     'dmV_Zll_MET40_DM1_MM10': {'DSID'    : 303511,
                                'events'  : 10000,
@@ -225,7 +225,7 @@ infos = {
                                  'xsec'    : 0.0001636},
 
 
-  # gluino-gluino -> stop-stop -> tttt + DM
+    # gluino-gluino -> stop-stop -> tttt + DM
 
     'GG_ttn1_1200_5000_1': {'DSID'    : 370114,
                             'events'  : 100000,
@@ -252,7 +252,7 @@ infos = {
                             'xsec'    : 0.004747},
 
 
-  # stop-stop -> tt + DM
+    # stop-stop -> tt + DM
 
     'TT_directTT_450_1': {'DSID'    : 388240,
                           'events'  : 50000,
@@ -279,7 +279,7 @@ infos = {
                           'xsec'    : 0.15518},
 
 
-  # chargino-neutralino -> WZ(->lvll)
+    # chargino-neutralino -> WZ(->lvll)
 
     'C1N2_WZ_100p0_0p0_3L_2L7': {'DSID'    : 392226,
                                  'events'  : 20000,
@@ -306,7 +306,7 @@ infos = {
                                  'xsec'    : 0.0301334215},
 
 
-  # chargino-neutralino -> WZ(->qqll)
+    # chargino-neutralino -> WZ(->qqll)
 
     'C1N2_WZ_500p0_100p0_2L2J_2L7': {'DSID'    : 392302,
                                      'events'  : 5000,
@@ -393,7 +393,7 @@ infos = {
                                'xsec'    : 0.0052089336},
 
 
-  # chargino-chargino
+    # chargino-chargino
 
     'C1C1_SlepSnu_x0p50_200p0_100p0_2L8': {'DSID'    : 392501,
                                            'events'  : 25000,
@@ -456,7 +456,7 @@ infos = {
                                            'xsec'    : 0.002285652872},
 
 
-  # slepton
+    # slepton
 
     'SlepSlep_direct_100p5_1p0_2L8': {'DSID'    : 392916,
                                       'events'  : 10000,
@@ -2426,7 +2426,7 @@ infos = {
                                           'sumw':4057477.95297,
                                           'xsec':1.197324},
 
-  # gluino-gluino -> stop-stop -> tttt + DM
+    # gluino-gluino -> stop-stop -> tttt + DM
 
     'GG_ttn1_1200_5000_1_1largeRjet1lep': {'DSID'    : 370114,
                                            'events'  : 100000,
@@ -2452,7 +2452,7 @@ infos = {
                                            'sumw'    : 201048.136391,
                                            'xsec'    : 0.004747},
 
-  # stop-stop -> tt + DM
+    # stop-stop -> tt + DM
 
     'TT_directTT_450_1_1largeRjet1lep': {'DSID'    : 388240,
                                          'events'  : 50000,
@@ -2478,7 +2478,7 @@ infos = {
                                          'sumw'    : 71506.9188489,
                                          'xsec'    : 0.15518},
 
-  # chargino-neutralino -> WZ(->lvll)
+    # chargino-neutralino -> WZ(->lvll)
 
     'C1N2_WZ_100p0_0p0_3L_2L7_1largeRjet1lep': {'DSID'    : 392226,
                                                 'events'  : 25000,
