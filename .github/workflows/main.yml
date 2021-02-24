@@ -8,14 +8,24 @@ on:
 
 jobs:
 
-  build:
-
+  clean-notebook:
+    name: Ensure Clean Notebook
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
-    - name: Ensure Clean Notebook
+      uses: actions/checkout@master
+    - name: Run Ensure Clean Notebook
       uses: ResearchSoftwareActions/EnsureCleanNotebooksAction@1.1
       with:
         disable-checks: outputs,execution_count
+
+#  codacy-analysis-cli:
+#    name: Codacy Analysis CLI
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@master
+#
+#      - name: Run Codacy Analysis CLI
+#        uses: codacy/codacy-analysis-cli-action@master
