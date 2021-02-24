@@ -1,6 +1,6 @@
 """Dict with DSID, # events, reduction efficiency, sum of weights, cross-section for each MC"""
 
-INFOS = {
+infos = {
 
     # ZPrime -> ee
 
