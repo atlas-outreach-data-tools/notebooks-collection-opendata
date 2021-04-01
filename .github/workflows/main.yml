@@ -1,22 +1,31 @@
 name: Python package
 
-on: [push]
+on: 
+  push:
+  pull_request:
+  schedule:
+    - cron: '* * 1 * *' # runs CI on 1st day of each month
 
 jobs:
-  build:
 
+  clean-notebook:
+    name: Ensure Clean Notebook
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python 3.x 
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.8'
-    - name: Install dependencies
-      run: |
-        pip install pandas sklearn
-    - name: Ensure Clean Notebook
+    - name: Checkout
+      uses: actions/checkout@master
+    - name: Run Ensure Clean Notebook
       uses: ResearchSoftwareActions/EnsureCleanNotebooksAction@1.1
       with:
         disable-checks: outputs,execution_count
+
+#  codacy-analysis-cli:
+#    name: Codacy Analysis CLI
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@master
+#
+#      - name: Run Codacy Analysis CLI
+#        uses: codacy/codacy-analysis-cli-action@master
