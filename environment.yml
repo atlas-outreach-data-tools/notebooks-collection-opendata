@@ -10,3 +10,4 @@ dependencies:
   - matplotlib
   - lmfit
   - scikit-learn
+  - urllib
