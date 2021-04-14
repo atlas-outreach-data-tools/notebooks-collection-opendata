@@ -4,3 +4,4 @@ numpy
 matplotlib
 lmfit
 scikit-learn
+urllib
