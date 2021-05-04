@@ -7,7 +7,6 @@ dependencies:
   - uproot3
   - uproot
   - awkward
-  - vector
   - pandas
   - numpy
   - matplotlib
