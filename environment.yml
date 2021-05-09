@@ -5,8 +5,12 @@ dependencies:
   - root
   - pip
   - uproot3
+  - uproot
+  - awkward
   - pandas
   - numpy
   - matplotlib
   - lmfit
   - scikit-learn
+  - pip:
+      - vector
