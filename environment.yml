@@ -1,7 +1,8 @@
 name: analysis
 channels:
-  - defaults
-  - conda-forge --all
+  - defaults:
+      - gcc_linux-64
+  - conda-forge
 dependencies:
   - root
   - pip
