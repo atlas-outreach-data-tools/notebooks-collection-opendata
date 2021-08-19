@@ -1,6 +1,4 @@
 name: analysis
-channels:
-  - defaults
 dependencies:
   - root
   - pip
