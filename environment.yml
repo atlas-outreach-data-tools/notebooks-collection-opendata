@@ -3,15 +3,15 @@ channels:
     - conda-forge
 dependencies:
   - root
-  - pip
-  - uproot3
-  - uproot
-  - awkward
-  - pandas
-  - numpy
-  - matplotlib
-  - lmfit
-  - scikit-learn
-  - pip:
-      - vector
-      - jupyterlab_latex
+#  - pip
+#  - uproot3
+#  - uproot
+#  - awkward
+#  - pandas
+#  - numpy
+#  - matplotlib
+#  - lmfit
+#  - scikit-learn
+#  - pip:
+#      - vector
+#      - jupyterlab_latex
