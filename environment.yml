@@ -1,4 +1,6 @@
 name: analysis
+channels:
+    - conda-forge
 dependencies:
   - root
   - pip
@@ -12,3 +14,4 @@ dependencies:
   - scikit-learn
   - pip:
       - vector
+      - jupyterlab_latex
