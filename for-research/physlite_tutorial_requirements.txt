@@ -1,0 +1,8 @@
+jupyterlab
+matplotlib
+tqdm
+xrootd
+zstandard
+uproot==5.1.2
+awkward==2.5.0
+vector==1.1.1
