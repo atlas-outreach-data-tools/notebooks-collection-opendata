@@ -1,0 +1,8 @@
+name: root-nightly
+channels:
+  - https://root.cern/download/conda-nightly/latest
+  - conda-forge
+dependencies:
+  - python=3.9
+  - root-nightly
+
