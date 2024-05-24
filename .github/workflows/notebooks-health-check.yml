@@ -37,6 +37,10 @@ jobs:
           echo "notebook-list=$NOTEBOOKS<<EOF" >> $GITHUB_OUTPUT
           echo "Got all notebooks!"
           }
+          
+      - name: use multiline string
+        run: |
+          echo "JsonInfo is  ${{ steps.get-notebooks.outputs.notebook-list }}"
 
   run-notebooks:
     needs: find-notebooks
