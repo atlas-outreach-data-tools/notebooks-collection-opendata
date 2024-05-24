@@ -29,14 +29,21 @@ jobs:
         id: get-notebooks
         run: |
           NOTEBOOKS=$(find . -name '*.ipynb' | tr '\n' ' ')
+          if [ -z "$NOTEBOOKS" ]; then
+            echo "No notebooks found"
+            NOTEBOOKS="[]"
+          else
+            NOTEBOOKS=$(echo $NOTEBOOKS | jq -R 'split(" ")')
+          fi
           echo "::set-output name=notebooks::${NOTEBOOKS}"
 
   run-notebooks:
     needs: find-notebooks
     runs-on: ubuntu-latest
+    if: ${{ needs.find-notebooks.outputs.notebooks != '[]' }}
     strategy:
       matrix:
-        notebook: ${{ fromJson(needs.find-notebooks.outputs.notebook-list) }}
+        notebook: ${{ fromJson(needs.find-notebooks.outputs.notebooks) }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
