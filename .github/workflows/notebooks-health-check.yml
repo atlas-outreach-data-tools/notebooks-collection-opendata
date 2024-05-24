@@ -9,8 +9,8 @@ on:
 jobs:
   find-notebooks:
     runs-on: ubuntu-latest
-    outputs:
-      notebook-list: ${{ steps.get-notebooks.outputs.notebooks-list }}
+    # outputs:
+    #   notebook-list: ${{ steps.get-notebooks.outputs.notebooks-list }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -35,7 +35,7 @@ jobs:
             NOTEBOOKS="[]"
           fi
           echo "notebook-list=$NOTEBOOKS<<EOF" >> $GITHUB_OUTPUT
-          echo "finished!"
+          echo "Got all notebooks!"
           }
 
   run-notebooks:
