@@ -1,0 +1,56 @@
+name: Run Jupyter Notebooks
+
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: '0 0 1 * *'
+
+jobs:
+  find-notebooks:
+    runs-on: ubuntu-latest
+    outputs:
+      notebook-list: ${{ steps.get-notebooks.outputs.notebooks }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install papermill
+
+      - name: Get all notebooks
+        id: get-notebooks
+        run: |
+          NOTEBOOKS=$(find . -name '*.ipynb' | tr '\n' ' ')
+          echo "::set-output name=notebooks::${NOTEBOOKS}"
+
+  run-notebooks:
+    needs: find-notebooks
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        notebook: ${{ fromJson(needs.find-notebooks.outputs.notebook-list) }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install papermill
+
+      - name: Run notebook with Papermill
+        run: |
+          papermill ${{ matrix.notebook }} /dev/null
