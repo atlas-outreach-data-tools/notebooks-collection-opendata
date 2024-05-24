@@ -35,6 +35,7 @@ jobs:
             NOTEBOOKS="[]"
           fi
           echo "notebook-list=$NOTEBOOKS<<EOF" >> $GITHUB_OUTPUT
+          echo "finished!"
           }
 
   run-notebooks:
