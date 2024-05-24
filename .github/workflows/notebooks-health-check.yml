@@ -23,7 +23,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install papermill
+          pip install jq papermill
 
       - name: Get all notebooks
         id: get-notebooks
@@ -35,15 +35,15 @@ jobs:
           else
             NOTEBOOKS=$(echo $NOTEBOOKS | jq -R 'split(" ")')
           fi
-          echo "::set-output name=notebooks::${NOTEBOOKS}"
+          echo "notebook-list=$NOTEBOOKS" >> $GITHUB_ENV
 
   run-notebooks:
     needs: find-notebooks
     runs-on: ubuntu-latest
-    if: ${{ needs.find-notebooks.outputs.notebooks != '[]' }}
+    if: ${{ needs.find-notebooks.outputs['notebook-list'] != '[]' }}
     strategy:
       matrix:
-        notebook: ${{ fromJson(needs.find-notebooks.outputs.notebooks) }}
+        notebook: ${{ fromJson(needs.find-notebooks.outputs['notebook-list']) }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
