@@ -28,12 +28,10 @@ jobs:
       - name: Get all notebooks
         id: get-notebooks
         run: |
-          NOTEBOOKS=$(find . -name '*.ipynb' | tr '\n' ' ')
+          NOTEBOOKS=$(find . -name '*.ipynb' | jq -R -s 'split("\n")[:-1]')
           if [ -z "$NOTEBOOKS" ]; then
             echo "No notebooks found"
             NOTEBOOKS="[]"
-          else
-            NOTEBOOKS=$(echo $NOTEBOOKS | jq -R 'split(" ")')
           fi
           echo "notebook-list=$NOTEBOOKS" >> $GITHUB_ENV
 
