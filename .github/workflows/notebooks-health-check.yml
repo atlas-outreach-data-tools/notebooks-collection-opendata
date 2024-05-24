@@ -25,18 +25,28 @@ jobs:
           python -m pip install --upgrade pip
           pip install jq papermill
 
+      # - name: Get all notebooks
+      #   id: get-notebooks
+      #   run: |
+      #     {
+      #     NOTEBOOKS=$(find ./for-research -name '*.ipynb' | jq -R -s 'split("\n")[:-1]')
+      #     if [ -z "$NOTEBOOKS" ]; then
+      #       echo "No notebooks found"
+      #       NOTEBOOKS="[]"
+      #     fi
+      #     echo "notebook-list=$NOTEBOOKS<<EOF" >> $GITHUB_OUTPUT
+      #     echo "Got all notebooks!"
+      #     }
+
       - name: Get all notebooks
         id: get-notebooks
         run: |
-          {
           NOTEBOOKS=$(find ./for-research -name '*.ipynb' | jq -R -s 'split("\n")[:-1]')
           if [ -z "$NOTEBOOKS" ]; then
             echo "No notebooks found"
             NOTEBOOKS="[]"
           fi
-          echo "notebook-list=$NOTEBOOKS<<EOF" >> $GITHUB_OUTPUT
-          echo "Got all notebooks!"
-          }
+          echo "{\"notebook-list\": $NOTEBOOKS}" > $GITHUB_OUTPUT
           
       - name: use multiline string
         run: |
