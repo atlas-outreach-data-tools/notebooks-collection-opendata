@@ -34,6 +34,7 @@ jobs:
             NOTEBOOKS="[]"
           fi
           echo "notebook-list=$NOTEBOOKS" >> $GITHUB_OUTPUT
+          echo 'EOF' >> $GITHUB_OUTPUT
 
   run-notebooks:
     needs: find-notebooks
