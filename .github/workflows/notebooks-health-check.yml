@@ -33,7 +33,7 @@ jobs:
             echo "No notebooks found"
             NOTEBOOKS="[]"
           fi
-          echo "notebook-list=$NOTEBOOKS" >> $GITHUB_ENV
+          echo "notebook-list=$NOTEBOOKS" >> $GITHUB_OUTPUT
 
   run-notebooks:
     needs: find-notebooks
