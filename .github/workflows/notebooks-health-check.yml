@@ -10,7 +10,7 @@ jobs:
   find-notebooks:
     runs-on: ubuntu-latest
     outputs:
-      notebook-list: ${{ steps.get-notebooks.outputs.notebooks }}
+      notebook-list: ${{ steps.get-notebooks.outputs.notebooks-list }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
