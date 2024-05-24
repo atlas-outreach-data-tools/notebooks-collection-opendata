@@ -12,16 +12,11 @@ jobs:
     outputs:
       notebook-list: ${{ steps.get-notebooks.outputs.notebooks }}
     steps:
-      - name: Set up Node.js 20
-        uses: actions/setup-node@v2
-        with:
-          node-version: '20'
-      
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.8'
 
@@ -50,16 +45,11 @@ jobs:
       matrix:
         notebook: ${{ fromJson(needs.find-notebooks.outputs['notebook-list']) }}
     steps:
-      - name: Set up Node.js 20
-        uses: actions/setup-node@v2
-        with:
-          node-version: '20'
-          
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.8'
 
