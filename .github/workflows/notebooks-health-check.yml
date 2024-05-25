@@ -29,8 +29,7 @@ jobs:
         id: get-notebooks
         run: |
           {
-          # NOTEBOOKS=$(find ./for-research -name '*.ipynb' | jq -R -s 'split("\n")[:-1] | @json')
-          NOTEBOOKS=[./for-research/physlite_tutorial.ipynb, ./for-research/public-likelihoods/index.ipynb]
+          NOTEBOOKS=$(find ./for-research -name '*.ipynb' | jq -R -s 'split("\n")[:-1] | @json')
           if [ -z "$NOTEBOOKS" ]; then
             echo "No notebooks found"
             NOTEBOOKS="[]"
@@ -46,7 +45,7 @@ jobs:
     if: ${{ needs.find-notebooks.outputs['notebook-list'] != '[]' }}
     strategy:
       matrix:
-        notebook: ${{ needs.find-notebooks.outputs['notebook-list'] }}
+        notebook: [./for-research/physlite_tutorial.ipynb, ./for-research/public-likelihoods/index.ipynb]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
