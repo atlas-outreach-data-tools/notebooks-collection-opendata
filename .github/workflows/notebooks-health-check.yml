@@ -39,27 +39,13 @@ jobs:
           echo "Got all notebooks!"
           }
 
-      # - name: Get all notebooks
-      #   id: get-notebooks
-      #   run: |
-      #     NOTEBOOKS=$(find ./for-research -name '*.ipynb' | jq -R -s 'split("\n")[:-1]')
-      #     if [ -z "$NOTEBOOKS" ]; then
-      #       echo "No notebooks found"
-      #       NOTEBOOKS="[]"
-      #     fi
-      #     echo "{\"notebook-list\": $NOTEBOOKS}" > $GITHUB_OUTPUT
-          
-      - name: use multiline string
-        run: |
-          echo "JsonInfo is  ${{ steps.get-notebooks.outputs.notebook-list }}"
-
   run-notebooks:
     needs: find-notebooks
     runs-on: ubuntu-latest
-    if: ${{ needs.find-notebooks.outputs['notebook-list'] != '[]' }}
+    if: ${{ needs.find-notebooks.outputs.notebook-list != '[]' }}
     strategy:
       matrix:
-        notebook: ${{ fromJson(needs.find-notebooks.outputs['notebook-list']) }}
+        notebook: ${{ fromJson(needs.find-notebooks.outputs.notebook-list) }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
