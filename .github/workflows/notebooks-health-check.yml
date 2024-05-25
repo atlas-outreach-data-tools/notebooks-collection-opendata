@@ -42,10 +42,10 @@ jobs:
   run-notebooks:
     needs: find-notebooks
     runs-on: ubuntu-latest
-    if: ${{ needs.find-notebooks.outputs.notebook-list != '[]' }}
+    if: ${{ needs.find-notebooks.outputs['notebook-list'] != '[]' }}
     strategy:
       matrix:
-        notebook: ${{ fromJson(needs.find-notebooks.outputs.notebook-list) }}
+        notebook: ${{ fromJson(needs.find-notebooks.outputs['notebook-list']) }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
