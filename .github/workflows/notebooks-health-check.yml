@@ -29,7 +29,7 @@ jobs:
         id: get-notebooks
         run: |
           {
-          NOTEBOOKS=$(find ./for-research -name '*.ipynb' | jq -R -s 'split("\n")[:-1] | @json')
+          NOTEBOOKS=$(find ./for-research -name '*.ipynb' -print0 | jq -Rs 'split("\u0000")[:-1]')
           if [ -z "$NOTEBOOKS" ]; then
             echo "No notebooks found"
             NOTEBOOKS="[]"
