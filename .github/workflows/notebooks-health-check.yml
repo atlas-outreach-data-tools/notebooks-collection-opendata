@@ -9,8 +9,8 @@ on:
 jobs:
   find-notebooks:
     runs-on: ubuntu-latest
-    # outputs:
-    #   notebook-list: ${{ steps.get-notebooks.outputs.notebooks-list }}
+    outputs:
+      notebook-list: ${{ steps.get-notebooks.outputs.notebooks-list }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -45,7 +45,7 @@ jobs:
     if: ${{ needs.find-notebooks.outputs['notebook-list'] != '[]' }}
     strategy:
       matrix:
-        notebook: [./for-research/physlite_tutorial.ipynb, ./for-research/public-likelihoods/index.ipynb]
+        notebook: ${{ needs.find-notebooks.outputs['notebook-list'] }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
