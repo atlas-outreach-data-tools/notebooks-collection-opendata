@@ -34,7 +34,7 @@ jobs:
             echo "No notebooks found"
             NOTEBOOKS="[]"
           fi
-          echo "notebook-list=$NOTEBOOKS" >> $GITHUB_OUTPUT
+          echo "notebook-list={$NOTEBOOKS}" >> $GITHUB_OUTPUT
           cat $GITHUB_OUTPUT
           echo "Got all notebooks!"
           }
