@@ -34,7 +34,7 @@ jobs:
             echo "No notebooks found"
             NOTEBOOKS="[]"
           fi
-          echo "notebook-list={$NOTEBOOKS}" >> $GITHUB_OUTPUT
+          echo "notebook-list=$NOTEBOOKS" >> $GITHUB_OUTPUT
           cat $GITHUB_OUTPUT
           echo "Got all notebooks!"
           }
@@ -45,7 +45,7 @@ jobs:
     if: ${{ needs.find-notebooks.outputs['notebook-list'] != '[]' }}
     strategy:
       matrix:
-        notebook: ${{ fromJson(needs.find-notebooks.outputs.notebook-list) }}
+        notebook: notebook: ${{ fromJson(needs.find-notebooks.outputs['notebook-list']) }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
