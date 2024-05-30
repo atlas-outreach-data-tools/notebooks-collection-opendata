@@ -38,8 +38,8 @@ jobs:
           cat $GITHUB_OUTPUT
           echo "Got all notebooks!"
           }
-      - name: Get all notebooks
-        run: echo ${{ outputs.notebooks }}
+      # - name: Get all notebooks
+      #   run: echo ${{ outputs.notebooks }}
 
   test-goddamn-env:
     needs: find-notebooks
