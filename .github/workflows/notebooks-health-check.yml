@@ -56,7 +56,7 @@ jobs:
     if: ${{ needs.find-notebooks.outputs.notebooks != '[]' }}
     strategy:
       matrix:
-        notebook: ${{ needs.find-notebooks.outputs.notebooks }}
+        notebook: ${{ fromJson(needs.find-notebooks.outputs.notebooks) }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
