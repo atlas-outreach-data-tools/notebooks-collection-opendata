@@ -47,7 +47,7 @@ jobs:
     steps:
       - name: Get all notebooks
         run: |
-          echo ${{ needs.find-notebooks.outputs.notebooks }}
+          echo ${{ fromJson(needs.find-notebooks.outputs.notebooks) }}
           echo "got-em"
 
   run-notebooks:
