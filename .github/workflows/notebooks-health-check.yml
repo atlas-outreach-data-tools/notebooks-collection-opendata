@@ -48,7 +48,6 @@ jobs:
       - name: Get all notebooks
         run: |
           echo ${{ needs.find-notebooks.env.notebooks }}
-          echo ${{ find-notebooks.env.notebooks }}
           echo ${{ env.notebooks }}
           echo "got-em"
 
