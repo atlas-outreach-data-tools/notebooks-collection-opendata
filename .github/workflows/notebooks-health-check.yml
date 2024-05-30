@@ -41,6 +41,14 @@ jobs:
       - name: Get all notebooks
         run: echo ${{ env.notebooks }}
 
+  test-goddamn-env:
+    needs: find-notebooks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get all notebooks
+        run: |
+          echo ${{ needs.find-notebooks.env.notebooks }}
+          echo "got-em"
 
   run-notebooks:
     needs: find-notebooks
