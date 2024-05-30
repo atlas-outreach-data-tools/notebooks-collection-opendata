@@ -11,12 +11,12 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       notebooks: ${{ steps.get-notebooks.outputs.notebooks }}
-      NOTEBOOKS8-cpp: ${{ steps.get-notebooks.outputs.notebooks8-cpp }}
-      NOTEBOOKS8-python: ${{ steps.get-notebooks.outputs.notebooks8-python }}
-      NOTEBOOKS13-cpp: ${{ steps.get-notebooks.outputs.notebooks13-cpp }}
-      NOTEBOOKS13-python: ${{ steps.get-notebooks.outputs.notebooks13-python }}
-      NOTEBOOKS13-uproot: ${{ steps.get-notebooks.outputs.notebooks13-uproot }}
-      NOTEBOOKS13-rdataframe: ${{ steps.get-notebooks.outputs.notebooks13-rdataframe }}
+      NOTEBOOKS8_cpp: ${{ steps.get-notebooks.outputs.notebooks8-cpp }}
+      NOTEBOOKS8_python: ${{ steps.get-notebooks.outputs.notebooks8-python }}
+      NOTEBOOKS13_cpp: ${{ steps.get-notebooks.outputs.notebooks13-cpp }}
+      NOTEBOOKS13_python: ${{ steps.get-notebooks.outputs.notebooks13-python }}
+      NOTEBOOKS13_uproot: ${{ steps.get-notebooks.outputs.notebooks13-uproot }}
+      NOTEBOOKS13_rdataframe: ${{ steps.get-notebooks.outputs.notebooks13-rdataframe }}
       NOTEBOOKS-research: ${{ steps.get-notebooks.outputs.notebooks-research }}
 
     steps:
@@ -42,54 +42,55 @@ jobs:
             echo "No notebooks found"
             NOTEBOOKS="[]"
           fi
-          NOTEBOOKS8-cpp=$(find ./8-TeV-examples/cpp -name '*.ipynb' -print0 | jq -Rsc 'split("\u0000")[:-1]')
-          if [ -z "$NOTEBOOKS8-cpp" ]; then
+          
+          NOTEBOOKS8_cpp=$(find ./8-TeV-examples/cpp -name '*.ipynb' -print0 | jq -Rsc 'split("\u0000")[:-1]')
+          if [ -z "$NOTEBOOKS8_cpp" ]; then
             echo "No notebooks found"
-            NOTEBOOKS8-cpp="[]"
+            NOTEBOOKS8_cpp="[]"
           fi
-          echo "notebooks8-cpp=$NOTEBOOKS8-cpp" >> $GITHUB_OUTPUT
+          echo "notebooks8-cpp=$NOTEBOOKS8_cpp" >> $GITHUB_OUTPUT
 
-          NOTEBOOKS8-python=$(find ./8-TeV-examples/python -name '*.ipynb' -print0 | jq -Rsc 'split("\u0000")[:-1]')
-          if [ -z "$NOTEBOOKS8-python" ]; then
+          NOTEBOOKS8_python=$(find ./8-TeV-examples/python -name '*.ipynb' -print0 | jq -Rsc 'split("\u0000")[:-1]')
+          if [ -z "$NOTEBOOKS8_python" ]; then
             echo "No notebooks found"
-            NOTEBOOKS8-python="[]"
+            NOTEBOOKS8_python="[]"
           fi
-          echo "notebooks8-python=$NOTEBOOKS8-python" >> $GITHUB_OUTPUT
+          echo "notebooks8-python=$NOTEBOOKS8_python" >> $GITHUB_OUTPUT
 
-          NOTEBOOKS13-cpp=$(find ./13-TeV-examples/cpp -name '*.ipynb' -print0 | jq -Rsc 'split("\u0000")[:-1]')
-          if [ -z "$NOTEBOOKS13-cpp" ]; then
+          NOTEBOOKS13_cpp=$(find ./13-TeV-examples/cpp -name '*.ipynb' -print0 | jq -Rsc 'split("\u0000")[:-1]')
+          if [ -z "$NOTEBOOKS13_cpp" ]; then
             echo "No notebooks found"
-            NOTEBOOKS13-cpp="[]"
+            NOTEBOOKS13_cpp="[]"
           fi
-          echo "notebooks13-cpp=$NOTEBOOKS13-cpp" >> $GITHUB_OUTPUT
+          echo "notebooks13-cpp=$NOTEBOOKS13_cpp" >> $GITHUB_OUTPUT
 
-          NOTEBOOKS13-uproot=$(find ./13-TeV-examples/uproot_python -name '*.ipynb' -print0 | jq -Rsc 'split("\u0000")[:-1]')
-          if [ -z "$NOTEBOOKS13-uproot" ]; then
+          NOTEBOOKS13_uproot=$(find ./13-TeV-examples/uproot_python -name '*.ipynb' -print0 | jq -Rsc 'split("\u0000")[:-1]')
+          if [ -z "$NOTEBOOKS13_uproot" ]; then
             echo "No notebooks found"
-            NOTEBOOKS13-uproot="[]"
+            NOTEBOOKS13_uproot="[]"
           fi
-          echo "notebooks13-uproot=$NOTEBOOKS13-uproot" >> $GITHUB_OUTPUT
+          echo "notebooks13-uproot=$NOTEBOOKS13_uproot" >> $GITHUB_OUTPUT
 
-          NOTEBOOKS13-python=$(find ./13-TeV-examples/python -name '*.ipynb' -print0 | jq -Rsc 'split("\u0000")[:-1]')
-          if [ -z "$NOTEBOOKS13-python" ]; then
+          NOTEBOOKS13_python=$(find ./13-TeV-examples/python -name '*.ipynb' -print0 | jq -Rsc 'split("\u0000")[:-1]')
+          if [ -z "$NOTEBOOKS13_python" ]; then
             echo "No notebooks found"
-            NOTEBOOKS13-python="[]"
+            NOTEBOOKS13_python="[]"
           fi
-          echo "notebooks13-python=$NOTEBOOKS13-python" >> $GITHUB_OUTPUT
+          echo "notebooks13-python=$NOTEBOOKS13_python" >> $GITHUB_OUTPUT
 
-          NOTEBOOKS13-rdataframe=$(find ./13-TeV-examples/rdataframe -name '*.ipynb' -print0 | jq -Rsc 'split("\u0000")[:-1]')
-          if [ -z "$NOTEBOOKS13-rdataframe" ]; then
+          NOTEBOOKS13_rdataframe=$(find ./13-TeV-examples/rdataframe -name '*.ipynb' -print0 | jq -Rsc 'split("\u0000")[:-1]')
+          if [ -z "$NOTEBOOKS13_rdataframe" ]; then
             echo "No notebooks found"
-            NOTEBOOKS13-rdataframe="[]"
+            NOTEBOOKS13_rdataframe="[]"
           fi
-          echo "notebooks13-rdataframe=$NOTEBOOKS13-rdataframe" >> $GITHUB_OUTPUT
+          echo "notebooks13-rdataframe=$NOTEBOOKS13_rdataframe" >> $GITHUB_OUTPUT
 
-          NOTEBOOKS-research=$(find ./13-TeV-examples/for-research -name '*.ipynb' -print0 | jq -Rsc 'split("\u0000")[:-1]')
-          if [ -z "$NOTEBOOKS-research" ]; then
+          NOTEBOOKS_research=$(find ./13-TeV-examples/for-research -name '*.ipynb' -print0 | jq -Rsc 'split("\u0000")[:-1]')
+          if [ -z "$NOTEBOOKS_research" ]; then
             echo "No notebooks found"
-            NOTEBOOKS13-research="[]"
+            NOTEBOOKS_research="[]"
           fi
-          echo "notebooks-research=$NOTEBOOKS1research" >> $GITHUB_OUTPUT
+          echo "notebooks-research=$NOTEBOOKS_research" >> $GITHUB_OUTPUT
           
           cat $GITHUB_OUTPUT
           echo "Got all notebooks!"
@@ -98,10 +99,10 @@ jobs:
   run-notebooks:
     needs: find-notebooks
     runs-on: ubuntu-latest
-    if: ${{ needs.find-notebooks.outputs.NOTEBOOKS13-python != '[]' }}
+    if: ${{ needs.find-notebooks.outputs.NOTEBOOKS13_python != '[]' }}
     strategy:
       matrix:
-        notebook: ${{ fromJson(needs.find-notebooks.outputs.NOTEBOOKS13-python) }}
+        notebook: ${{ fromJson(needs.find-notebooks.outputs.NOTEBOOKS13_python) }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
