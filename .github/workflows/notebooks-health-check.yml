@@ -36,9 +36,11 @@ jobs:
           fi
           echo "notebooks=$NOTEBOOKS" >> $GITHUB_ENV
           cat $GITHUB_ENV
-          echo ${{ env.notebooks }}
           echo "Got all notebooks!"
           }
+      - name: Get all notebooks
+        run: echo ${{ env.notebooks }}
+
 
   run-notebooks:
     needs: find-notebooks
