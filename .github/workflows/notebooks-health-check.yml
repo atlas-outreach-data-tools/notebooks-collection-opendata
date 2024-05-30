@@ -98,7 +98,7 @@ jobs:
 
   run-notebooks-8-cpp:
     needs: find-notebooks
-    runs-on: ubuntu-latest
+    runs-on: rootproject/root
     if: ${{ needs.find-notebooks.outputs.NOTEBOOKS8_cpp != '[]' }}
     strategy:
       matrix:
@@ -115,7 +115,11 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install papermill
+          pip install jupyter ipykernel papermill
+
+      - name: Set up Jupyter kernel
+        run: |
+          python -m ipykernel install --user --name=root
 
       - name: Run notebook with Papermill
         run: |
@@ -124,7 +128,7 @@ jobs:
 
   run-notebooks-8-python:
     needs: find-notebooks
-    runs-on: ubuntu-latest
+    runs-on: rootproject/root
     if: ${{ needs.find-notebooks.outputs.NOTEBOOKS8_python != '[]' }}
     strategy:
       matrix:
@@ -141,7 +145,11 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install papermill
+          pip install jupyter ipykernel papermill
+
+      - name: Set up Jupyter kernel
+        run: |
+          python -m ipykernel install --user --name=python3
 
       - name: Run notebook with Papermill
         run: |
@@ -149,7 +157,7 @@ jobs:
 
   run-notebooks-13-cpp:
     needs: find-notebooks
-    runs-on: ubuntu-latest
+    runs-on: rootproject/root
     if: ${{ needs.find-notebooks.outputs.NOTEBOOKS13_cpp != '[]' }}
     strategy:
       matrix:
@@ -166,7 +174,11 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install papermill
+          pip install jupyter ipykernel papermill
+
+      - name: Set up Jupyter kernel
+        run: |
+          python -m ipykernel install --user --name=root
 
       - name: Run notebook with Papermill
         run: |
