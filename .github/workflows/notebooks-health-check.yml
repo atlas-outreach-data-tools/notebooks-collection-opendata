@@ -29,7 +29,7 @@ jobs:
         id: get-notebooks
         run: |
           {
-          NOTEBOOKS=$(find ./for-research -name '*.ipynb' -print0 | jq -Rsc 'split("\u0000")[:-1]')
+          NOTEBOOKS=$(find . -name '*.ipynb' -print0 | jq -Rsc 'split("\u0000")[:-1]')
           if [ -z "$NOTEBOOKS" ]; then
             echo "No notebooks found"
             NOTEBOOKS="[]"
@@ -38,17 +38,6 @@ jobs:
           cat $GITHUB_OUTPUT
           echo "Got all notebooks!"
           }
-      # - name: Get all notebooks
-      #   run: echo ${{ outputs.notebooks }}
-
-  test-goddamn-env:
-    needs: find-notebooks
-    runs-on: ubuntu-latest
-    steps:
-      - name: Get all notebooks
-        run: |
-          echo ${{ fromJson(needs.find-notebooks.outputs.notebooks) }}
-          echo "got-em"
 
   run-notebooks:
     needs: find-notebooks
