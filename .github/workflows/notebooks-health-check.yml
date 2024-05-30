@@ -17,7 +17,7 @@ jobs:
       NOTEBOOKS13_python: ${{ steps.get-notebooks.outputs.notebooks13-python }}
       NOTEBOOKS13_uproot: ${{ steps.get-notebooks.outputs.notebooks13-uproot }}
       NOTEBOOKS13_rdataframe: ${{ steps.get-notebooks.outputs.notebooks13-rdataframe }}
-      NOTEBOOKS-research: ${{ steps.get-notebooks.outputs.notebooks-research }}
+      NOTEBOOKS_research: ${{ steps.get-notebooks.outputs.notebooks-research }}
 
     steps:
       - name: Checkout repository
@@ -209,6 +209,64 @@ jobs:
     strategy:
       matrix:
         notebook: ${{ fromJson(needs.find-notebooks.outputs.NOTEBOOKS13_uproot) }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.8'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install jupyter ipykernel papermill
+
+      - name: Set up Jupyter kernel
+        run: |
+          python -m ipykernel install --user --name=python3
+
+      - name: Run notebook with Papermill
+        run: |
+          papermill ${{ matrix.notebook }} /dev/null
+
+  run-notebooks-13-rdataframe:
+    needs: find-notebooks
+    runs-on: ubuntu-latest
+    if: ${{ needs.find-notebooks.outputs.NOTEBOOKS13_rdataframe != '[]' }}
+    strategy:
+      matrix:
+        notebook: ${{ fromJson(needs.find-notebooks.outputs.NOTEBOOKS13_rdataframe) }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.8'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install jupyter ipykernel papermill
+
+      - name: Set up Jupyter kernel
+        run: |
+          python -m ipykernel install --user --name=python3
+
+      - name: Run notebook with Papermill
+        run: |
+          papermill ${{ matrix.notebook }} /dev/null
+
+  run-notebooks-research:
+    needs: find-notebooks
+    runs-on: ubuntu-latest
+    if: ${{ needs.find-notebooks.outputs.NOTEBOOKS_research != '[]' }}
+    strategy:
+      matrix:
+        notebook: ${{ fromJson(needs.find-notebooks.outputs.NOTEBOOKS_research) }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
