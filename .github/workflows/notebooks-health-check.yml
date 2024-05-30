@@ -34,18 +34,18 @@ jobs:
             echo "No notebooks found"
             NOTEBOOKS="[]"
           fi
-          echo "notebook-list=$NOTEBOOKS" >> $GITHUB_OUTPUT
-          cat $GITHUB_OUTPUT
+          echo "notebooks=$NOTEBOOKS" >> $GITHUB_ENV
+          echo $GITHUB_ENV
           echo "Got all notebooks!"
           }
 
   run-notebooks:
     needs: find-notebooks
     runs-on: ubuntu-latest
-    if: ${{ needs.find-notebooks.outputs['notebook-list'] != '[]' }}
+    if: ${{ needs.find-notebooks.env.notebooks != '[]' }}
     strategy:
       matrix:
-        notebook: ${{fromJson(needs.find-notebooks.outputs['notebook-list'])}}
+        notebook: ${{ needs.find-notebooks.env.notebooks }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
