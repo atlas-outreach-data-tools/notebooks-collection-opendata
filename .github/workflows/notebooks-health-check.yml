@@ -35,7 +35,7 @@ jobs:
             NOTEBOOKS="[]"
           fi
           echo "notebooks=$NOTEBOOKS" >> $GITHUB_ENV
-          echo $GITHUB_ENV
+          cat $GITHUB_ENV
           echo "Got all notebooks!"
           }
 
