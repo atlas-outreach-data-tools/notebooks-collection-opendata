@@ -175,7 +175,7 @@ jobs:
 
   run-notebooks-13-python:
     needs: find-notebooks
-    runs-on: ubuntu-latest
+    runs-on: atlasopendata/root_notebook:codata22
     if: ${{ needs.find-notebooks.outputs.NOTEBOOKS13_python != '[]' }}
     strategy:
       matrix:
