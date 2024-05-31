@@ -1,14 +1,16 @@
 name: Run Jupyter Notebooks
 
 on:
-  push:
+  # push:
   pull_request:
   schedule:
     - cron: '0 0 1 * *'
 
 jobs:
   find-notebooks:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
+    container:
+      image: atlasopendata/root_notebook:codata22
     outputs:
       notebooks: ${{ steps.get-notebooks.outputs.notebooks }}
       NOTEBOOKS8_cpp: ${{ steps.get-notebooks.outputs.notebooks8-cpp }}
@@ -96,34 +98,36 @@ jobs:
           echo "Got all notebooks!"
           }
 
-  # run-notebooks-8-cpp:
-  #   needs: find-notebooks
-  #   runs-on: rootproject/root
-  #   if: ${{ needs.find-notebooks.outputs.NOTEBOOKS8_cpp != '[]' }}
-  #   strategy:
-  #     matrix:
-  #       notebook: ${{ fromJson(needs.find-notebooks.outputs.NOTEBOOKS8_cpp) }}
-  #   steps:
-  #     - name: Checkout repository
-  #       uses: actions/checkout@v4
+  run-notebooks-8-cpp:
+    needs: find-notebooks
+    runs-on: ubuntu-22.04
+    container:
+      image: atlasopendata/root_notebook:codata22
+    if: ${{ needs.find-notebooks.result == 'success' && needs.find-notebooks.outputs.NOTEBOOKS8_cpp != '[]' }}
+    strategy:
+      matrix:
+        notebook: ${{ fromJson(needs.find-notebooks.outputs.NOTEBOOKS8_cpp) }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-  #     - name: Set up Python
-  #       uses: actions/setup-python@v5
-  #       with:
-  #         python-version: '3.8'
+      # - name: Set up Python
+      #   uses: actions/setup-python@v5
+      #   with:
+      #     python-version: '3.8'
 
-  #     - name: Install dependencies
-  #       run: |
-  #         python -m pip install --upgrade pip
-  #         pip install jupyter ipykernel papermill
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install jupyter ipykernel papermill
 
-  #     - name: Set up Jupyter kernel
-  #       run: |
-  #         python -m ipykernel install --user --name=root
+      - name: Set up Jupyter kernel
+        run: |
+          python -m ipykernel install --user --name=root
 
-  #     - name: Run notebook with Papermill
-  #       run: |
-  #         papermill ${{ matrix.notebook }} /dev/null
+      - name: Run notebook with Papermill
+        run: |
+          papermill ${{ matrix.notebook }} /dev/null
 
 
   run-notebooks-8-python:
@@ -131,7 +135,7 @@ jobs:
     runs-on: ubuntu-22.04
     container:
       image: atlasopendata/root_notebook:codata22
-    if: ${{ needs.find-notebooks.outputs.NOTEBOOKS8_python != '[]' }}
+    if: ${{ needs.find-notebooks.result == 'success' && needs.find-notebooks.outputs.NOTEBOOKS8_python != '[]' }}
     strategy:
       matrix:
         notebook: ${{ fromJson(needs.find-notebooks.outputs.NOTEBOOKS8_python) }}
@@ -162,7 +166,7 @@ jobs:
     runs-on: ubuntu-22.04
     container:
       image: atlasopendata/root_notebook:codata22
-    if: ${{ needs.find-notebooks.outputs.NOTEBOOKS13_cpp != '[]' }}
+    if: ${{ needs.find-notebooks.result == 'success' && needs.find-notebooks.outputs.NOTEBOOKS13_cpp != '[]' }}
     strategy:
       matrix:
         notebook: ${{ fromJson(needs.find-notebooks.outputs.NOTEBOOKS13_cpp) }}
@@ -194,7 +198,7 @@ jobs:
     runs-on: ubuntu-22.04
     container:
       image: atlasopendata/root_notebook:codata22
-    if: ${{ needs.find-notebooks.outputs.NOTEBOOKS13_python != '[]' }}
+    if: ${{ needs.find-notebooks.result == 'success' && needs.find-notebooks.outputs.NOTEBOOKS13_python != '[]' }}
     strategy:
       matrix:
         notebook: ${{ fromJson(needs.find-notebooks.outputs.NOTEBOOKS13_python) }}
@@ -220,89 +224,95 @@ jobs:
         run: |
           papermill ${{ matrix.notebook }} /dev/null
 
-  # run-notebooks-13-uproot:
-  #   needs: find-notebooks
-  #   runs-on: ubuntu-latest
-  #   if: ${{ needs.find-notebooks.outputs.NOTEBOOKS13_uproot != '[]' }}
-  #   strategy:
-  #     matrix:
-  #       notebook: ${{ fromJson(needs.find-notebooks.outputs.NOTEBOOKS13_uproot) }}
-  #   steps:
-  #     - name: Checkout repository
-  #       uses: actions/checkout@v4
+  run-notebooks-13-uproot:
+    needs: find-notebooks
+    runs-on: ubuntu-22.04
+    container:
+      image: atlasopendata/root_notebook:codata22
+    if: ${{ needs.find-notebooks.result == 'success' && needs.find-notebooks.outputs.NOTEBOOKS13_uproot != '[]' }}
+    strategy:
+      matrix:
+        notebook: ${{ fromJson(needs.find-notebooks.outputs.NOTEBOOKS13_uproot) }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-  #     - name: Set up Python
-  #       uses: actions/setup-python@v5
-  #       with:
-  #         python-version: '3.8'
+      # - name: Set up Python
+      #   uses: actions/setup-python@v5
+      #   with:
+      #     python-version: '3.8'
 
-  #     - name: Install dependencies
-  #       run: |
-  #         python -m pip install --upgrade pip
-  #         pip install jupyter ipykernel papermill
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install jupyter ipykernel papermill
 
-  #     - name: Set up Jupyter kernel
-  #       run: |
-  #         python -m ipykernel install --user --name=python3
+      - name: Set up Jupyter kernel
+        run: |
+          python -m ipykernel install --user --name=python3
 
-  #     - name: Run notebook with Papermill
-  #       run: |
-  #         papermill ${{ matrix.notebook }} /dev/null
+      - name: Run notebook with Papermill
+        run: |
+          papermill ${{ matrix.notebook }} /dev/null
 
-  # run-notebooks-13-rdataframe:
-  #   needs: find-notebooks
-  #   runs-on: ubuntu-latest
-  #   if: ${{ needs.find-notebooks.outputs.NOTEBOOKS13_rdataframe != '[]' }}
-  #   strategy:
-  #     matrix:
-  #       notebook: ${{ fromJson(needs.find-notebooks.outputs.NOTEBOOKS13_rdataframe) }}
-  #   steps:
-  #     - name: Checkout repository
-  #       uses: actions/checkout@v4
+  run-notebooks-13-rdataframe:
+    needs: find-notebooks
+    runs-on: ubuntu-22.04
+    container:
+      image: atlasopendata/root_notebook:codata22
+    if: ${{ needs.find-notebooks.result == 'success' && needs.find-notebooks.outputs.NOTEBOOKS13_rdataframe != '[]' }}
+    strategy:
+      matrix:
+        notebook: ${{ fromJson(needs.find-notebooks.outputs.NOTEBOOKS13_rdataframe) }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-  #     - name: Set up Python
-  #       uses: actions/setup-python@v5
-  #       with:
-  #         python-version: '3.8'
+      # - name: Set up Python
+      #   uses: actions/setup-python@v5
+      #   with:
+      #     python-version: '3.8'
 
-  #     - name: Install dependencies
-  #       run: |
-  #         python -m pip install --upgrade pip
-  #         pip install jupyter ipykernel papermill
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install jupyter ipykernel papermill
 
-  #     - name: Set up Jupyter kernel
-  #       run: |
-  #         python -m ipykernel install --user --name=python3
+      - name: Set up Jupyter kernel
+        run: |
+          python -m ipykernel install --user --name=python3
 
-  #     - name: Run notebook with Papermill
-  #       run: |
-  #         papermill ${{ matrix.notebook }} /dev/null
+      - name: Run notebook with Papermill
+        run: |
+          papermill ${{ matrix.notebook }} /dev/null
 
-  # run-notebooks-research:
-  #   needs: find-notebooks
-  #   runs-on: ubuntu-latest
-  #   if: ${{ needs.find-notebooks.outputs.NOTEBOOKS_research != '[]' }}
-  #   strategy:
-  #     matrix:
-  #       notebook: ${{ fromJson(needs.find-notebooks.outputs.NOTEBOOKS_research) }}
-  #   steps:
-  #     - name: Checkout repository
-  #       uses: actions/checkout@v4
+  run-notebooks-research:
+    needs: find-notebooks
+    runs-on: ubuntu-22.04
+    container:
+      image: atlasopendata/root_notebook:codata22
+    if: ${{ needs.find-notebooks.result == 'success' && needs.find-notebooks.outputs.NOTEBOOKS_research != '[]' }}
+    strategy:
+      matrix:
+        notebook: ${{ fromJson(needs.find-notebooks.outputs.NOTEBOOKS_research) }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-  #     - name: Set up Python
-  #       uses: actions/setup-python@v5
-  #       with:
-  #         python-version: '3.8'
+      # - name: Set up Python
+      #   uses: actions/setup-python@v5
+      #   with:
+      #     python-version: '3.8'
 
-  #     - name: Install dependencies
-  #       run: |
-  #         python -m pip install --upgrade pip
-  #         pip install jupyter ipykernel papermill
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install jupyter ipykernel papermill
 
-  #     - name: Set up Jupyter kernel
-  #       run: |
-  #         python -m ipykernel install --user --name=python3
+      - name: Set up Jupyter kernel
+        run: |
+          python -m ipykernel install --user --name=python3
 
-  #     - name: Run notebook with Papermill
-  #       run: |
-  #         papermill ${{ matrix.notebook }} /dev/null
+      - name: Run notebook with Papermill
+        run: |
+          papermill ${{ matrix.notebook }} /dev/null
