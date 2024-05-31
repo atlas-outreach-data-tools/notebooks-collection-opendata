@@ -126,7 +126,8 @@ jobs:
 
       - name: Run notebook with Papermill
         run: |
-          papermill ${{ matrix.notebook }} /dev/null
+          cd $(dirname ${{ matrix.notebook }})
+          papermill $(basename ${{ matrix.notebook }}) /dev/null
 
 
   run-notebooks-8-python:
@@ -159,7 +160,8 @@ jobs:
 
       - name: Run notebook with Papermill
         run: |
-          papermill ${{ matrix.notebook }} /dev/null
+          cd $(dirname ${{ matrix.notebook }})
+          papermill $(basename ${{ matrix.notebook }}) /dev/null
 
   run-notebooks-13-cpp:
     needs: find-notebooks
@@ -191,7 +193,8 @@ jobs:
 
       - name: Run notebook with Papermill
         run: |
-          papermill ${{ matrix.notebook }} /dev/null
+          cd $(dirname ${{ matrix.notebook }})
+          papermill $(basename ${{ matrix.notebook }}) /dev/null
 
 
   run-notebooks-13-python:
@@ -224,7 +227,8 @@ jobs:
 
       - name: Run notebook with Papermill
         run: |
-          papermill ${{ matrix.notebook }} /dev/null
+          cd $(dirname ${{ matrix.notebook }})
+          papermill $(basename ${{ matrix.notebook }}) /dev/null
 
   run-notebooks-13-uproot:
     needs: find-notebooks
@@ -256,7 +260,8 @@ jobs:
 
       - name: Run notebook with Papermill
         run: |
-          papermill ${{ matrix.notebook }} /dev/null
+          cd $(dirname ${{ matrix.notebook }})
+          papermill $(basename ${{ matrix.notebook }}) /dev/null
 
   run-notebooks-13-rdataframe:
     needs: find-notebooks
@@ -288,7 +293,8 @@ jobs:
 
       - name: Run notebook with Papermill
         run: |
-          papermill ${{ matrix.notebook }} /dev/null
+          cd $(dirname ${{ matrix.notebook }})
+          papermill $(basename ${{ matrix.notebook }}) /dev/null
 
   run-notebooks-research:
     needs: find-notebooks
@@ -320,4 +326,5 @@ jobs:
 
       - name: Run notebook with Papermill
         run: |
-          papermill ${{ matrix.notebook }} /dev/null
+          cd $(dirname ${{ matrix.notebook }})
+          papermill $(basename ${{ matrix.notebook }}) /dev/null
