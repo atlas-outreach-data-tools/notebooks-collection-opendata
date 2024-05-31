@@ -8,9 +8,7 @@ on:
 
 jobs:
   find-notebooks:
-    runs-on: ubuntu-22.04
-    container:
-      image: atlasopendata/root_notebook:codata22
+    runs-on: ubuntu-latest
     outputs:
       notebooks: ${{ steps.get-notebooks.outputs.notebooks }}
       NOTEBOOKS8_cpp: ${{ steps.get-notebooks.outputs.notebooks8-cpp }}
