@@ -103,6 +103,7 @@ jobs:
       image: atlasopendata/root_notebook:codata22
     if: ${{ needs.find-notebooks.result == 'success' && needs.find-notebooks.outputs.NOTEBOOKS8_cpp != '[]' }}
     strategy:
+      fail-fast: false
       matrix:
         notebook: ${{ fromJson(needs.find-notebooks.outputs.NOTEBOOKS8_cpp) }}
     steps:
@@ -135,6 +136,7 @@ jobs:
       image: atlasopendata/root_notebook:codata22
     if: ${{ needs.find-notebooks.result == 'success' && needs.find-notebooks.outputs.NOTEBOOKS8_python != '[]' }}
     strategy:
+      fail-fast: false
       matrix:
         notebook: ${{ fromJson(needs.find-notebooks.outputs.NOTEBOOKS8_python) }}
     steps:
@@ -166,6 +168,7 @@ jobs:
       image: atlasopendata/root_notebook:codata22
     if: ${{ needs.find-notebooks.result == 'success' && needs.find-notebooks.outputs.NOTEBOOKS13_cpp != '[]' }}
     strategy:
+      fail-fast: false
       matrix:
         notebook: ${{ fromJson(needs.find-notebooks.outputs.NOTEBOOKS13_cpp) }}
     steps:
@@ -198,6 +201,7 @@ jobs:
       image: atlasopendata/root_notebook:codata22
     if: ${{ needs.find-notebooks.result == 'success' && needs.find-notebooks.outputs.NOTEBOOKS13_python != '[]' }}
     strategy:
+      fail-fast: false
       matrix:
         notebook: ${{ fromJson(needs.find-notebooks.outputs.NOTEBOOKS13_python) }}
     steps:
@@ -229,6 +233,7 @@ jobs:
       image: atlasopendata/root_notebook:codata22
     if: ${{ needs.find-notebooks.result == 'success' && needs.find-notebooks.outputs.NOTEBOOKS13_uproot != '[]' }}
     strategy:
+      fail-fast: false
       matrix:
         notebook: ${{ fromJson(needs.find-notebooks.outputs.NOTEBOOKS13_uproot) }}
     steps:
@@ -260,6 +265,7 @@ jobs:
       image: atlasopendata/root_notebook:codata22
     if: ${{ needs.find-notebooks.result == 'success' && needs.find-notebooks.outputs.NOTEBOOKS13_rdataframe != '[]' }}
     strategy:
+      fail-fast: false
       matrix:
         notebook: ${{ fromJson(needs.find-notebooks.outputs.NOTEBOOKS13_rdataframe) }}
     steps:
@@ -291,6 +297,7 @@ jobs:
       image: atlasopendata/root_notebook:codata22
     if: ${{ needs.find-notebooks.result == 'success' && needs.find-notebooks.outputs.NOTEBOOKS_research != '[]' }}
     strategy:
+      fail-fast: false
       matrix:
         notebook: ${{ fromJson(needs.find-notebooks.outputs.NOTEBOOKS_research) }}
     steps:
