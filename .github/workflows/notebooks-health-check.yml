@@ -130,7 +130,7 @@ jobs:
     needs: find-notebooks
     runs-on: ubuntu-22.04
     container:
-      image: rootproject/root:6.30.06-ubuntu22.04
+      image: atlasopendata/root_notebook:codata22
     if: ${{ needs.find-notebooks.outputs.NOTEBOOKS8_python != '[]' }}
     strategy:
       matrix:
@@ -139,10 +139,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11.6'
+      # - name: Set up Python
+      #   uses: actions/setup-python@v5
+      #   with:
+      #     python-version: '3.11.6'
 
       - name: Install dependencies
         run: |
@@ -161,7 +161,7 @@ jobs:
     needs: find-notebooks
     runs-on: ubuntu-22.04
     container:
-      image: rootproject/root:6.30.06-ubuntu22.04
+      image: atlasopendata/root_notebook:codata22
     if: ${{ needs.find-notebooks.outputs.NOTEBOOKS13_cpp != '[]' }}
     strategy:
       matrix:
@@ -170,10 +170,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11.6'
+      # - name: Set up Python
+      #   uses: actions/setup-python@v5
+      #   with:
+      #     python-version: '3.11.6'
 
       - name: Install dependencies
         run: |
@@ -193,7 +193,7 @@ jobs:
     needs: find-notebooks
     runs-on: ubuntu-22.04
     container:
-      image: rootproject/root:6.30.06-ubuntu22.04
+      image: atlasopendata/root_notebook:codata22
     if: ${{ needs.find-notebooks.outputs.NOTEBOOKS13_python != '[]' }}
     strategy:
       matrix:
@@ -202,10 +202,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11.6'
+      # - name: Set up Python
+      #   uses: actions/setup-python@v5
+      #   with:
+      #     python-version: '3.11.6'
 
       - name: Install dependencies
         run: |
