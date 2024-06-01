@@ -468,7 +468,7 @@ jobs:
           )
 
           echo "# Status of the Jupyter notebooks" > status.md
-          echo "*This page is created automatically, for more information please visit [our repository](https://github.com/atlas-outreach-data-tools/notebooks-collection-opendata/actions).*" >> status.md
+          echo "*This page is created automatically, for more information please visit [our repository](https://github.com/atlas-outreach-data-tools/notebooks-collection-opendata/actions/runs/${{ github.run_number }}).*" >> status.md
           echo "| Status | Link |" >> status.md
           echo "|----------|----------|" >> status.md
           pwd
