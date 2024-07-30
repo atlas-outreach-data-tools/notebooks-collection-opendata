@@ -55,7 +55,7 @@ jobs:
           fi
           echo "notebooks8-cpp=$NOTEBOOKS8_cpp" >> $GITHUB_OUTPUT
 
-          NOTEBOOKS8_python=$(find ./8-TeV-examples/python -name '*.ipynb' -print0 | jq -Rsc 'split("\u0000")[:-1]')
+          NOTEBOOKS8_python=$(find ./8-TeV-examples/python -name '*Z.ipynb' -print0 | jq -Rsc 'split("\u0000")[:-1]')
           if [ -z "$NOTEBOOKS8_python" ]; then
             echo "No notebooks found"
             NOTEBOOKS8_python="[]"
@@ -69,14 +69,14 @@ jobs:
           fi
           echo "notebooks13-cpp=$NOTEBOOKS13_cpp" >> $GITHUB_OUTPUT
 
-          NOTEBOOKS13_uproot=$(find ./13-TeV-examples/uproot_python -name '*.ipynb' -print0 | jq -Rsc 'split("\u0000")[:-1]')
+          NOTEBOOKS13_uproot=$(find ./13-TeV-examples/uproot_python -name '*Z.ipynb' -print0 | jq -Rsc 'split("\u0000")[:-1]')
           if [ -z "$NOTEBOOKS13_uproot" ]; then
             echo "No notebooks found"
             NOTEBOOKS13_uproot="[]"
           fi
           echo "notebooks13-uproot=$NOTEBOOKS13_uproot" >> $GITHUB_OUTPUT
 
-          NOTEBOOKS13_python=$(find ./13-TeV-examples/python -name '*.ipynb' -print0 | jq -Rsc 'split("\u0000")[:-1]')
+          NOTEBOOKS13_python=$(find ./13-TeV-examples/python -name '*Z.ipynb' -print0 | jq -Rsc 'split("\u0000")[:-1]')
           if [ -z "$NOTEBOOKS13_python" ]; then
             echo "No notebooks found"
             NOTEBOOKS13_python="[]"
@@ -492,7 +492,7 @@ jobs:
                 prefix="https://github.com/atlas-outreach-data-tools/notebooks-collection-opendata/tree/master/"
                 URL=$(echo "${NOTEBOOK/\.\//"$prefix"}")
 
-                section=$(echo "$NOTEBOOK" | cut -d'-' -f4)
+                section=$(echo "$NOTEBOOK" | cut -d'/' -f3)
                 
                 notebooks["$section"]+="$OUT|[$(basename $NOTEBOOK)]($URL)\n"
               done < $file
