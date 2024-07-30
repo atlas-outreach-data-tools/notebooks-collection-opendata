@@ -3,6 +3,11 @@ name: Run Jupyter Notebooks
 on:
   # push:
   pull_request:
+    branches:
+        - 'main'
+    paths-ignore:
+      - 'README.md'
+      - 'Dockerfile'
   schedule:
     - cron: '0 0 1 * *'
 
@@ -118,7 +123,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install jupyter ipykernel papermill
+          pip install jupyter ipykernel papermill coffea
 
       - name: Set up Jupyter kernel
         run: |
@@ -469,15 +474,11 @@ jobs:
 
           echo "# Status of the Jupyter notebooks" > status.md
           echo "*This page is created automatically, for more information please visit [our repository](https://github.com/atlas-outreach-data-tools/notebooks-collection-opendata/actions/runs/${{ github.run_id }}).*" >> status.md
-          echo "| Status | Link |" >> status.md
-          echo "|----------|----------|" >> status.md
-          pwd
 
           declare -A notebooks
 
           for file in $(pwd)/artifacts/*/*
           do
-            file $file
             if [ -f "$file" ]; then
               while IFS= read -r line
               do
@@ -491,19 +492,16 @@ jobs:
                 prefix="https://github.com/atlas-outreach-data-tools/notebooks-collection-opendata/tree/master/"
                 URL=$(echo "${NOTEBOOK/\.\//"$prefix"}")
 
-                # Extract the section title
-                section=$(echo "$NOTEBOOK" | sed -E 's/^.*result_run-notebooks-([^-]+)-([^-]+).*$/\1-\2/')
+                section=$(echo "$NOTEBOOK" | cut -d'-' -f4)
                 
-                # Append notebook info to the corresponding section
                 notebooks["$section"]+="$OUT|[$(basename $NOTEBOOK)]($URL)\n"
               done < $file
             fi
           done
 
-          # Write the sections and notebooks to status.md
           for section in "${!notebooks[@]}"
           do
-            echo "### ${section//-/ }" >> status.md
+            echo "### $section" >> status.md
             echo "| Status | Link |" >> status.md
             echo "|----------|----------|" >> status.md
             echo -e "${notebooks[$section]}" >> status.md
