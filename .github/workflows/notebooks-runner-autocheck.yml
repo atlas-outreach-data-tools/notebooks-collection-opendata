@@ -55,7 +55,7 @@ jobs:
           fi
           echo "notebooks8-cpp=$NOTEBOOKS8_cpp" >> $GITHUB_OUTPUT
 
-          NOTEBOOKS8_python=$(find ./8-TeV-examples/python -name '*Z.ipynb' -print0 | jq -Rsc 'split("\u0000")[:-1]')
+          NOTEBOOKS8_python=$(find ./8-TeV-examples/python -name '*.ipynb' -print0 | jq -Rsc 'split("\u0000")[:-1]')
           if [ -z "$NOTEBOOKS8_python" ]; then
             echo "No notebooks found"
             NOTEBOOKS8_python="[]"
@@ -69,14 +69,14 @@ jobs:
           fi
           echo "notebooks13-cpp=$NOTEBOOKS13_cpp" >> $GITHUB_OUTPUT
 
-          NOTEBOOKS13_uproot=$(find ./13-TeV-examples/uproot_python -name '*Z.ipynb' -print0 | jq -Rsc 'split("\u0000")[:-1]')
+          NOTEBOOKS13_uproot=$(find ./13-TeV-examples/uproot_python -name '*.ipynb' -print0 | jq -Rsc 'split("\u0000")[:-1]')
           if [ -z "$NOTEBOOKS13_uproot" ]; then
             echo "No notebooks found"
             NOTEBOOKS13_uproot="[]"
           fi
           echo "notebooks13-uproot=$NOTEBOOKS13_uproot" >> $GITHUB_OUTPUT
 
-          NOTEBOOKS13_python=$(find ./13-TeV-examples/python -name '*Z.ipynb' -print0 | jq -Rsc 'split("\u0000")[:-1]')
+          NOTEBOOKS13_python=$(find ./13-TeV-examples/python -name '*.ipynb' -print0 | jq -Rsc 'split("\u0000")[:-1]')
           if [ -z "$NOTEBOOKS13_python" ]; then
             echo "No notebooks found"
             NOTEBOOKS13_python="[]"
@@ -394,7 +394,7 @@ jobs:
     needs: find-notebooks
     runs-on: ubuntu-22.04
     container:
-      image: atlasopendata/root_notebook:codata22
+      image: ghcr.io/atlas-outreach-data-tools/notebooks-collection-opendata:latest
     if: ${{ needs.find-notebooks.result == 'success' && needs.find-notebooks.outputs.NOTEBOOKS_research != '[]' }}
     strategy:
       fail-fast: false
@@ -493,8 +493,15 @@ jobs:
                 URL=$(echo "${NOTEBOOK/\.\//"$prefix"}")
 
                 section=$(echo "$NOTEBOOK" | cut -d'/' -f3)
-                
-                notebooks["$section"]+="$OUT|[$(basename $NOTEBOOK)]($URL)\n"
+                if [[ "$section" == "uproot_python" ]]; then
+                  notebooks["uproot"]+="$OUT|[$(basename $NOTEBOOK)]($URL)\n"
+                elif [[ "$section" == "rdataframe" ]]; then
+                  echo "yoooo"
+                  notebooks["RDataFrame"]+="$OUT|[$(basename $NOTEBOOK)]($URL)\n"
+                else
+                  notebooks["$section"]+="$OUT|[$(basename $NOTEBOOK)]($URL)\n"
+                fi
+
               done < $file
             fi
           done
@@ -506,7 +513,7 @@ jobs:
             echo "|----------|----------|" >> status.md
             echo -e "${notebooks[$section]}" >> status.md
           done
-          echo "*Last update on $(date)*" >> status.md
+          echo "*Last update on $(TZ=Europe/Rome date)*" >> status.md
           cat status.md
 
       - name: Commit and push to GitLab
