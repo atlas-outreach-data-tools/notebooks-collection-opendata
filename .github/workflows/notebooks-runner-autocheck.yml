@@ -430,7 +430,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v3
         with:
-          name: result_run-notebooks-research-${{ env.sanitized_name }}.txt
+          name: result_run-notebooks-13-research-${{ env.sanitized_name }}.txt
           path: ./artifacts
 
 
@@ -472,25 +472,43 @@ jobs:
           echo "| Status | Link |" >> status.md
           echo "|----------|----------|" >> status.md
           pwd
+
+          declare -A notebooks
+
           for file in $(pwd)/artifacts/*/*
-            do
-              file $file
-              if [ -f "$file" ]; then
-                while IFS= read -r line
-                do
-                  NOTEBOOK=$(echo "$line" | cut -d: -f1)
-                  STATUS=$(echo "$line" | cut -d: -f2 | xargs)
-                  if [[ "$STATUS" == "success" ]]; then
-                    OUT="✅"
-                  else
-                    OUT="❌"
-                  fi
-                  prefix="https://github.com/atlas-outreach-data-tools/notebooks-collection-opendata/tree/master/"
-                  URL=$(echo "${NOTEBOOK/\.\//"$prefix"}")
-                  echo "| $OUT | [$(basename $NOTEBOOK)]($URL) |" >> status.md
-                done < $file
-              fi
-            done
+          do
+            file $file
+            if [ -f "$file" ]; then
+              while IFS= read -r line
+              do
+                NOTEBOOK=$(echo "$line" | cut -d: -f1)
+                STATUS=$(echo "$line" | cut -d: -f2 | xargs)
+                if [[ "$STATUS" == "success" ]]; then
+                  OUT="✅"
+                else
+                  OUT="❌"
+                fi
+                prefix="https://github.com/atlas-outreach-data-tools/notebooks-collection-opendata/tree/master/"
+                URL=$(echo "${NOTEBOOK/\.\//"$prefix"}")
+
+                # Extract the section title
+                section=$(echo "$NOTEBOOK" | sed -E 's/^.*result_run-notebooks-([^-]+)-([^-]+).*$/\1-\2/')
+                
+                # Append notebook info to the corresponding section
+                notebooks["$section"]+="$OUT|[$(basename $NOTEBOOK)]($URL)\n"
+              done < $file
+            fi
+          done
+
+          # Write the sections and notebooks to status.md
+          for section in "${!notebooks[@]}"
+          do
+            echo "### ${section//-/ }" >> status.md
+            echo "| Status | Link |" >> status.md
+            echo "|----------|----------|" >> status.md
+            echo -e "${notebooks[$section]}" >> status.md
+          done
+          echo "*Last update on $(date)*" >> status.md
           cat status.md
 
       - name: Commit and push to GitLab
