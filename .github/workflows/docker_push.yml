@@ -4,12 +4,12 @@ name: Create and publish a Docker image
 on:
   push:
     branches:
-      - 'main'
+      - 'master'
     paths:
       - 'Dockerfile'
   pull_request:
     branches:
-      - 'main'
+      - 'master'
     paths:
       - 'Dockerfile'
 
