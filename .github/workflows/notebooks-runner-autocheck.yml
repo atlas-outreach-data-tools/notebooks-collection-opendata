@@ -105,7 +105,7 @@ jobs:
     needs: find-notebooks
     runs-on: ubuntu-22.04
     container:
-      image: atlasopendata/root_notebook:codata22
+      image: ghcr.io/atlas-outreach-data-tools/notebooks-collection-opendata:latest
     if: ${{ needs.find-notebooks.result == 'success' && needs.find-notebooks.outputs.NOTEBOOKS8_cpp != '[]' }}
     strategy:
       fail-fast: false
@@ -154,7 +154,7 @@ jobs:
     needs: find-notebooks
     runs-on: ubuntu-22.04
     container:
-      image: atlasopendata/root_notebook:codata22
+      image: ghcr.io/atlas-outreach-data-tools/notebooks-collection-opendata:latest
     if: ${{ needs.find-notebooks.result == 'success' && needs.find-notebooks.outputs.NOTEBOOKS8_python != '[]' }}
     strategy:
       fail-fast: false
@@ -202,7 +202,7 @@ jobs:
     needs: find-notebooks
     runs-on: ubuntu-22.04
     container:
-      image: atlasopendata/root_notebook:codata22
+      image: ghcr.io/atlas-outreach-data-tools/notebooks-collection-opendata:latest
     if: ${{ needs.find-notebooks.result == 'success' && needs.find-notebooks.outputs.NOTEBOOKS13_cpp != '[]' }}
     strategy:
       fail-fast: false
@@ -250,7 +250,7 @@ jobs:
     needs: find-notebooks
     runs-on: ubuntu-22.04
     container:
-      image: atlasopendata/root_notebook:codata22
+      image: ghcr.io/atlas-outreach-data-tools/notebooks-collection-opendata:latest
     if: ${{ needs.find-notebooks.result == 'success' && needs.find-notebooks.outputs.NOTEBOOKS13_python != '[]' }}
     strategy:
       fail-fast: false
@@ -298,7 +298,7 @@ jobs:
     needs: find-notebooks
     runs-on: ubuntu-22.04
     container:
-      image: atlasopendata/root_notebook:codata22
+      image: ghcr.io/atlas-outreach-data-tools/notebooks-collection-opendata:latest
     if: ${{ needs.find-notebooks.result == 'success' && needs.find-notebooks.outputs.NOTEBOOKS13_uproot != '[]' }}
     strategy:
       fail-fast: false
@@ -346,7 +346,7 @@ jobs:
     needs: find-notebooks
     runs-on: ubuntu-22.04
     container:
-      image: atlasopendata/root_notebook:codata22
+      image: ghcr.io/atlas-outreach-data-tools/notebooks-collection-opendata:latest
     if: ${{ needs.find-notebooks.result == 'success' && needs.find-notebooks.outputs.NOTEBOOKS13_rdataframe != '[]' }}
     strategy:
       fail-fast: false
