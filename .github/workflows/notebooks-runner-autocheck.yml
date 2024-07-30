@@ -287,13 +287,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # - name: Set up Python
-      #   uses: actions/setup-python@v5
-      #   with:
-      #     python-version: '3.8'
-
-
-
+      
       - name: Set up Jupyter kernel
         run: |
           python -m ipykernel install --user --name=python3
@@ -332,13 +326,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # - name: Set up Python
-      #   uses: actions/setup-python@v5
-      #   with:
-      #     python-version: '3.8'
-
-
-
+      
       - name: Set up Jupyter kernel
         run: |
           python -m ipykernel install --user --name=python3
@@ -377,13 +365,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # - name: Set up Python
-      #   uses: actions/setup-python@v5
-      #   with:
-      #     python-version: '3.8'
-
-
-
+      
       - name: Set up Jupyter kernel
         run: |
           python -m ipykernel install --user --name=python3
@@ -504,5 +486,5 @@ jobs:
 
           git checkout -b update_status_${{ github.sha }}
           git add status.md
-          git commit -m "Update status.md"
+          git commit -m "Update status.md, commit ${{ github.sha }}"
           git push -u origin update_status_${{ github.sha }}
