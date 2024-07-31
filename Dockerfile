@@ -21,12 +21,14 @@ RUN pip3 install --no-cache-dir --upgrade  \
     pandas \
     pydot \
     awkward \
+    awkward-pandas \
     vector \
     scikit-learn \
     lmfit \
     jupyter \ 
     ipykernel \ 
     papermill \
+    dask[distributed] \
     coffea
 
 WORKDIR /home/jovyan/work/
