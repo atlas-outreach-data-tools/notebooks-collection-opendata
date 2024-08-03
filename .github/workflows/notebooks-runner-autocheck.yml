@@ -8,8 +8,9 @@ on:
     paths-ignore:
       - 'README.md'
       - 'Dockerfile'
+      - '.github/workflows/docker_push.yml'
   schedule:
-    - cron: '0 0 1 * *'
+    - cron: '0 0 * * 3'
 
 jobs:
   find-notebooks:
