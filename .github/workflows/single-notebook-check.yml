@@ -11,6 +11,8 @@ on:
 jobs:
   detect-changes:
     runs-on: ubuntu-22.04
+    outputs:
+      notebooks: ${{ steps.changed-notebooks.outputs.notebooks }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -21,8 +23,7 @@ jobs:
           git fetch origin master
           git diff --name-only origin/master...HEAD | grep ipynb > changed_notebooks.txt
           echo "notebooks=$(cat changed_notebooks.txt | jq -R -s -c 'split("\n") | map(select(length > 0))')" >> $GITHUB_ENV
-        outputs:
-          notebooks: ${{ steps.changed-notebooks.outputs.notebooks }}
+        
 
   run-notebooks:
     needs: detect-changes
