@@ -17,17 +17,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 2
+          fetch-depth: 0
 
       - name: List changed Jupyter Notebook files
         id: changed-notebooks
         run: |
           echo "Current Branch: ${{ github.ref }}"
-          git fetch origin master
+          # git fetch origin master
           # git checkout master
           # git pull origin master
           # git checkout ${{ github.ref }}"
-          git diff --name-only origin/master...HEAD | grep ipynb > changed_notebooks.txt
+          git diff --name-only ${{ github.base_ref }}"...${{ github.ref }}" | grep ipynb > changed_notebooks.txt
           echo "notebooks=$(cat changed_notebooks.txt | jq -R -s -c 'split("\n") | map(select(length > 0))')" >> $GITHUB_ENV
         
 
