@@ -3,9 +3,9 @@ name: Check Jupyter Notebook
 on:
   push:
     paths:
-      - 13-TeV-examples/**/*ipynb
-      - 8-TeV-examples/**/*ipynb
-      - for-research/**/*ipynb
+      - 13-TeV-examples/**/*.ipynb
+      - 8-TeV-examples/**/*.ipynb
+      - for-research/**/*.ipynb
 
 jobs:
   detect-changes:
