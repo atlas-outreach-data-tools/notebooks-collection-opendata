@@ -22,6 +22,7 @@ jobs:
         run: |
           echo "Current Branch: ${{ github.ref }}"
           git fetch origin master
+          git checkout master
           git pull origin master
           git checkout ${{ github.ref }}"
           git diff --name-only origin/master...HEAD | grep ipynb > changed_notebooks.txt
