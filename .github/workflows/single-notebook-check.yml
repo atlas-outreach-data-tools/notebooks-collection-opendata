@@ -20,6 +20,8 @@ jobs:
           git fetch origin master
           git diff --name-only origin/master...HEAD | grep ipynb > changed_notebooks.txt
           echo "notebooks=$(cat changed_notebooks.txt | jq -R -s -c 'split("\n") | map(select(length > 0))')" >> $GITHUB_ENV
+        outputs:
+          notebooks: ${{ steps.changed-notebooks.outputs.notebooks }}
 
   run-notebooks:
     needs: detect-changes
@@ -27,7 +29,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        notebook: ${{ fromJson(env.notebooks) }}
+        notebook: ${{ fromJson(needs.detect-changes.outputs.notebooks) }}
 
     container:
       image: ghcr.io/atlas-outreach-data-tools/notebooks-collection-opendata:latest
