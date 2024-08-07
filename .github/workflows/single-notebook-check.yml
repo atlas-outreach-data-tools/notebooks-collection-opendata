@@ -1,9 +1,7 @@
 name: Check Jupyter Notebook
 
 on:
-  pull_request:
-    branches:
-      - 'master'
+  push:
     paths:
       - 13-TeV-examples/**/*ipynb
       - 8-TeV-examples/**/*ipynb
