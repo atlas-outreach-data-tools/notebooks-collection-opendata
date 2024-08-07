@@ -6,6 +6,7 @@ on:
       - 13-TeV-examples/**/*.ipynb
       - 8-TeV-examples/**/*.ipynb
       - for-research/**/*.ipynb
+      - .github/workflows/single-notebook-check.yml
 
 jobs:
   detect-changes:
