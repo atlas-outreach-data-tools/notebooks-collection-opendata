@@ -24,13 +24,20 @@ jobs:
         run: |
           echo "Current Branch: ${{ github.ref }}"
           git fetch origin master
-          git diff --name-only origin/master...HEAD | grep ipynb > changed_notebooks.txt
-          echo "notebooks=$(cat changed_notebooks.txt | jq -R -s -c 'split("\n")[:-1]')" >> $GITHUB_OUTPUT
+          DIFF=git diff --name-only origin/master...HEAD | grep ipynb
+          if [ -z "$DIFF" ]; then
+            echo "No notebooks found"
+            echo "notebooks=[]" >> $GITHUB_OUTPUT
+          else
+            echo "$DIFF" > changed_notebooks.txt
+            echo "notebooks=$(cat changed_notebooks.txt | jq -R -s -c 'split("\n")[:-1]')" >> $GITHUB_OUTPUT
+          fi
         
 
   run-notebooks:
     needs: detect-changes
     runs-on: ubuntu-22.04
+    if: ${{ needs.detect-changes.outputs.notebooks != '[]' }}
     strategy:
       fail-fast: false
       matrix:
