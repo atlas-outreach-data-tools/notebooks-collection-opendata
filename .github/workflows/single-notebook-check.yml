@@ -25,7 +25,7 @@ jobs:
           echo "Current Branch: ${{ github.ref }}"
           git fetch origin master
           git diff --name-only origin/master...HEAD | grep ipynb > changed_notebooks.txt
-          echo "notebooks=$(cat changed_notebooks.txt | jq -R -s -c 'split("\n")[:-1]')" >> $GITHUB_ENV
+          echo "notebooks=$(cat changed_notebooks.txt | jq -R -s -c 'split("\n")[:-1]')" >> $GITHUB_OUTPUT
         
 
   run-notebooks:
