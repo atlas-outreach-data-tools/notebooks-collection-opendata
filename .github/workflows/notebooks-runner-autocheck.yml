@@ -43,14 +43,14 @@ jobs:
             NOTEBOOKS="[]"
           fi
           
-          NOTEBOOKS8_cpp=$(find ./8-TeV-examples/cpp -name '*.ipynb' -print0 | jq -Rsc 'split("\u0000")[:-1]')
+          # NOTEBOOKS8_cpp=$(find ./8-TeV-examples/cpp -name '*.ipynb' -print0 | jq -Rsc 'split("\u0000")[:-1]')
           if [ -z "$NOTEBOOKS8_cpp" ]; then
             echo "No notebooks found"
             NOTEBOOKS8_cpp="[]"
           fi
           echo "notebooks8-cpp=$NOTEBOOKS8_cpp" >> $GITHUB_OUTPUT
 
-          NOTEBOOKS8_python=$(find ./8-TeV-examples/python -name '*.ipynb' -print0 | jq -Rsc 'split("\u0000")[:-1]')
+          # NOTEBOOKS8_python=$(find ./8-TeV-examples/python -name '*.ipynb' -print0 | jq -Rsc 'split("\u0000")[:-1]')
           if [ -z "$NOTEBOOKS8_python" ]; then
             echo "No notebooks found"
             NOTEBOOKS8_python="[]"
