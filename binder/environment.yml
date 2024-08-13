@@ -12,6 +12,7 @@ dependencies:
   - matplotlib
   - lmfit
   - scikit-learn
+  - aiohttp
   - pip:
-      - vector
-      - jupyterlab_latex
+    - vector
+    - jupyterlab_latex
