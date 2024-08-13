@@ -61,7 +61,7 @@ jobs:
           visibility: public
 
       - name: Build and push Docker image - conda
-        id: push
+        id: push-conda
         uses: docker/build-push-action@v4
         with:
           context: .
