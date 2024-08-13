@@ -1,12 +1,8 @@
 name: analysis
 channels:
-  - conda-forge
+    - conda-forge
 dependencies:
-  - python=3.9
-  - xeus-cling=0.13.0
-  - xeus=2.0.0
-  - openssl=1.1.1n
-  - root=6.24.6
+  - root
   - pip
   - uproot3
   - uproot
