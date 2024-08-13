@@ -1,26 +1,17 @@
-# Use an official miniconda3 image from Docker Hub as a parent image
 FROM continuumio/miniconda3
 
-# Set the working directory in the container
 WORKDIR /opt/app
 
 # Copy the environment.yml file into the container
-COPY environment.yml .
+COPY binder/environment.yml .
 
-# Install the dependencies using the environment.yml file
 RUN conda env create -f environment.yml
-
-# Make sure the environment is activated when the container starts
 SHELL ["conda", "run", "-n", "analysis", "/bin/bash", "-c"]
 
-# Set the environment variables
 ENV PATH /opt/conda/envs/analysis/bin:$PATH
-
-# Install any additional dependencies (optional)
 RUN conda install -n analysis jupyter
+RUN conda install -c conda-forge xeus-cling
+# Expose port 8888 for Jupyter Lab
+EXPOSE 8888
 
-# Copy the application code into the container (if any)
-# COPY . .
-
-# Specify the command to run when the container starts
-CMD ["bash"]
+CMD ["jupyter", "lab", "--ip=0.0.0.0", "--allow-root", "--no-browser"]
