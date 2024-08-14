@@ -54,21 +54,19 @@ jobs:
         uses: docker/build-push-action@v4.0.0
         with:
           context: .
-          dockerfile: Dockerfile
+          file: Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          visibility: public
 
       - name: Build and push Docker image - conda
         id: push-conda
         uses: docker/build-push-action@v4
         with:
           context: .
-          dockerfile: Dockerfile.conda
+          file: Dockerfile.conda
           push: true
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:conda
-          visibility: public
       
       # This step generates an artifact attestation for the image, which is an unforgeable statement about where and how it was built. It increases supply chain security for people who consume the image. For more information, see "[AUTOTITLE](/actions/security-guides/using-artifact-attestations-to-establish-provenance-for-builds)." 
       - name: Generate artifact attestation
