@@ -13,7 +13,7 @@ dependencies:
   - lmfit
   - scikit-learn
   - aiohttp
+  - jupyter
   - pip:
     - vector
-    - jupyterlab_latex
-    - jupyter
+    - jupyterlab_late
