@@ -8,8 +8,6 @@ COPY binder/environment.yml .
 RUN conda env create -f environment.yml
 SHELL ["conda", "run", "-n", "analysis", "/bin/bash", "-c"]
 
-ENV PATH /opt/conda/envs/analysis/bin:$PATH
-RUN conda install -n analysis jupyter
 # Expose port 8888 for Jupyter Lab
 EXPOSE 8888
 
