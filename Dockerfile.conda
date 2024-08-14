@@ -10,7 +10,6 @@ SHELL ["conda", "run", "-n", "analysis", "/bin/bash", "-c"]
 
 ENV PATH /opt/conda/envs/analysis/bin:$PATH
 RUN conda install -n analysis jupyter
-RUN conda install -c conda-forge xeus-cling
 # Expose port 8888 for Jupyter Lab
 EXPOSE 8888
 
