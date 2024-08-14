@@ -16,4 +16,4 @@ dependencies:
   - pip:
     - vector
     - jupyterlab_latex
-    - jupyte
+    - jupyter
