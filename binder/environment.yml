@@ -14,6 +14,8 @@ dependencies:
   - scikit-learn
   - aiohttp
   - jupyter
+  - ipykernel
+  - papermill
   - pip:
     - vector
     - jupyterlab_late
