@@ -33,3 +33,6 @@ RUN pip3 install --no-cache-dir --upgrade  \
 
 WORKDIR /home/jovyan/work/
 
+EXPOSE 8888
+
+CMD ["jupyter", "lab", "--ip=0.0.0.0", "--allow-root", "--no-browser"]
