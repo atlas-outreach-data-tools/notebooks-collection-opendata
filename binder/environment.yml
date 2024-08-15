@@ -2,7 +2,7 @@ name: analysis
 channels:
     - conda-forge
 dependencies:
-  - root
+  - root_base
   - pip
   - uproot3
   - uproot
