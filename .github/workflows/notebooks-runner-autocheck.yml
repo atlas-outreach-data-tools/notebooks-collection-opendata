@@ -4,6 +4,7 @@ on:
   push:
     branches:
         - 'master'
+        - 'single-test'
     paths-ignore:
       - 'README.md'
       - 'Dockerfile'
@@ -110,15 +111,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # - name: Set up Python
-      #   uses: actions/setup-python@v5
-      #   with:
-      #     python-version: '3.8'
-
-      - name: Set up Jupyter kernel
-        run: |
-          python -m ipykernel install --user --name=root
-
       - name: Run notebook with Papermill
         run: |
           cd $(dirname ${{ matrix.notebook }})
@@ -154,15 +146,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # - name: Set up Python
-      #   uses: actions/setup-python@v5
-      #   with:
-      #     python-version: '3.11.6'
-
-      - name: Set up Jupyter kernel
-        run: |
-          python -m ipykernel install --user --name=python3
-
       - name: Run notebook with Papermill
         run: |
           cd $(dirname ${{ matrix.notebook }})
@@ -196,17 +179,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      # - name: Set up Python
-      #   uses: actions/setup-python@v5
-      #   with:
-      #     python-version: '3.11.6'
-
-
-
-      - name: Set up Jupyter kernel
-        run: |
-          python -m ipykernel install --user --name=root
 
       - name: Run notebook with Papermill
         run: |
@@ -242,17 +214,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # - name: Set up Python
-      #   uses: actions/setup-python@v5
-      #   with:
-      #     python-version: '3.11.6'
-
-
-
-      - name: Set up Jupyter kernel
-        run: |
-          python -m ipykernel install --user --name=python3
-
       - name: Run notebook with Papermill
         run: |
           cd $(dirname ${{ matrix.notebook }})
@@ -286,11 +247,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      
-      - name: Set up Jupyter kernel
-        run: |
-          python -m ipykernel install --user --name=python3
 
       - name: Run notebook with Papermill
         run: |
@@ -326,11 +282,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      
-      - name: Set up Jupyter kernel
-        run: |
-          python -m ipykernel install --user --name=python3
-
       - name: Run notebook with Papermill
         run: |
           cd $(dirname ${{ matrix.notebook }})
@@ -365,11 +316,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      
-      - name: Set up Jupyter kernel
-        run: |
-          python -m ipykernel install --user --name=python3
-
       - name: Run notebook with Papermill
         run: |
           cd $(dirname ${{ matrix.notebook }})
@@ -389,8 +335,6 @@ jobs:
         with:
           name: result_run-notebooks-13-research-${{ env.sanitized_name }}.txt
           path: ./artifacts
-
-
 
   generate-status-report:
     runs-on: ubuntu-latest
