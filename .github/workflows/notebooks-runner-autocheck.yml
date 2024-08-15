@@ -4,7 +4,6 @@ on:
   push:
     branches:
         - 'master'
-        - 'single-test'
     paths-ignore:
       - 'README.md'
       - 'Dockerfile'
@@ -114,7 +113,7 @@ jobs:
       - name: Run notebook with Papermill
         run: |
           cd $(dirname ${{ matrix.notebook }})
-          papermill $(basename ${{ matrix.notebook }}) /dev/null
+          papermill --log-level ERROR $(basename ${{ matrix.notebook }}) /dev/null
 
       - name: Output result
         if: always()
@@ -149,7 +148,7 @@ jobs:
       - name: Run notebook with Papermill
         run: |
           cd $(dirname ${{ matrix.notebook }})
-          papermill $(basename ${{ matrix.notebook }}) /dev/null
+          papermill --log-level ERROR $(basename ${{ matrix.notebook }}) /dev/null
 
       - name: Output result
         if: always()
@@ -183,7 +182,7 @@ jobs:
       - name: Run notebook with Papermill
         run: |
           cd $(dirname ${{ matrix.notebook }})
-          papermill $(basename ${{ matrix.notebook }}) /dev/null
+          papermill --log-level ERROR $(basename ${{ matrix.notebook }}) /dev/null
 
       - name: Output result
         if: always()
@@ -217,7 +216,7 @@ jobs:
       - name: Run notebook with Papermill
         run: |
           cd $(dirname ${{ matrix.notebook }})
-          papermill $(basename ${{ matrix.notebook }}) /dev/null
+          papermill --log-level ERROR $(basename ${{ matrix.notebook }}) /dev/null
 
       - name: Output result
         if: always()
@@ -251,7 +250,7 @@ jobs:
       - name: Run notebook with Papermill
         run: |
           cd $(dirname ${{ matrix.notebook }})
-          papermill $(basename ${{ matrix.notebook }}) /dev/null
+          papermill --log-level ERROR $(basename ${{ matrix.notebook }}) /dev/null
 
       - name: Output result
         if: always()
@@ -285,7 +284,7 @@ jobs:
       - name: Run notebook with Papermill
         run: |
           cd $(dirname ${{ matrix.notebook }})
-          papermill $(basename ${{ matrix.notebook }}) /dev/null
+          papermill --log-level ERROR $(basename ${{ matrix.notebook }}) /dev/null
 
       - name: Output result
         if: always()
@@ -319,7 +318,7 @@ jobs:
       - name: Run notebook with Papermill
         run: |
           cd $(dirname ${{ matrix.notebook }})
-          papermill $(basename ${{ matrix.notebook }}) /dev/null
+          papermill --log-level ERROR $(basename ${{ matrix.notebook }}) /dev/null
 
       - name: Output result
         if: always()
