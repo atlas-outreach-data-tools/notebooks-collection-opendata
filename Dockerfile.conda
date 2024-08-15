@@ -1,4 +1,4 @@
-FROM continuumio/miniconda3:24.7.1
+FROM continuumio/miniconda3
 
 WORKDIR /opt/app
 
