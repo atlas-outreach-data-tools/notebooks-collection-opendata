@@ -18,4 +18,4 @@ dependencies:
   - papermill
   - pip:
     - vector
-    - jupyterlab_late
+    - jupyterlab_latex
