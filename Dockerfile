@@ -1,5 +1,6 @@
 FROM continuumio/miniconda3
-
+LABEL author="ATLAS Open Data Team @ CERN 2024"
+LABEL maintainer="Giovanni Guerrieri - giovanni.guerrieri@cern.ch"
 WORKDIR /opt/app
 
 # Copy the environment.yml file into the container
