@@ -1,8 +1,7 @@
 name: Run Jupyter Notebooks
 
 on:
-  # push:
-  pull_request:
+  push:
     branches:
         - 'master'
     paths-ignore:
@@ -44,14 +43,14 @@ jobs:
             NOTEBOOKS="[]"
           fi
           
-          NOTEBOOKS8_cpp=$(find ./8-TeV-examples/cpp -name '*.ipynb' -print0 | jq -Rsc 'split("\u0000")[:-1]')
+          # NOTEBOOKS8_cpp=$(find ./8-TeV-examples/cpp -name '*.ipynb' -print0 | jq -Rsc 'split("\u0000")[:-1]')
           if [ -z "$NOTEBOOKS8_cpp" ]; then
             echo "No notebooks found"
             NOTEBOOKS8_cpp="[]"
           fi
           echo "notebooks8-cpp=$NOTEBOOKS8_cpp" >> $GITHUB_OUTPUT
 
-          NOTEBOOKS8_python=$(find ./8-TeV-examples/python -name '*.ipynb' -print0 | jq -Rsc 'split("\u0000")[:-1]')
+          # NOTEBOOKS8_python=$(find ./8-TeV-examples/python -name '*.ipynb' -print0 | jq -Rsc 'split("\u0000")[:-1]')
           if [ -z "$NOTEBOOKS8_python" ]; then
             echo "No notebooks found"
             NOTEBOOKS8_python="[]"
@@ -111,19 +110,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # - name: Set up Python
-      #   uses: actions/setup-python@v5
-      #   with:
-      #     python-version: '3.8'
-
-      - name: Set up Jupyter kernel
-        run: |
-          python -m ipykernel install --user --name=root
-
       - name: Run notebook with Papermill
         run: |
           cd $(dirname ${{ matrix.notebook }})
-          papermill $(basename ${{ matrix.notebook }}) /dev/null
+          papermill --log-level ERROR $(basename ${{ matrix.notebook }}) /dev/null
 
       - name: Output result
         if: always()
@@ -135,7 +125,7 @@ jobs:
 
       - name: Upload results
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4.3.5
         with:
           name: result_run-notebooks-8-cpp-${{ env.sanitized_name }}.txt
           path: ./artifacts
@@ -155,19 +145,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # - name: Set up Python
-      #   uses: actions/setup-python@v5
-      #   with:
-      #     python-version: '3.11.6'
-
-      - name: Set up Jupyter kernel
-        run: |
-          python -m ipykernel install --user --name=python3
-
       - name: Run notebook with Papermill
         run: |
           cd $(dirname ${{ matrix.notebook }})
-          papermill $(basename ${{ matrix.notebook }}) /dev/null
+          papermill --log-level ERROR $(basename ${{ matrix.notebook }}) /dev/null
 
       - name: Output result
         if: always()
@@ -179,7 +160,7 @@ jobs:
 
       - name: Upload results
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4.3.5
         with:
           name: result_run-notebooks-8-python-${{ env.sanitized_name }}.txt
           path: ./artifacts
@@ -198,21 +179,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # - name: Set up Python
-      #   uses: actions/setup-python@v5
-      #   with:
-      #     python-version: '3.11.6'
-
-
-
-      - name: Set up Jupyter kernel
-        run: |
-          python -m ipykernel install --user --name=root
-
       - name: Run notebook with Papermill
         run: |
           cd $(dirname ${{ matrix.notebook }})
-          papermill $(basename ${{ matrix.notebook }}) /dev/null
+          papermill --log-level ERROR $(basename ${{ matrix.notebook }}) /dev/null
 
       - name: Output result
         if: always()
@@ -224,7 +194,7 @@ jobs:
 
       - name: Upload results
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4.3.5
         with:
           name: result_run-notebooks-13-cpp-${{ env.sanitized_name }}.txt
           path: ./artifacts
@@ -243,21 +213,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # - name: Set up Python
-      #   uses: actions/setup-python@v5
-      #   with:
-      #     python-version: '3.11.6'
-
-
-
-      - name: Set up Jupyter kernel
-        run: |
-          python -m ipykernel install --user --name=python3
-
       - name: Run notebook with Papermill
         run: |
           cd $(dirname ${{ matrix.notebook }})
-          papermill $(basename ${{ matrix.notebook }}) /dev/null
+          papermill --log-level ERROR $(basename ${{ matrix.notebook }}) /dev/null
 
       - name: Output result
         if: always()
@@ -269,7 +228,7 @@ jobs:
 
       - name: Upload results
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4.3.5
         with:
           name: result_run-notebooks-13-python-${{ env.sanitized_name }}.txt
           path: ./artifacts
@@ -288,15 +247,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      
-      - name: Set up Jupyter kernel
-        run: |
-          python -m ipykernel install --user --name=python3
-
       - name: Run notebook with Papermill
         run: |
           cd $(dirname ${{ matrix.notebook }})
-          papermill $(basename ${{ matrix.notebook }}) /dev/null
+          papermill --log-level ERROR $(basename ${{ matrix.notebook }}) /dev/null
 
       - name: Output result
         if: always()
@@ -308,7 +262,7 @@ jobs:
 
       - name: Upload results
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4.3.5
         with:
           name: result_run-notebooks-13-uproot-${{ env.sanitized_name }}.txt
           path: ./artifacts
@@ -327,15 +281,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      
-      - name: Set up Jupyter kernel
-        run: |
-          python -m ipykernel install --user --name=python3
-
       - name: Run notebook with Papermill
         run: |
           cd $(dirname ${{ matrix.notebook }})
-          papermill $(basename ${{ matrix.notebook }}) /dev/null
+          papermill --log-level ERROR $(basename ${{ matrix.notebook }}) /dev/null
 
       - name: Output result
         if: always()
@@ -347,7 +296,7 @@ jobs:
 
       - name: Upload results
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4.3.5
         with:
           name: result_run-notebooks-13-rdataframe-${{ env.sanitized_name }}.txt
           path: ./artifacts
@@ -366,15 +315,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      
-      - name: Set up Jupyter kernel
-        run: |
-          python -m ipykernel install --user --name=python3
-
       - name: Run notebook with Papermill
         run: |
           cd $(dirname ${{ matrix.notebook }})
-          papermill $(basename ${{ matrix.notebook }}) /dev/null
+          papermill --log-level ERROR $(basename ${{ matrix.notebook }}) /dev/null
 
       - name: Output result
         if: always()
@@ -386,12 +330,10 @@ jobs:
 
       - name: Upload results
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4.3.5
         with:
           name: result_run-notebooks-13-research-${{ env.sanitized_name }}.txt
           path: ./artifacts
-
-
 
   generate-status-report:
     runs-on: ubuntu-latest

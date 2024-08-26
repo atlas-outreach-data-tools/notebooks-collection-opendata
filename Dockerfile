@@ -1,35 +1,17 @@
-FROM rootproject/root:6.32.02-ubuntu22.04
-LABEL maintainer="giovanni.guerrieri@cern.ch"
-WORKDIR /
-ENV DEBIAN_FRONTEND=noninteractive
-USER root
+FROM continuumio/miniconda3
+LABEL author="ATLAS Open Data Team @ CERN 2024"
+LABEL maintainer="Giovanni Guerrieri - giovanni.guerrieri@cern.ch"
+WORKDIR /opt/app
 
-#install the prerequisites (option always yes activated)
-RUN apt-get update \
-    && apt-get upgrade -y \
-    && apt-get install -y python3 python3-dev git curl python3-pip \                                           
-    && apt-get --yes install \
-    nano\
-    vim
+# Copy the environment.yml file into the container
+COPY binder/environment.yml .
 
+RUN conda env update -n base -f environment.yml && \
+    conda clean -afy && \
+    rm -rf /opt/conda/pkgs/*
+SHELL ["conda", "run", "-n", "analysis", "/bin/bash", "-c"]
 
-RUN pip3 install --no-cache-dir --upgrade  \
-    uproot3 \
-    uproot \
-    tables \
-    matplotlib \
-    pandas \
-    pydot \
-    awkward \
-    awkward-pandas \
-    vector \
-    scikit-learn \
-    lmfit \
-    jupyter \ 
-    ipykernel \ 
-    papermill \
-    dask[distributed] \
-    coffea
+# # Expose port 8888 for Jupyter Lab
+# EXPOSE 8888
 
-WORKDIR /home/jovyan/work/
-
+# CMD ["jupyter", "lab", "--ip=0.0.0.0", "--allow-root", "--no-browser"]
