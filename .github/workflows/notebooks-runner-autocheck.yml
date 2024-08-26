@@ -4,6 +4,7 @@ on:
   push:
     branches:
         - 'master'
+        - 'single-test'
     paths-ignore:
       - 'README.md'
       - 'Dockerfile'

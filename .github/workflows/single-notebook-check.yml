@@ -1,0 +1,67 @@
+name: Check Jupyter Notebook
+
+on:
+  push:
+    paths:
+      - 13-TeV-examples/**/*.ipynb
+      - 8-TeV-examples/**/*.ipynb
+      - for-research/**/*.ipynb
+      - .github/workflows/single-notebook-check.yml
+
+jobs:
+  detect-changes:
+    runs-on: ubuntu-22.04
+    outputs:
+      notebooks: ${{ steps.changed-notebooks.outputs.notebooks }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: List changed Jupyter Notebook files
+        id: changed-notebooks
+        run: |
+          echo "Current Branch: ${{ github.ref }}"
+          git fetch origin master
+          DIFF=$(git diff --name-only origin/master...HEAD | grep ipynb || true)
+          if [ -z "$DIFF" ]; then
+            echo "No notebooks found"
+            echo "notebooks=[]" >> $GITHUB_OUTPUT
+          else
+            echo "$DIFF" > changed_notebooks.txt
+            echo "notebooks=$(cat changed_notebooks.txt | jq -R -s -c 'split("\n")[:-1]')" >> $GITHUB_OUTPUT
+          fi
+        
+
+  run-notebooks:
+    needs: detect-changes
+    runs-on: ubuntu-22.04
+    if: ${{ needs.detect-changes.outputs.notebooks != '[]' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        notebook: ${{ fromJson(needs.detect-changes.outputs.notebooks) }}
+
+    container:
+      image: ghcr.io/atlas-outreach-data-tools/notebooks-collection-opendata:latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Jupyter kernel
+        run: |
+          dir_name=$(dirname "${{ matrix.notebook }}")
+          kernel="python3"
+          
+          if [[ "$dir_name" == *cpp ]]; then
+            kernel="root"
+          fi
+
+          python -m ipykernel install --user --name=$kernel
+
+      - name: Run notebook with Papermill
+        run: |
+          cd $(dirname ${{ matrix.notebook }})
+          papermill $(basename ${{ matrix.notebook }}) /dev/null
