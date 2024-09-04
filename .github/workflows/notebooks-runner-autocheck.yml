@@ -126,7 +126,7 @@ jobs:
 
       - name: Upload results
         if: always()
-        uses: actions/upload-artifact@v4.3.5
+        uses: actions/upload-artifact@v4.4.0
         with:
           name: result_run-notebooks-8-cpp-${{ env.sanitized_name }}.txt
           path: ./artifacts
@@ -161,7 +161,7 @@ jobs:
 
       - name: Upload results
         if: always()
-        uses: actions/upload-artifact@v4.3.5
+        uses: actions/upload-artifact@v4.4.0
         with:
           name: result_run-notebooks-8-python-${{ env.sanitized_name }}.txt
           path: ./artifacts
@@ -195,7 +195,7 @@ jobs:
 
       - name: Upload results
         if: always()
-        uses: actions/upload-artifact@v4.3.5
+        uses: actions/upload-artifact@v4.4.0
         with:
           name: result_run-notebooks-13-cpp-${{ env.sanitized_name }}.txt
           path: ./artifacts
@@ -229,7 +229,7 @@ jobs:
 
       - name: Upload results
         if: always()
-        uses: actions/upload-artifact@v4.3.5
+        uses: actions/upload-artifact@v4.4.0
         with:
           name: result_run-notebooks-13-python-${{ env.sanitized_name }}.txt
           path: ./artifacts
@@ -263,7 +263,7 @@ jobs:
 
       - name: Upload results
         if: always()
-        uses: actions/upload-artifact@v4.3.5
+        uses: actions/upload-artifact@v4.4.0
         with:
           name: result_run-notebooks-13-uproot-${{ env.sanitized_name }}.txt
           path: ./artifacts
@@ -297,7 +297,7 @@ jobs:
 
       - name: Upload results
         if: always()
-        uses: actions/upload-artifact@v4.3.5
+        uses: actions/upload-artifact@v4.4.0
         with:
           name: result_run-notebooks-13-rdataframe-${{ env.sanitized_name }}.txt
           path: ./artifacts
@@ -331,7 +331,7 @@ jobs:
 
       - name: Upload results
         if: always()
-        uses: actions/upload-artifact@v4.3.5
+        uses: actions/upload-artifact@v4.4.0
         with:
           name: result_run-notebooks-13-research-${{ env.sanitized_name }}.txt
           path: ./artifacts
@@ -349,7 +349,7 @@ jobs:
 
 
       - name: Download all artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4.1.8
         with:
           path: ./artifacts
       
