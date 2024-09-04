@@ -429,7 +429,6 @@ jobs:
           ls -l status.md
 
           git checkout -b update_status_${{ github.sha }}
-          git pull origin main --rebase
           git add status.md
           git commit -m "Update status.md, commit ${{ github.sha }}"
           git push -u origin update_status_${{ github.sha }}
