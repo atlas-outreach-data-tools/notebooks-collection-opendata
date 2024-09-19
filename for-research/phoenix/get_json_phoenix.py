@@ -27,6 +27,10 @@ from coffea.nanoevents import NanoEventsFactory
 # For dealing with warnings from uproot that we don't need to worry about
 import warnings
 
+# Helper function to check if required branches exist
+def branches_exist(branch_forms, required_branches):
+    return all(branch in branch_forms for branch in required_branches)
+
 # Largely following the ATLAS PHYSLITE tutorial here
 # https://gitlab.cern.ch/atlas-analysis-sw-tutorial/plotting/-/blob/master/LXPLUS-plotting_the_z_peak.ipynb?ref_type=heads
 # Opening the ntuple and reading ALL of the branches will take unnecessary time and memory
@@ -37,143 +41,148 @@ class PHYSLITE_NtupleSchema(BaseSchema):
         super().__init__(base_form)
         self._form['contents'] = self._build_collections(self._form['contents'])
 
-    # We don't need ALL of the branches from the ntuple
-    # We only care about the electron variables
-    def _build_collections(self, branch_forms):
+    def _create_collection(self, branch_forms, possible_branches, collection_name, vector_type=None, additional_branches=None):
+        # Initialize a dictionary to store the branches we will collect
+        branch_dict = {}
+        
+        # Loop over possible branches and check if they exist in the input branch forms
+        # If they do, add them to the branch_dict
+        for key, branch_name in possible_branches.items():
+            if branch_name in branch_forms:
+                branch_dict[key] = branch_forms[branch_name]
+        
+        # If additional branches are provided, check if they exist and add them as well
+        if additional_branches:
+            for key, branch_name in additional_branches.items():
+                if branch_name in branch_forms:
+                    branch_dict[key] = branch_forms[branch_name]
 
+        # If we found any valid branches, return a zipped form (possibly with a vector type)
+        if branch_dict:
+            if vector_type:
+                return zip_forms(branch_dict, collection_name, vector_type)
+            else:
+                return zip_forms(branch_dict, collection_name)
+        else:
+            # If no branches were found for the collection, print a message and return None
+            print(f"No branches found for {collection_name}, skipping {collection_name}.")
+            return None
+        
+    def _build_collections(self, branch_forms):
         output = {}
 
         # Event information
-        # For data, the relevant event identifiers are run number and event number
-        # For MC, the relevant event identifiers are mc channel number (DSID) and MC event number
-        output['EventID'] = zip_forms( {'event_number':branch_forms['EventInfoAuxDyn.eventNumber'],
-                                        'run_number':branch_forms['EventInfoAuxDyn.runNumber'],
-                                        'mc_event_number':branch_forms['EventInfoAuxDyn.mcEventNumber'],
-                                        'channel_number':branch_forms['EventInfoAuxDyn.mcChannelNumber']},
-                                       'EventID')
-        # Jets, small R and large R - just need the 4-vectors
-        for jetCollection in ['AnalysisJets','AnalysisLargeRJets']:
-            output[jetCollection] = zip_forms( {'pt':branch_forms[jetCollection+'AuxDyn.pt'],
-                                                'eta':branch_forms[jetCollection+'AuxDyn.eta'],
-                                                'phi':branch_forms[jetCollection+'AuxDyn.phi'],
-                                                'mass':branch_forms[jetCollection+'AuxDyn.m']},
-                                                'AnalysisJets', 'PtEtaPhiMLorentzVector' )
-        # Vertices - just need the 3-vector
-        output['PrimaryVertices'] = zip_forms( {'x':branch_forms['PrimaryVerticesAuxDyn.x'],
-                                                'y':branch_forms['PrimaryVerticesAuxDyn.y'],
-                                                'z':branch_forms['PrimaryVerticesAuxDyn.z']},
-                                                  'PrimaryVertices')
-        # MET - just need etx and ety, along with the source to be sure we have the right MET
-        output['AnalysisMET'] = zip_forms( {'source':branch_forms['MET_Core_AnalysisMETAuxDyn.source'],
-                                            'etx':branch_forms['MET_Core_AnalysisMETAuxDyn.mpx'],
-                                            'ety':branch_forms['MET_Core_AnalysisMETAuxDyn.mpy']},
-                                           'AnalysisMET')
-        # Tracks - we use the 5 standard parameters for all four track collections
-        for trkCollection in ['InDetTrackParticles','MuonSpectrometerTrackParticles','ExtrapolatedMuonTrackParticles','GSFTrackParticles']:
-            track_branch_dict = {'d0':branch_forms[trkCollection+'AuxDyn.d0'],
-                                                'z0':branch_forms[trkCollection+'AuxDyn.z0'],
-                                                'phi':branch_forms[trkCollection+'AuxDyn.phi'],
-                                                'theta':branch_forms[trkCollection+'AuxDyn.theta'],
-                                                'qOverP':branch_forms[trkCollection+'AuxDyn.qOverP']}
-            if trkCollection+'AuxDyn.numberDoF' in branch_forms:
-                track_branch_dict['ndof'] = branch_forms[trkCollection+'AuxDyn.numberDoF']
-            if trkCollection+'AuxDyn.chiSquared' in branch_forms:
-                track_branch_dict['chi2'] = branch_forms[trkCollection+'AuxDyn.chiSquared']
-            output[trkCollection] = zip_forms( track_branch_dict,
-                                               trkCollection)
-        # Clusters - just the energy, eta, and phi
-        output['egammaClusters'] = zip_forms( {'energy':branch_forms['egammaClustersAuxDyn.calE'],
-                                               'eta':branch_forms['egammaClustersAuxDyn.calEta'],
-                                               'phi':branch_forms['egammaClustersAuxDyn.calPhi']},
-                                              'egammaClusters')
+        possible_branches = {
+            'event_number': 'EventInfoAuxDyn.eventNumber',
+            'run_number': 'EventInfoAuxDyn.runNumber',
+            'mc_event_number': 'EventInfoAuxDyn.mcEventNumber',
+            'channel_number': 'EventInfoAuxDyn.mcChannelNumber'
+        }
+        event_id = self._create_collection(branch_forms, possible_branches, 'EventID')
+        if event_id:
+            output['EventID'] = event_id
 
-        # Muons - eta, phi, type, quality, and some links we need to keep
-        output['AnalysisMuons'] = zip_forms( {'Eta':branch_forms['AnalysisMuonsAuxDyn.eta'],
-                                              'Phi':branch_forms['AnalysisMuonsAuxDyn.phi'],
-                                              'Type':branch_forms['AnalysisMuonsAuxDyn.muonType'],
-                                              'Quality':branch_forms['AnalysisMuonsAuxDyn.quality'],
-                                              'IDTP_Link':branch_forms['AnalysisMuonsAuxDyn.inDetTrackParticleLink/AnalysisMuonsAuxDyn.inDetTrackParticleLink.m_persIndex'],
-                                              'MSTP_Link':branch_forms['AnalysisMuonsAuxDyn.muonSpectrometerTrackParticleLink/AnalysisMuonsAuxDyn.muonSpectrometerTrackParticleLink.m_persIndex'],
-                                              'EMTP_Link':branch_forms['AnalysisMuonsAuxDyn.extrapolatedMuonSpectrometerTrackParticleLink/AnalysisMuonsAuxDyn.extrapolatedMuonSpectrometerTrackParticleLink.m_persIndex']},
-                                             'AnalysisMuons')
-        # Photons - four vector plus cluster link, like the example in the tutorial
-        output['AnalysisPhotons'] = zip_forms( {'pt':branch_forms['AnalysisPhotonsAuxDyn.pt'],
-                                                'eta':branch_forms['AnalysisPhotonsAuxDyn.eta'],
-                                                'phi':branch_forms['AnalysisPhotonsAuxDyn.phi'],
-                                                'mass':branch_forms['AnalysisPhotonsAuxDyn.m'],
-                                                'Cluster_Links':branch_forms['AnalysisPhotonsAuxDyn.caloClusterLinks']},
-                                               'AnalysisPhotons', 'PtEtaPhiMLorentzVector')
-        # Electrons - four vector plus cluster and track links
-        output['AnalysisElectrons'] = zip_forms( {'pt':branch_forms['AnalysisElectronsAuxDyn.pt'],
-                                                'eta':branch_forms['AnalysisElectronsAuxDyn.eta'],
-                                                'phi':branch_forms['AnalysisElectronsAuxDyn.phi'],
-                                                'mass':branch_forms['AnalysisElectronsAuxDyn.m'],
-                                                'Cluster_Links':branch_forms['AnalysisElectronsAuxDyn.caloClusterLinks'],
-                                                'Track_Links':branch_forms['AnalysisElectronsAuxDyn.trackParticleLinks']},
-                                               'AnalysisElectrons', 'PtEtaPhiMLorentzVector')
-        # All done putting together our branches! Now just return the output that we've built
-        return output
-        
-    @property
-    def behavior(self):
-        behavior = {}
-        behavior.update(base.behavior)
-        behavior.update(vector.behavior)
-        return behavior
+        # Jets, small R and large R
+        for jetCollection in ['AnalysisJets', 'AnalysisLargeRJets']:
+            possible_branches = {
+                'pt': jetCollection + 'AuxDyn.pt',
+                'eta': jetCollection + 'AuxDyn.eta',
+                'phi': jetCollection + 'AuxDyn.phi',
+                'mass': jetCollection + 'AuxDyn.m'
+            }
+            jets = self._create_collection(branch_forms, possible_branches, jetCollection, 'PtEtaPhiMLorentzVector')
+            if jets:
+                output[jetCollection] = jets
 
+        # Vertices
+        possible_branches = {
+            'x': 'PrimaryVerticesAuxDyn.x',
+            'y': 'PrimaryVerticesAuxDyn.y',
+            'z': 'PrimaryVerticesAuxDyn.z'
+        }
+        vertices = self._create_collection(branch_forms, possible_branches, 'PrimaryVertices')
+        if vertices:
+            output['PrimaryVertices'] = vertices
 
-# Similar setup, but for flat ntuples provided using the outreach and education ntuple making framework
-class Flat_NtupleSchema(BaseSchema):
-    def __init__(self, base_form):
-        super().__init__(base_form)
-        self._form['contents'] = self._build_collections(self._form['contents'])
+        # MET
+        possible_branches = {
+            'source': 'MET_Core_AnalysisMETAuxDyn.source',
+            'etx': 'MET_Core_AnalysisMETAuxDyn.mpx',
+            'ety': 'MET_Core_AnalysisMETAuxDyn.mpy'
+        }
+        met = self._create_collection(branch_forms, possible_branches, 'AnalysisMET')
+        if met:
+            output['AnalysisMET'] = met
 
-    # We don't need ALL of the branches from the ntuple
-    # We only care about the electron variables
-    def _build_collections(self, branch_forms):
+        # Tracks
+        for trkCollection in ['InDetTrackParticles', 'MuonSpectrometerTrackParticles', 'ExtrapolatedMuonTrackParticles', 'GSFTrackParticles']:
+            possible_branches = {
+                'd0': trkCollection + 'AuxDyn.d0',
+                'z0': trkCollection + 'AuxDyn.z0',
+                'phi': trkCollection + 'AuxDyn.phi',
+                'theta': trkCollection + 'AuxDyn.theta',
+                'qOverP': trkCollection + 'AuxDyn.qOverP'
+            }
+            # Optional branches
+            additional_branches = {}
+            if trkCollection + 'AuxDyn.numberDoF' in branch_forms:
+                additional_branches['ndof'] = trkCollection + 'AuxDyn.numberDoF'
+            if trkCollection + 'AuxDyn.chiSquared' in branch_forms:
+                additional_branches['chi2'] = trkCollection + 'AuxDyn.chiSquared'
+            tracks = self._create_collection(branch_forms, possible_branches, trkCollection, additional_branches=additional_branches)
+            if tracks:
+                output[trkCollection] = tracks
 
-        output = {}
+        # Clusters
+        possible_branches = {
+            'energy': 'egammaClustersAuxDyn.calE',
+            'eta': 'egammaClustersAuxDyn.calEta',
+            'phi': 'egammaClustersAuxDyn.calPhi'
+        }
+        clusters = self._create_collection(branch_forms, possible_branches, 'egammaClusters')
+        if clusters:
+            output['egammaClusters'] = clusters
 
-        # Event information - None stored in the ntuple by default
+        # Muons
+        possible_branches = {
+            'Eta': 'AnalysisMuonsAuxDyn.eta',
+            'Phi': 'AnalysisMuonsAuxDyn.phi',
+            'Type': 'AnalysisMuonsAuxDyn.muonType',
+            'Quality': 'AnalysisMuonsAuxDyn.quality',
+            'IDTP_Link': 'AnalysisMuonsAuxDyn.inDetTrackParticleLink/AnalysisMuonsAuxDyn.inDetTrackParticleLink.m_persIndex',
+            'MSTP_Link': 'AnalysisMuonsAuxDyn.muonSpectrometerTrackParticleLink/AnalysisMuonsAuxDyn.muonSpectrometerTrackParticleLink.m_persIndex',
+            'EMTP_Link': 'AnalysisMuonsAuxDyn.extrapolatedMuonSpectrometerTrackParticleLink/AnalysisMuonsAuxDyn.extrapolatedMuonSpectrometerTrackParticleLink.m_persIndex'
+        }
+        muons = self._create_collection(branch_forms, possible_branches, 'AnalysisMuons')
+        if muons:
+            output['AnalysisMuons'] = muons
 
-        # Jets, small R and large R - just need the 4-vectors
-        for jetCollection in ['jet','largeRJet']:
-            output[jetCollection] = zip_forms( {'pt':branch_forms[jetCollection+'_pt'],
-                                                'eta':branch_forms[jetCollection+'_eta'],
-                                                'phi':branch_forms[jetCollection+'_phi'],
-                                                'energy':branch_forms[jetCollection+'_e']},
-                                                'AnalysisJets', 'PtEtaPhiELorentzVector' )
+        # Photons
+        possible_branches = {
+            'pt': 'AnalysisPhotonsAuxDyn.pt',
+            'eta': 'AnalysisPhotonsAuxDyn.eta',
+            'phi': 'AnalysisPhotonsAuxDyn.phi',
+            'mass': 'AnalysisPhotonsAuxDyn.m',
+            'Cluster_Links': 'AnalysisPhotonsAuxDyn.caloClusterLinks'
+        }
+        photons = self._create_collection(branch_forms, possible_branches, 'AnalysisPhotons', 'PtEtaPhiMLorentzVector')
+        if photons:
+            output['AnalysisPhotons'] = photons
 
-        # Vertices - None stored in the ntuple by default
+        # Electrons
+        possible_branches = {
+            'pt': 'AnalysisElectronsAuxDyn.pt',
+            'eta': 'AnalysisElectronsAuxDyn.eta',
+            'phi': 'AnalysisElectronsAuxDyn.phi',
+            'mass': 'AnalysisElectronsAuxDyn.m',
+            'Cluster_Links': 'AnalysisElectronsAuxDyn.caloClusterLinks',
+            'Track_Links': 'AnalysisElectronsAuxDyn.trackParticleLinks'
+        }
+        electrons = self._create_collection(branch_forms, possible_branches, 'AnalysisElectrons', 'PtEtaPhiMLorentzVector')
+        if electrons:
+            output['AnalysisElectrons'] = electrons
 
-        # MET - just need etx and ety
-        output['AnalysisMET'] = zip_forms( {'etx':branch_forms['met_mpx'],
-                                            'ety':branch_forms['met_mpy']},
-                                           'AnalysisMET')
-
-        # Tracks - None stored in the ntuple by default
-
-        # Clusters - None stored in the ntuple by default
-
-        # Photons - four vector plus cluster link, like the example in the tutorial
-        output['AnalysisPhotons'] = zip_forms( {'pt':branch_forms['photon_pt'],
-                                                'eta':branch_forms['photon_eta'],
-                                                'phi':branch_forms['photon_phi'],
-                                                'energy':branch_forms['photon_e']},
-                                               'AnalysisPhotons', 'PtEtaPhiELorentzVector')
-
-        # Electrons and Muons - four vector plus cluster and track-based info
-        output['Leptons'] = zip_forms( {'pt':branch_forms['lep_pt'],
-                                        'eta':branch_forms['lep_eta'],
-                                        'phi':branch_forms['lep_phi'],
-                                        'energy':branch_forms['lep_e'],
-                                        'd0':branch_forms['lep_d0'],
-                                        'z0':branch_forms['lep_z0'],
-                                        'lep_type':branch_forms['lep_type'],
-                                        'charge':branch_forms['lep_charge'],
-                                        'tight':branch_forms['lep_isTight']},
-                                       'AnalysisElectrons', 'PtEtaPhiELorentzVector')
-        # All done putting together our branches! Now just return the output that we've built
+        # Return the output dictionary
         return output
 
     @property
@@ -183,9 +192,6 @@ class Flat_NtupleSchema(BaseSchema):
         behavior.update(vector.behavior)
         return behavior
 
-
-
-# Main function that does the work and returns a dictionar
 def json_format(files: list[str],
                 events: int=10,
                 skip: int=0,
@@ -201,6 +207,9 @@ def json_format(files: list[str],
 
     # Create the output dictionary
     output_dict = {}
+    
+    # Initialize a set to keep track of missing collections
+    missing_collections = set()
 
     # Get the event list
     eventList = []
@@ -220,10 +229,10 @@ def json_format(files: list[str],
                     eventList += [ ( int(cut_line.split(',')[0].strip()),int(cut_line.split(',')[1].strip()) ) ]
                 else:
                     print(f'Could not parse {cut_line} in {eventListFile} as run, event pair')
-        if ntuple:
-            print('FYI: When running on ntuples, run numbers are not available, and event numbers correspond to TTree entry numbers')
-            # Modify the event list accordingly
-            eventList = [ (1,x[1]) for x in eventList ]
+            if ntuple:
+                print('FYI: When running on ntuples, run numbers are not available, and event numbers correspond to TTree entry numbers')
+                # Modify the event list accordingly
+                eventList = [ (1,x[1]) for x in eventList ]
     print(f'Will attempt to output {(len(eventList) if len(eventList)>0 else events)} events')
 
     # Check if this is MC - will do this in not the most elegant way, but can avoid a user setting anything
@@ -236,7 +245,7 @@ def json_format(files: list[str],
     # Helpers for jet radii
     jet_radii = {'jet':0.4,'largeRJet':1.0,'AnalysisJets':0.4,'AnalysisLargeRJets':1.0}
 
-    # List of track collections I'll want to save
+    # List of track collections we'll want to save
     trkCollectionList = ['InDetTrackParticles','MuonSpectrometerTrackParticles','ExtrapolatedMuonTrackParticles','GSFTrackParticles']
 
     # Now the actual work! Start looping over the input files
@@ -290,10 +299,15 @@ def json_format(files: list[str],
                 event_number = processed_events
                 run_number = 1
             else:
-                event_number = events_data['EventID'][processed_events].mc_event_number if isMC>0 else events_data['EventID'][processed_events].event_number
-                # In MC simulation, the run number indicates the conditions used for simulation
-                # The channel number is the dataset ID, which is more intuitive
-                run_number = events_data['EventID'][processed_events].channel_number if isMC>0 else events_data['EventID'][processed_events].run_number
+                if 'EventID' in events_data.fields:
+                    event_id = events_data['EventID'][processed_events]
+                    event_number = event_id.mc_event_number if isMC>0 else event_id.event_number
+                    # In MC simulation, the run number indicates the conditions used for simulation
+                    # The channel number is the dataset ID, which is more intuitive
+                    run_number = event_id.channel_number if isMC>0 else event_id.run_number
+                else:
+                    print("EventID not found in events_data, skipping event.")
+                    continue  # Cannot proceed without event number and run number
 
             # If we are using a list, check if the event is in our list
             if len(eventList)>0 and (run_number,event_number) not in eventList:
@@ -314,18 +328,23 @@ def json_format(files: list[str],
             # Add Jets and Large-radius Jets
             this_event['Jets'] = {}
             for jetCollection in ['jet','largeRJet'] if ntuple else ['AnalysisJets','AnalysisLargeRJets']:
-                this_event['Jets'][jetCollection] = []
-                # Loop over (small-R) jets in the event
-                for ajet,pt in enumerate(events_data[jetCollection][processed_events].pt):
-                    # Add the necessary information
-                    jet_data = {'eta': events_data[jetCollection][processed_events].eta[ajet],
-                                'phi': events_data[jetCollection][processed_events].phi[ajet],
-                                'energy': events_data[jetCollection][processed_events].energy[ajet],
-                                'coneR': jet_radii[jetCollection]}
-                    this_event['Jets'][jetCollection] += [ jet_data ]
+                if jetCollection in events_data.fields:
+                    this_event['Jets'][jetCollection] = []
+                    # Loop over jets in the event
+                    for ajet,pt in enumerate(events_data[jetCollection][processed_events].pt):
+                        # Add the necessary information
+                        jet_data = {'eta': events_data[jetCollection][processed_events].eta[ajet],
+                                    'phi': events_data[jetCollection][processed_events].phi[ajet],
+                                    'energy': events_data[jetCollection][processed_events].energy[ajet],
+                                    'coneR': jet_radii[jetCollection]}
+                        this_event['Jets'][jetCollection] += [ jet_data ]
+                else:
+                    if jetCollection not in missing_collections:
+                        print(f"Jet collection {jetCollection} not found in events_data, skipping {jetCollection}.")
+                        missing_collections.add(jetCollection)
 
             # Add vertices
-            if not ntuple:
+            if not ntuple and 'PrimaryVertices' in events_data.fields:
                 this_event['Vertices'] = {}
                 this_event['Vertices']['PrimaryVertices'] = []
                 # Loop over vertices in the event
@@ -334,21 +353,30 @@ def json_format(files: list[str],
                                  'y':events_data['PrimaryVertices'][processed_events].y[avert],
                                  'z':events_data['PrimaryVertices'][processed_events].z[avert]}
                     this_event['Vertices']['PrimaryVertices'] += [ vert_data ]
-                    # We are not linking to tracks here; not all tracks are in PHYSLITE
+            elif not ntuple:
+                if 'PrimaryVertices' not in missing_collections:
+                    print("PrimaryVertices not found in events_data, skipping vertices.")
+                    missing_collections.add('PrimaryVertices')
+                    
 
             # Add MET
-            this_event['MissingEnergy'] = {}
-            this_event['MissingEnergy']['MET'] = []
-            if ntuple:
-                this_event['MissingEnergy']['MET'] += [ {'etx': events_data['AnalysisMET'][processed_events].etx,
-                                                         'ety': events_data['AnalysisMET'][processed_events].ety} ]
+            if 'AnalysisMET' in events_data.fields:
+                this_event['MissingEnergy'] = {}
+                this_event['MissingEnergy']['MET'] = []
+                if ntuple:
+                    this_event['MissingEnergy']['MET'] += [ {'etx': events_data['AnalysisMET'][processed_events].etx,
+                                                             'ety': events_data['AnalysisMET'][processed_events].ety} ]
+                else:
+                    for amet,source in enumerate(events_data['AnalysisMET'][processed_events].source):
+                        # Check for the magic number that is final MET
+                        if source != 69664:
+                            continue
+                        this_event['MissingEnergy']['MET'] += [ {'etx': events_data['AnalysisMET'][processed_events].etx[amet],
+                                                                 'ety': events_data['AnalysisMET'][processed_events].ety[amet]} ]
             else:
-                for amet,source in enumerate(events_data['AnalysisMET'][processed_events].source):
-                    # Check for the magic number that is final MET
-                    if source != 69664:
-                        continue
-                    this_event['MissingEnergy']['MET'] += [ {'etx': events_data['AnalysisMET'][processed_events].etx[amet],
-                                                             'ety': events_data['AnalysisMET'][processed_events].ety[amet]} ]
+                if 'AnalysisMET' not in missing_collections:
+                    print("AnalysisMET not found in events_data, skipping MET.")
+                    missing_collections.add('AnalysisMET')
 
             # Add tracks that we'll want down the line
             this_event['Tracks'] = {}
@@ -358,125 +386,171 @@ def json_format(files: list[str],
                 # ExtrapolatedMuonTrackParticles are muon tracks extrapolated to the primary vertex
                 # GSFTrackParticles are refitted (global sequential fitter) tracks for electrons in particular
                 for trkCollection in trkCollectionList:
-                    this_event['Tracks'][trkCollection] = []
-                    for atrk,phi in enumerate(events_data[trkCollection][processed_events].phi):
-                        track_data = {'dparams': [events_data[trkCollection][processed_events].d0[atrk],
-                                                  events_data[trkCollection][processed_events].z0[atrk],
-                                                  events_data[trkCollection][processed_events].phi[atrk],
-                                                  events_data[trkCollection][processed_events].theta[atrk],
-                                                  events_data[trkCollection][processed_events].qOverP[atrk] ] }
-                        # Info that is only in some of the track collections
-                        if trkCollection in trkCollectionsWithNdofChi2:
-                            track_data['ndof'] = events_data[trkCollection][processed_events].ndof[atrk]
-                            track_data['chi2'] = events_data[trkCollection][processed_events].chi2[atrk]
-                        this_event['Tracks'][trkCollection] += [ track_data ]
+                    if trkCollection in events_data.fields:
+                        this_event['Tracks'][trkCollection] = []
+                        for atrk,phi in enumerate(events_data[trkCollection][processed_events].phi):
+                            track_data = {'dparams': [events_data[trkCollection][processed_events].d0[atrk],
+                                                      events_data[trkCollection][processed_events].z0[atrk],
+                                                      events_data[trkCollection][processed_events].phi[atrk],
+                                                      events_data[trkCollection][processed_events].theta[atrk],
+                                                      events_data[trkCollection][processed_events].qOverP[atrk] ] }
+                            # Info that is only in some of the track collections
+                            if trkCollection in trkCollectionsWithNdofChi2:
+                                track_data['ndof'] = events_data[trkCollection][processed_events].ndof[atrk]
+                                track_data['chi2'] = events_data[trkCollection][processed_events].chi2[atrk]
+                            this_event['Tracks'][trkCollection] += [ track_data ]
+                    else:
+                        if trkCollection not in missing_collections:
+                            print(f"Track collection {trkCollection} not found in events_data, skipping {trkCollection}.")
+                            missing_collections.add(trkCollection)
+            else:
+                # For ntuple, check if 'Leptons' is in events_data.fields
+                if 'Leptons' in events_data.fields:
+                    this_event['Tracks']['LeptonTracks'] = []
+                else:
+                    if 'Leptons' not in missing_collections:
+                        print("Leptons collection not found in events_data, skipping tracks.")
+                        missing_collections.add('Leptons')
 
             # Add e/gamma clusters in preparation for photons and electrons
             this_event['CaloClusters'] = {}
-            this_event['CaloClusters']['egammaClusters'] = []
-            if not ntuple:
+            if not ntuple and 'egammaClusters' in events_data.fields:
+                this_event['CaloClusters']['egammaClusters'] = []
                 for aclu,phi in enumerate(events_data['egammaClusters'][processed_events].phi):
                     cluster_data = {'energy': events_data['egammaClusters'][processed_events].energy[aclu],
                                     'eta': events_data['egammaClusters'][processed_events].eta[aclu],
                                     'phi': events_data['egammaClusters'][processed_events].phi[aclu]}
                     this_event['CaloClusters']['egammaClusters'] += [ cluster_data ]
+            else:
+                if not ntuple:
+                    if 'egammaClusters' not in missing_collections:
+                        print("egammaClusters not found in events_data, skipping clusters.")
+                        missing_collections.add('egammaClusters')
 
-            # Now we can add photons, nice and easy...
-            this_event['Photons'] = {}
-            this_event['Photons']['AnalysisPhotons'] = []
-            for apho,phi in enumerate(events_data['AnalysisPhotons'][processed_events].phi):
-                photon_data = {'energy': events_data['AnalysisPhotons'][processed_events].energy[apho],
-                               'eta': events_data['AnalysisPhotons'][processed_events].eta[apho],
-                               'phi': events_data['AnalysisPhotons'][processed_events].phi[apho]}
-                # A photon is allowed to have multiple clusters linked; we want the first index, which 'defines' it
-                if ntuple:
-                    # If we are running on the flat ntuple, fake the cluster data based on the photon itself
-                    cluster_data = {'energy': events_data['AnalysisPhotons'][processed_events].energy[apho],
-                                    'eta': events_data['AnalysisPhotons'][processed_events].eta[apho],
-                                    'phi': events_data['AnalysisPhotons'][processed_events].phi[apho]}
-                    clu_link_index = len(this_event['CaloClusters']['egammaClusters'])
-                    this_event['CaloClusters']['egammaClusters'] += [ cluster_data ]
                 else:
-                    clu_link_index = events_data['AnalysisPhotons'][processed_events].Cluster_Links[apho][0]['m_persIndex']
-                if clu_link_index < 1000000:
-                    photon_data['LinkedClusters'] = [ f'egammaClusters:{clu_link_index}' ]
-                this_event['Photons']['AnalysisPhotons'] += [photon_data]
+                    this_event['CaloClusters']['egammaClusters'] = []
 
-            # Now we can add muons and electrons
-            this_event['Muons'] = {}
-            this_event['Muons']['AnalysisMuons'] = []
-            this_event['Electrons'] = {}
-            this_event['Electrons']['AnalysisElectrons'] = []
-
-            if ntuple:
-                this_event['Tracks']['LeptonTracks'] = []
-                for alep,leptype in enumerate(events_data['Leptons'][processed_events].lep_type):
-                    # Add the track info
-                    track_link_index = len(this_event['Tracks']['LeptonTracks'])
-                    track_data = {'dparams': [events_data['Leptons'][processed_events].d0[alep],
-                                              events_data['Leptons'][processed_events].z0[alep],
-                                              events_data['Leptons'][processed_events].phi[alep],
-                                              events_data['Leptons'][processed_events].theta[alep], # Conversion thanks to 4-vector
-                                              events_data['Leptons'][processed_events].charge[alep] / events_data['Leptons'][processed_events].p[alep] ] }
-                    this_event['Tracks']['LeptonTracks'] += [ track_data ]
-                    # A bit annoying here that electrons and muons use different formats
-                    if leptype==11:
-                        electron_data = {'energy': events_data['Leptons'][processed_events].energy[alep],
-                                         'eta': events_data['Leptons'][processed_events].eta[alep],
-                                         'phi': events_data['Leptons'][processed_events].phi[alep],
-                                         'LinkedTracks': [ f'LeptonTracks:{track_link_index}' ]}
-                        # If we are running on the flat ntuple, fake the cluster data based on the electron itself
-                        cluster_data = {'energy': events_data['Leptons'][processed_events].energy[alep],
-                                        'eta': events_data['Leptons'][processed_events].eta[alep],
-                                        'phi': events_data['Leptons'][processed_events].phi[alep]}
+            # Now we can add photons
+            if 'AnalysisPhotons' in events_data.fields:
+                this_event['Photons'] = {}
+                this_event['Photons']['AnalysisPhotons'] = []
+                for apho,phi in enumerate(events_data['AnalysisPhotons'][processed_events].phi):
+                    photon_data = {'energy': events_data['AnalysisPhotons'][processed_events].energy[apho],
+                                   'eta': events_data['AnalysisPhotons'][processed_events].eta[apho],
+                                   'phi': events_data['AnalysisPhotons'][processed_events].phi[apho]}
+                    # A photon is allowed to have multiple clusters linked; we want the first index, which 'defines' it
+                    if ntuple:
+                        # If we are running on the flat ntuple, fake the cluster data based on the photon itself
+                        cluster_data = {'energy': events_data['AnalysisPhotons'][processed_events].energy[apho],
+                                        'eta': events_data['AnalysisPhotons'][processed_events].eta[apho],
+                                        'phi': events_data['AnalysisPhotons'][processed_events].phi[apho]}
                         clu_link_index = len(this_event['CaloClusters']['egammaClusters'])
                         this_event['CaloClusters']['egammaClusters'] += [ cluster_data ]
-                        electron_data['LinkedClusters'] = [ f'egammaClusters:{clu_link_index}' ]
-                        this_event['Electrons']['AnalysisElectrons'] += [ electron_data ]
-                    elif leptype==13:
-                        muon_data = {'Eta':events_data['Leptons'][processed_events].eta[alep],
-                                     'Phi':events_data['Leptons'][processed_events].phi[alep],
-                                     'LinkedClusters': None,
-                                     'Quality': 'Tight' if events_data['Leptons'][processed_events].tight[alep] else 'Medium',
-                                     'LinkedTracks': [ f'LeptonTracks:{track_link_index}' ]}
-                        # PassedHighPt, Type not stored in the ntuple
-                        this_event['Muons']['AnalysisMuons'] += [ muon_data ]
-            else:
-                # Loop over all the muons we have
-                for amuon,phi in enumerate(events_data['AnalysisMuons'][processed_events].Phi):
-                    my_quality = events_data['AnalysisMuons'][processed_events].Quality[amuon]
-                    muon_data = {'Eta':events_data['AnalysisMuons'][processed_events].Eta[amuon],
-                                 'Phi':events_data['AnalysisMuons'][processed_events].Phi[amuon],
-                                 'LinkedClusters': None,
-                                 'Type': muon_types[ events_data['AnalysisMuons'][processed_events].Type[amuon] ],
-                                 'Quality': muon_quality[ my_quality%8 ],
-                                 'PassedHighPt': my_quality>=16,
-                                 'LinkedTracks': []}
-                    # Add track links. When the link is invalid, the index is very large (4e9)
-                    idtp_link_index = events_data['AnalysisMuons'][processed_events].IDTP_Link[amuon]
-                    if idtp_link_index < 1000000:
-                        muon_data['LinkedTracks'] += [ f'InDetTrackParticles:{idtp_link_index}' ]
-                    mstp_link_index = events_data['AnalysisMuons'][processed_events].MSTP_Link[amuon]
-                    if mstp_link_index < 1000000:
-                        muon_data['LinkedTracks'] += [ f'MuonSpectrometerTrackParticles:{mstp_link_index}' ]
-                    emtp_link_index = events_data['AnalysisMuons'][processed_events].EMTP_Link[amuon]
-                    if emtp_link_index < 1000000:
-                        muon_data['LinkedTracks'] += [ f'ExtrapolatedMuonTrackParticles:{emtp_link_index}' ]
-                    # NB if we want to be fancy, we could add a passed high-pT cuts flag as well
-                    this_event['Muons']['AnalysisMuons'] += [ muon_data ]
-    
-                for aelec,phi in enumerate(events_data['AnalysisElectrons'][processed_events].phi):
-                    electron_data = {'energy': events_data['AnalysisElectrons'][processed_events].energy[aelec],
-                                     'eta': events_data['AnalysisElectrons'][processed_events].eta[aelec],
-                                     'phi': events_data['AnalysisElectrons'][processed_events].phi[aelec]}
-                    # An electron is allowed to have multiple clusters linked; we want the first index, which 'defines' it
-                    clu_link_index = events_data['AnalysisElectrons'][processed_events].Cluster_Links[aelec][0]['m_persIndex']
+                    else:
+                        clu_link_index = events_data['AnalysisPhotons'][processed_events].Cluster_Links[apho][0]['m_persIndex']
                     if clu_link_index < 1000000:
-                        electron_data['LinkedClusters'] = [ f'egammaClusters:{clu_link_index}' ]
-                    track_link_index = events_data['AnalysisElectrons'][processed_events].Track_Links[aelec][0]['m_persIndex']
-                    if track_link_index<1000000:
-                        electron_data['LinkedTracks'] = [ f'GSFTrackParticles:{track_link_index}' ]
-                    this_event['Electrons']['AnalysisElectrons'] += [ electron_data ]
+                        photon_data['LinkedClusters'] = [ f'egammaClusters:{clu_link_index}' ]
+                    this_event['Photons']['AnalysisPhotons'] += [photon_data]
+            else:
+                 if 'AnalysisPhotons' not in missing_collections:
+                    print("AnalysisPhotons not found in events_data, skipping photons.")
+                    missing_collections.add('AnalysisPhotons')
+
+            # Now we can add muons and electrons
+            if 'AnalysisMuons' in events_data.fields or 'Leptons' in events_data.fields:
+                this_event['Muons'] = {}
+                this_event['Muons']['AnalysisMuons'] = []
+                this_event['Electrons'] = {}
+                this_event['Electrons']['AnalysisElectrons'] = []
+
+                if ntuple:
+                    if 'Leptons' in events_data.fields:
+                        for alep,leptype in enumerate(events_data['Leptons'][processed_events].lep_type):
+                            # Add the track info
+                            track_link_index = len(this_event['Tracks']['LeptonTracks'])
+                            track_data = {'dparams': [events_data['Leptons'][processed_events].d0[alep],
+                                                      events_data['Leptons'][processed_events].z0[alep],
+                                                      events_data['Leptons'][processed_events].phi[alep],
+                                                      events_data['Leptons'][processed_events].theta[alep], # Conversion thanks to 4-vector
+                                                      events_data['Leptons'][processed_events].charge[alep] / events_data['Leptons'][processed_events].p[alep] ] }
+                            this_event['Tracks']['LeptonTracks'] += [ track_data ]
+                            # A bit annoying here that electrons and muons use different formats
+                            if leptype==11:
+                                electron_data = {'energy': events_data['Leptons'][processed_events].energy[alep],
+                                                 'eta': events_data['Leptons'][processed_events].eta[alep],
+                                                 'phi': events_data['Leptons'][processed_events].phi[alep],
+                                                 'LinkedTracks': [ f'LeptonTracks:{track_link_index}' ]}
+                                # If we are running on the flat ntuple, fake the cluster data based on the electron itself
+                                cluster_data = {'energy': events_data['Leptons'][processed_events].energy[alep],
+                                                'eta': events_data['Leptons'][processed_events].eta[alep],
+                                                'phi': events_data['Leptons'][processed_events].phi[alep]}
+                                clu_link_index = len(this_event['CaloClusters']['egammaClusters'])
+                                this_event['CaloClusters']['egammaClusters'] += [ cluster_data ]
+                                electron_data['LinkedClusters'] = [ f'egammaClusters:{clu_link_index}' ]
+                                this_event['Electrons']['AnalysisElectrons'] += [ electron_data ]
+                            elif leptype==13:
+                                muon_data = {'Eta':events_data['Leptons'][processed_events].eta[alep],
+                                             'Phi':events_data['Leptons'][processed_events].phi[alep],
+                                             'LinkedClusters': None,
+                                             'Quality': 'Tight' if events_data['Leptons'][processed_events].tight[alep] else 'Medium',
+                                             'LinkedTracks': [ f'LeptonTracks:{track_link_index}' ]}
+                                # PassedHighPt, Type not stored in the ntuple
+                                this_event['Muons']['AnalysisMuons'] += [ muon_data ]
+                    else:
+                        if 'Leptons' not in missing_collections:
+                            print("Leptons collection not found in events_data, skipping muons and electrons.")
+                            missing_collections.add('Leptons')
+                        
+                else:
+                    # Loop over all the muons we have
+                    if 'AnalysisMuons' in events_data.fields:
+                        for amuon,phi in enumerate(events_data['AnalysisMuons'][processed_events].Phi):
+                            my_quality = events_data['AnalysisMuons'][processed_events].Quality[amuon]
+                            muon_data = {'Eta':events_data['AnalysisMuons'][processed_events].Eta[amuon],
+                                         'Phi':events_data['AnalysisMuons'][processed_events].Phi[amuon],
+                                         'LinkedClusters': None,
+                                         'Type': muon_types[ events_data['AnalysisMuons'][processed_events].Type[amuon] ],
+                                         'Quality': muon_quality[ my_quality%8 ],
+                                         'PassedHighPt': my_quality>=16,
+                                         'LinkedTracks': []}
+                            # Add track links. When the link is invalid, the index is very large (4e9)
+                            idtp_link_index = events_data['AnalysisMuons'][processed_events].IDTP_Link[amuon]
+                            if idtp_link_index < 1000000:
+                                muon_data['LinkedTracks'] += [ f'InDetTrackParticles:{idtp_link_index}' ]
+                            mstp_link_index = events_data['AnalysisMuons'][processed_events].MSTP_Link[amuon]
+                            if mstp_link_index < 1000000:
+                                muon_data['LinkedTracks'] += [ f'MuonSpectrometerTrackParticles:{mstp_link_index}' ]
+                            emtp_link_index = events_data['AnalysisMuons'][processed_events].EMTP_Link[amuon]
+                            if emtp_link_index < 1000000:
+                                muon_data['LinkedTracks'] += [ f'ExtrapolatedMuonTrackParticles:{emtp_link_index}' ]
+                            # NB if we want to be fancy, we could add a passed high-pT cuts flag as well
+                            this_event['Muons']['AnalysisMuons'] += [ muon_data ]
+                    else:
+                        if 'AnalysisMuons' not in missing_collections:
+                            print("AnalysisMuons not found in events_data, skipping muons.")
+                            missing_collections.add('AnalysisMuons')
+                        
+                    if 'AnalysisElectrons' in events_data.fields:
+                        for aelec,phi in enumerate(events_data['AnalysisElectrons'][processed_events].phi):
+                            electron_data = {'energy': events_data['AnalysisElectrons'][processed_events].energy[aelec],
+                                             'eta': events_data['AnalysisElectrons'][processed_events].eta[aelec],
+                                             'phi': events_data['AnalysisElectrons'][processed_events].phi[aelec]}
+                            # An electron is allowed to have multiple clusters linked; we want the first index, which 'defines' it
+                            clu_link_index = events_data['AnalysisElectrons'][processed_events].Cluster_Links[aelec][0]['m_persIndex']
+                            if clu_link_index < 1000000:
+                                electron_data['LinkedClusters'] = [ f'egammaClusters:{clu_link_index}' ]
+                            track_link_index = events_data['AnalysisElectrons'][processed_events].Track_Links[aelec][0]['m_persIndex']
+                            if track_link_index<1000000:
+                                electron_data['LinkedTracks'] = [ f'GSFTrackParticles:{track_link_index}' ]
+                            this_event['Electrons']['AnalysisElectrons'] += [ electron_data ]
+                    else:
+                        if 'AnalysisElectrons' not in missing_collections:
+                            print("AnalysisElectrons not found in events_data, skipping electrons.")
+                            missing_collections.add('AnalysisElectrons')
+            else:
+                if 'Leptons' not in missing_collections:
+                    print("No muons or electrons found in events_data, skipping leptons.")
+                    missing_collections.add('Leptons')
 
             # Add the event to my output dictionary
             output_dict[my_key] = this_event
@@ -491,7 +565,7 @@ def json_format(files: list[str],
         # Did we process enough events?
         if len(output_dict)>=events:
             break
-        if len(output_dict)==len(eventList) and len(eventList)>0:
+        if len(output_dict)==len(eventList) and len(output_dict)>0:
             break
 
     # Just a little error-checking
@@ -502,7 +576,6 @@ def json_format(files: list[str],
 
     # Return the output dictionary that is now full
     return output_dict
-
 
 # Actual application execution
 if __name__ == '__main__':
