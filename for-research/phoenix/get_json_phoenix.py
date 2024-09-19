@@ -32,38 +32,38 @@ import warnings
 # Opening the ntuple and reading ALL of the branches will take unnecessary time and memory
 # Let's define a schema to only use the branches we care about
 
+# Helper function to create a collection from branch forms
+def create_collection(branch_forms, possible_branches, collection_name, vector_type=None, additional_branches=None):
+    # Initialize a dictionary to store the branches we will collect
+    branch_dict = {}
+
+    # Loop over possible branches and check if they exist in the input branch forms
+    # If they do, add them to the branch_dict
+    for key, branch_name in possible_branches.items():
+        if branch_name in branch_forms:
+            branch_dict[key] = branch_forms[branch_name]
+
+    # If additional branches are provided, check if they exist and add them as well
+    if additional_branches:
+        for key, branch_name in additional_branches.items():
+            if branch_name in branch_forms:
+                branch_dict[key] = branch_forms[branch_name]
+
+    # If we found any valid branches, return a zipped form (possibly with a vector type)
+    if branch_dict:
+        if vector_type:
+            return zip_forms(branch_dict, collection_name, vector_type)
+        else:
+            return zip_forms(branch_dict, collection_name)
+    else:
+        # If no branches were found for the collection, print a message and return None
+        print(f"No branches found for {collection_name}, skipping {collection_name}.")
+        return None
+
 class PHYSLITE_NtupleSchema(BaseSchema):
     def __init__(self, base_form):
         super().__init__(base_form)
         self._form['contents'] = self._build_collections(self._form['contents'])
-
-    def _create_collection(self, branch_forms, possible_branches, collection_name, vector_type=None, additional_branches=None):
-        
-        # Initialize a dictionary to store the branches we will collect
-        branch_dict = {}
-        
-        # Loop over possible branches and check if they exist in the input branch forms
-        # If they do, add them to the branch_dict
-        for key, branch_name in possible_branches.items():
-            if branch_name in branch_forms:
-                branch_dict[key] = branch_forms[branch_name]
-        
-        # If additional branches are provided, check if they exist and add them as well
-        if additional_branches:
-            for key, branch_name in additional_branches.items():
-                if branch_name in branch_forms:
-                    branch_dict[key] = branch_forms[branch_name]
-
-        # If we found any valid branches, return a zipped form (possibly with a vector type)
-        if branch_dict:
-            if vector_type:
-                return zip_forms(branch_dict, collection_name, vector_type)
-            else:
-                return zip_forms(branch_dict, collection_name)
-        else:
-            # If no branches were found for the collection, print a message and return None
-            print(f"No branches found for {collection_name}, skipping {collection_name}.")
-            return None
     
     # We don't need ALL of the branches from the ntuple
     # We only care about the electron variables
@@ -72,17 +72,19 @@ class PHYSLITE_NtupleSchema(BaseSchema):
         output = {}
 
         # Event information
+        # For data, the relevant event identifiers are run number and event number
+        # For MC, the relevant event identifiers are mc channel number (DSID) and MC event number
         possible_branches = {
             'event_number': 'EventInfoAuxDyn.eventNumber',
             'run_number': 'EventInfoAuxDyn.runNumber',
             'mc_event_number': 'EventInfoAuxDyn.mcEventNumber',
             'channel_number': 'EventInfoAuxDyn.mcChannelNumber'
         }
-        event_id = self._create_collection(branch_forms, possible_branches, 'EventID')
+        event_id = create_collection(branch_forms, possible_branches, 'EventID')
         if event_id:
             output['EventID'] = event_id
 
-        # Jets, small R and large R
+        # Jets, small R and large R - just need the 4-vectors
         for jetCollection in ['AnalysisJets', 'AnalysisLargeRJets']:
             possible_branches = {
                 'pt': jetCollection + 'AuxDyn.pt',
@@ -90,60 +92,56 @@ class PHYSLITE_NtupleSchema(BaseSchema):
                 'phi': jetCollection + 'AuxDyn.phi',
                 'mass': jetCollection + 'AuxDyn.m'
             }
-            jets = self._create_collection(branch_forms, possible_branches, jetCollection, 'PtEtaPhiMLorentzVector')
+            jets = create_collection(branch_forms, possible_branches, jetCollection, 'PtEtaPhiMLorentzVector')
             if jets:
                 output[jetCollection] = jets
 
-        # Vertices
+        # Vertices - just need the 3-vector
         possible_branches = {
             'x': 'PrimaryVerticesAuxDyn.x',
             'y': 'PrimaryVerticesAuxDyn.y',
             'z': 'PrimaryVerticesAuxDyn.z'
         }
-        vertices = self._create_collection(branch_forms, possible_branches, 'PrimaryVertices')
+        vertices = create_collection(branch_forms, possible_branches, 'PrimaryVertices')
         if vertices:
             output['PrimaryVertices'] = vertices
 
-        # MET
+        # MET - just need etx and ety, along with the source to be sure we have the right MET
         possible_branches = {
             'source': 'MET_Core_AnalysisMETAuxDyn.source',
             'etx': 'MET_Core_AnalysisMETAuxDyn.mpx',
             'ety': 'MET_Core_AnalysisMETAuxDyn.mpy'
         }
-        met = self._create_collection(branch_forms, possible_branches, 'AnalysisMET')
+        met = create_collection(branch_forms, possible_branches, 'AnalysisMET')
         if met:
             output['AnalysisMET'] = met
 
-        # Tracks
+        # Tracks - we use the 5 standard parameters for all four track collections
         for trkCollection in ['InDetTrackParticles', 'MuonSpectrometerTrackParticles', 'ExtrapolatedMuonTrackParticles', 'GSFTrackParticles']:
             possible_branches = {
                 'd0': trkCollection + 'AuxDyn.d0',
                 'z0': trkCollection + 'AuxDyn.z0',
                 'phi': trkCollection + 'AuxDyn.phi',
                 'theta': trkCollection + 'AuxDyn.theta',
-                'qOverP': trkCollection + 'AuxDyn.qOverP'
+                'qOverP': trkCollection + 'AuxDyn.qOverP',
+                'ndof': trkCollection + 'AuxDyn.numberDoF',
+                'chi2': trkCollection + 'AuxDyn.chiSquared'
             }
-            # Optional branches
-            additional_branches = {}
-            if trkCollection + 'AuxDyn.numberDoF' in branch_forms:
-                additional_branches['ndof'] = trkCollection + 'AuxDyn.numberDoF'
-            if trkCollection + 'AuxDyn.chiSquared' in branch_forms:
-                additional_branches['chi2'] = trkCollection + 'AuxDyn.chiSquared'
-            tracks = self._create_collection(branch_forms, possible_branches, trkCollection, additional_branches=additional_branches)
+            tracks = create_collection(branch_forms, possible_branches, trkCollection)
             if tracks:
                 output[trkCollection] = tracks
 
-        # Clusters
+        # Clusters - just the energy, eta, and phi
         possible_branches = {
             'energy': 'egammaClustersAuxDyn.calE',
             'eta': 'egammaClustersAuxDyn.calEta',
             'phi': 'egammaClustersAuxDyn.calPhi'
         }
-        clusters = self._create_collection(branch_forms, possible_branches, 'egammaClusters')
+        clusters = create_collection(branch_forms, possible_branches, 'egammaClusters')
         if clusters:
             output['egammaClusters'] = clusters
 
-        # Muons
+        # Muons - eta, phi, type, quality, and some links we need to keep
         possible_branches = {
             'Eta': 'AnalysisMuonsAuxDyn.eta',
             'Phi': 'AnalysisMuonsAuxDyn.phi',
@@ -153,11 +151,11 @@ class PHYSLITE_NtupleSchema(BaseSchema):
             'MSTP_Link': 'AnalysisMuonsAuxDyn.muonSpectrometerTrackParticleLink/AnalysisMuonsAuxDyn.muonSpectrometerTrackParticleLink.m_persIndex',
             'EMTP_Link': 'AnalysisMuonsAuxDyn.extrapolatedMuonSpectrometerTrackParticleLink/AnalysisMuonsAuxDyn.extrapolatedMuonSpectrometerTrackParticleLink.m_persIndex'
         }
-        muons = self._create_collection(branch_forms, possible_branches, 'AnalysisMuons')
+        muons = create_collection(branch_forms, possible_branches, 'AnalysisMuons')
         if muons:
             output['AnalysisMuons'] = muons
 
-        # Photons
+        # Photons - four vector plus cluster link, like the example in the tutorial
         possible_branches = {
             'pt': 'AnalysisPhotonsAuxDyn.pt',
             'eta': 'AnalysisPhotonsAuxDyn.eta',
@@ -165,11 +163,11 @@ class PHYSLITE_NtupleSchema(BaseSchema):
             'mass': 'AnalysisPhotonsAuxDyn.m',
             'Cluster_Links': 'AnalysisPhotonsAuxDyn.caloClusterLinks'
         }
-        photons = self._create_collection(branch_forms, possible_branches, 'AnalysisPhotons', 'PtEtaPhiMLorentzVector')
+        photons = create_collection(branch_forms, possible_branches, 'AnalysisPhotons', 'PtEtaPhiMLorentzVector')
         if photons:
             output['AnalysisPhotons'] = photons
 
-        # Electrons
+        # Electrons - four vector plus cluster and track links
         possible_branches = {
             'pt': 'AnalysisElectronsAuxDyn.pt',
             'eta': 'AnalysisElectronsAuxDyn.eta',
@@ -178,11 +176,11 @@ class PHYSLITE_NtupleSchema(BaseSchema):
             'Cluster_Links': 'AnalysisElectronsAuxDyn.caloClusterLinks',
             'Track_Links': 'AnalysisElectronsAuxDyn.trackParticleLinks'
         }
-        electrons = self._create_collection(branch_forms, possible_branches, 'AnalysisElectrons', 'PtEtaPhiMLorentzVector')
+        electrons = create_collection(branch_forms, possible_branches, 'AnalysisElectrons', 'PtEtaPhiMLorentzVector')
         if electrons:
             output['AnalysisElectrons'] = electrons
 
-        # Return the output dictionary
+        # All done putting together our branches! Now just return the output that we've built
         return output
 
     @property
@@ -191,6 +189,92 @@ class PHYSLITE_NtupleSchema(BaseSchema):
         behavior.update(base.behavior)
         behavior.update(vector.behavior)
         return behavior
+
+class Flat_NtupleSchema(BaseSchema):
+    def __init__(self, base_form):
+        # Initialize the schema by calling the base class constructor
+        super().__init__(base_form)
+        # Build collections from the branch forms and assign them to 'contents'
+        self._form['contents'] = self._build_collections(self._form['contents'])
+
+    # We don't need ALL of the branches from the ntuple
+    # We only care about the electron and lepton variables
+    def _build_collections(self, branch_forms):
+        # Initialize an empty dictionary to store the collections
+        output = {}
+
+        # Event information - None stored in the ntuple by default
+        # No need to include event-level info
+
+        # Jets, small R and large R - just need the 4-vectors
+        # Collect pt, eta, phi, and energy for small-radius jets and large-radius jets
+        for jetCollection in ['jet', 'largeRJet']:
+            possible_branches = {
+                'pt': jetCollection + '_pt',
+                'eta': jetCollection + '_eta',
+                'phi': jetCollection + '_phi',
+                'energy': jetCollection + '_e'
+            }
+            jets = create_collection(branch_forms, possible_branches, jetCollection, 'PtEtaPhiELorentzVector')
+            if jets:
+                output[jetCollection] = jets
+
+        # Vertices - None stored in the ntuple by default
+        # Skipping vertex information as it's not included in this ntuple
+
+        # MET - just need etx and ety (MET x and y components)
+        possible_branches = {
+            'etx': 'met_mpx',
+            'ety': 'met_mpy'
+        }
+        met = create_collection(branch_forms, possible_branches, 'AnalysisMET')
+        if met:
+            output['AnalysisMET'] = met
+
+        # Tracks - None stored in the ntuple by default
+        # Skipping track information
+
+        # Clusters - None stored in the ntuple by default
+        # Skipping cluster information
+
+        # Photons - just the four-vector information (pt, eta, phi, energy)
+        possible_branches = {
+            'pt': 'photon_pt',
+            'eta': 'photon_eta',
+            'phi': 'photon_phi',
+            'energy': 'photon_e'
+        }
+        photons = create_collection(branch_forms, possible_branches, 'AnalysisPhotons', 'PtEtaPhiELorentzVector')
+        if photons:
+            output['AnalysisPhotons'] = photons
+
+        # Electrons and Muons - store 4-vectors, track parameters, charge, and tight flag
+        possible_branches = {
+            'pt': 'lep_pt',
+            'eta': 'lep_eta',
+            'phi': 'lep_phi',
+            'energy': 'lep_e',
+            'd0': 'lep_d0',
+            'z0': 'lep_z0',
+            'lep_type': 'lep_type',
+            'charge': 'lep_charge',
+            'tight': 'lep_isTight'
+        }
+        leptons = create_collection(branch_forms, possible_branches, 'Leptons', 'PtEtaPhiELorentzVector')
+        if leptons:
+            output['Leptons'] = leptons
+
+        # All done putting together our branches! Now just return the output that we've built
+        return output
+
+    @property
+    def behavior(self):
+        # Return the behavior needed for this schema, combining base and vector behaviors
+        behavior = {}
+        behavior.update(base.behavior)
+        behavior.update(vector.behavior)
+        return behavior
+
 
 def json_format(files: list[str],
                 events: int=10,
