@@ -27,10 +27,6 @@ from coffea.nanoevents import NanoEventsFactory
 # For dealing with warnings from uproot that we don't need to worry about
 import warnings
 
-# Helper function to check if required branches exist
-def branches_exist(branch_forms, required_branches):
-    return all(branch in branch_forms for branch in required_branches)
-
 # Largely following the ATLAS PHYSLITE tutorial here
 # https://gitlab.cern.ch/atlas-analysis-sw-tutorial/plotting/-/blob/master/LXPLUS-plotting_the_z_peak.ipynb?ref_type=heads
 # Opening the ntuple and reading ALL of the branches will take unnecessary time and memory
