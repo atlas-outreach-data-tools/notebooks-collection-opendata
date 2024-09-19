@@ -190,6 +190,7 @@ class PHYSLITE_NtupleSchema(BaseSchema):
         behavior.update(vector.behavior)
         return behavior
 
+# Similar setup, but for flat ntuples provided using the outreach and education ntuple making framework
 class Flat_NtupleSchema(BaseSchema):
     def __init__(self, base_form):
         # Initialize the schema by calling the base class constructor
