@@ -42,6 +42,7 @@ class PHYSLITE_NtupleSchema(BaseSchema):
         self._form['contents'] = self._build_collections(self._form['contents'])
 
     def _create_collection(self, branch_forms, possible_branches, collection_name, vector_type=None, additional_branches=None):
+        
         # Initialize a dictionary to store the branches we will collect
         branch_dict = {}
         
@@ -67,8 +68,11 @@ class PHYSLITE_NtupleSchema(BaseSchema):
             # If no branches were found for the collection, print a message and return None
             print(f"No branches found for {collection_name}, skipping {collection_name}.")
             return None
-        
+    
+    # We don't need ALL of the branches from the ntuple
+    # We only care about the electron variables
     def _build_collections(self, branch_forms):
+    
         output = {}
 
         # Event information
