@@ -193,9 +193,7 @@ class PHYSLITE_NtupleSchema(BaseSchema):
 # Similar setup, but for flat ntuples provided using the outreach and education ntuple making framework
 class Flat_NtupleSchema(BaseSchema):
     def __init__(self, base_form):
-        # Initialize the schema by calling the base class constructor
         super().__init__(base_form)
-        # Build collections from the branch forms and assign them to 'contents'
         self._form['contents'] = self._build_collections(self._form['contents'])
 
     # We don't need ALL of the branches from the ntuple
@@ -205,10 +203,8 @@ class Flat_NtupleSchema(BaseSchema):
         output = {}
 
         # Event information - None stored in the ntuple by default
-        # No need to include event-level info
 
         # Jets, small R and large R - just need the 4-vectors
-        # Collect pt, eta, phi, and energy for small-radius jets and large-radius jets
         for jetCollection in ['jet', 'largeRJet']:
             possible_branches = {
                 'pt': jetCollection + '_pt',
@@ -221,7 +217,6 @@ class Flat_NtupleSchema(BaseSchema):
                 output[jetCollection] = jets
 
         # Vertices - None stored in the ntuple by default
-        # Skipping vertex information as it's not included in this ntuple
 
         # MET - just need etx and ety (MET x and y components)
         possible_branches = {
@@ -233,12 +228,10 @@ class Flat_NtupleSchema(BaseSchema):
             output['AnalysisMET'] = met
 
         # Tracks - None stored in the ntuple by default
-        # Skipping track information
 
         # Clusters - None stored in the ntuple by default
-        # Skipping cluster information
 
-        # Photons - just the four-vector information (pt, eta, phi, energy)
+        # Photons - four vector plus cluster link, like the example in the tutorial
         possible_branches = {
             'pt': 'photon_pt',
             'eta': 'photon_eta',
@@ -249,7 +242,7 @@ class Flat_NtupleSchema(BaseSchema):
         if photons:
             output['AnalysisPhotons'] = photons
 
-        # Electrons and Muons - store 4-vectors, track parameters, charge, and tight flag
+        # Electrons and Muons - four vector plus cluster and track-based info
         possible_branches = {
             'pt': 'lep_pt',
             'eta': 'lep_eta',
@@ -276,7 +269,7 @@ class Flat_NtupleSchema(BaseSchema):
         behavior.update(vector.behavior)
         return behavior
 
-
+# Main function that does the work and returns a dictionar
 def json_format(files: list[str],
                 events: int=10,
                 skip: int=0,
@@ -326,7 +319,7 @@ def json_format(files: list[str],
 
     # Helpers for muon types and qualities
     muon_types = ['Combined', 'Standalone', 'SegmentTagged', 'CaloTagged', 'SiAssociatedForward']
-    muon_quality = ['Tight', 'Medium', 'Loose', 'VeryLoose'];
+    muon_quality = ['Tight', 'Medium', 'Loose', 'VeryLoose']
     # Helpers for jet radii
     jet_radii = {'jet':0.4,'largeRJet':1.0,'AnalysisJets':0.4,'AnalysisLargeRJets':1.0}
 
@@ -429,19 +422,20 @@ def json_format(files: list[str],
                         missing_collections.add(jetCollection)
 
             # Add vertices
-            if not ntuple and 'PrimaryVertices' in events_data.fields:
-                this_event['Vertices'] = {}
-                this_event['Vertices']['PrimaryVertices'] = []
-                # Loop over vertices in the event
-                for avert,x in enumerate(events_data['PrimaryVertices'][processed_events].x):
-                    vert_data = {'x':events_data['PrimaryVertices'][processed_events].x[avert],
-                                 'y':events_data['PrimaryVertices'][processed_events].y[avert],
-                                 'z':events_data['PrimaryVertices'][processed_events].z[avert]}
-                    this_event['Vertices']['PrimaryVertices'] += [ vert_data ]
-            elif not ntuple:
-                if 'PrimaryVertices' not in missing_collections:
-                    print("PrimaryVertices not found in events_data, skipping vertices.")
-                    missing_collections.add('PrimaryVertices')
+            if not ntuple: 
+                if 'PrimaryVertices' in events_data.fields:
+                    this_event['Vertices'] = {}
+                    this_event['Vertices']['PrimaryVertices'] = []
+                    # Loop over vertices in the event
+                    for avert,x in enumerate(events_data['PrimaryVertices'][processed_events].x):
+                        vert_data = {'x':events_data['PrimaryVertices'][processed_events].x[avert],
+                                    'y':events_data['PrimaryVertices'][processed_events].y[avert],
+                                    'z':events_data['PrimaryVertices'][processed_events].z[avert]}
+                        this_event['Vertices']['PrimaryVertices'] += [ vert_data ]
+                else:
+                    if 'PrimaryVertices' not in missing_collections:
+                        print("PrimaryVertices not found in events_data, skipping vertices.")
+                        missing_collections.add('PrimaryVertices')
                     
 
             # Add MET
@@ -499,21 +493,18 @@ def json_format(files: list[str],
 
             # Add e/gamma clusters in preparation for photons and electrons
             this_event['CaloClusters'] = {}
-            if not ntuple and 'egammaClusters' in events_data.fields:
-                this_event['CaloClusters']['egammaClusters'] = []
-                for aclu,phi in enumerate(events_data['egammaClusters'][processed_events].phi):
-                    cluster_data = {'energy': events_data['egammaClusters'][processed_events].energy[aclu],
-                                    'eta': events_data['egammaClusters'][processed_events].eta[aclu],
-                                    'phi': events_data['egammaClusters'][processed_events].phi[aclu]}
-                    this_event['CaloClusters']['egammaClusters'] += [ cluster_data ]
-            else:
-                if not ntuple:
+            if not ntuple:
+                if 'egammaClusters' in events_data.fields:
+                    this_event['CaloClusters']['egammaClusters'] = []
+                    for aclu,phi in enumerate(events_data['egammaClusters'][processed_events].phi):
+                        cluster_data = {'energy': events_data['egammaClusters'][processed_events].energy[aclu],
+                                        'eta': events_data['egammaClusters'][processed_events].eta[aclu],
+                                        'phi': events_data['egammaClusters'][processed_events].phi[aclu]}
+                        this_event['CaloClusters']['egammaClusters'] += [ cluster_data ]
+                else:
                     if 'egammaClusters' not in missing_collections:
                         print("egammaClusters not found in events_data, skipping clusters.")
                         missing_collections.add('egammaClusters')
-
-                else:
-                    this_event['CaloClusters']['egammaClusters'] = []
 
             # Now we can add photons
             if 'AnalysisPhotons' in events_data.fields:
@@ -632,10 +623,6 @@ def json_format(files: list[str],
                         if 'AnalysisElectrons' not in missing_collections:
                             print("AnalysisElectrons not found in events_data, skipping electrons.")
                             missing_collections.add('AnalysisElectrons')
-            else:
-                if 'Leptons' not in missing_collections:
-                    print("No muons or electrons found in events_data, skipping leptons.")
-                    missing_collections.add('Leptons')
 
             # Add the event to my output dictionary
             output_dict[my_key] = this_event
@@ -650,7 +637,7 @@ def json_format(files: list[str],
         # Did we process enough events?
         if len(output_dict)>=events:
             break
-        if len(output_dict)==len(eventList) and len(output_dict)>0:
+        if len(output_dict)==len(eventList) and len(eventList)>0:
             break
 
     # Just a little error-checking
