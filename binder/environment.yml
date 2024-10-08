@@ -2,9 +2,13 @@ name: analysis
 channels:
     - conda-forge
 dependencies:
+  - python=3.10
   - aiohttp==3.9.5
   - awkward==2.6.7
+  - awkward-pandas==2023.8.0
   - coffea==0.7.0
+  - dask[distributed]==2024.8.2
+  - hist==2.8.0
   - ipykernel==6.29.5
   - jupyter==1.0.0
   - lmfit==1.3.2
