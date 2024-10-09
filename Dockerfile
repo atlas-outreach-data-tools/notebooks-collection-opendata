@@ -11,7 +11,7 @@ RUN conda env update -n base -f environment.yml && \
     rm -rf /opt/conda/pkgs/*
 SHELL ["conda", "run", "-n", "analysis", "/bin/bash", "-c"]
 
-# # Expose port 8888 for Jupyter Lab
-# EXPOSE 8888
+# Expose port 8888 for Jupyter Lab
+EXPOSE 8888
 
-# CMD ["jupyter", "lab", "--ip=0.0.0.0", "--allow-root", "--no-browser"]
+CMD ["jupyter", "lab", "--ip=0.0.0.0", "--allow-root", "--no-browser"]
