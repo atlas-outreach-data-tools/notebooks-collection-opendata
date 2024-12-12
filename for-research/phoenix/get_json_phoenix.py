@@ -307,10 +307,10 @@ def json_format(files: list[str],
                     eventList += [ ( int(cut_line.split(',')[0].strip()),int(cut_line.split(',')[1].strip()) ) ]
                 else:
                     print(f'Could not parse {cut_line} in {eventListFile} as run, event pair')
-            if ntuple:
-                print('FYI: When running on ntuples, run numbers are not available, and event numbers correspond to TTree entry numbers')
-                # Modify the event list accordingly
-                eventList = [ (1,x[1]) for x in eventList ]
+                if ntuple:
+                    print('FYI: When running on ntuples, run numbers are not available, and event numbers correspond to TTree entry numbers')
+                    # Modify the event list accordingly
+                    eventList = [ (1,x[1]) for x in eventList ]
     print(f'Will attempt to output {(len(eventList) if len(eventList)>0 else events)} events')
 
     # Check if this is MC - will do this in not the most elegant way, but can avoid a user setting anything
@@ -379,7 +379,10 @@ def json_format(files: list[str],
             else:
                 if 'EventID' in events_data.fields:
                     event_id = events_data['EventID'][processed_events]
-                    event_number = event_id.mc_event_number if isMC>0 else event_id.event_number
+                    # Some MCs have mc_event_number zero for all event, this results in the script running forever
+                    # Let's avoid that
+                    event_number = event_id.mc_event_number if (isMC>0 and event_id.mc_event_number!=0) else event_id.event_number
+
                     # In MC simulation, the run number indicates the conditions used for simulation
                     # The channel number is the dataset ID, which is more intuitive
                     run_number = event_id.channel_number if isMC>0 else event_id.run_number
