@@ -15,5 +15,3 @@ SHELL ["bash", "-c"]
 EXPOSE 8888
 
 WORKDIR /home
-
-# CMD ["jupyter", "lab", "--ip=0.0.0.0", "--allow-root", "--no-browser"]
