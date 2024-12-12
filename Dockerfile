@@ -1,4 +1,4 @@
-FROM continuumio/miniconda3
+FROM continuumio/miniconda3:24.4.0-0
 LABEL author="ATLAS Open Data Team @ CERN 2024"
 LABEL maintainer="Giovanni Guerrieri - giovanni.guerrieri@cern.ch"
 WORKDIR /opt/app
