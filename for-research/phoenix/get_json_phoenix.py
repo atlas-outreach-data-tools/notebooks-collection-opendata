@@ -387,8 +387,10 @@ def json_format(files: list[str],
                     # The channel number is the dataset ID, which is more intuitive
                     run_number = event_id.channel_number if isMC>0 else event_id.run_number
                 else:
-                    print("EventID not found in events_data, skipping event.")
-                    continue  # Cannot proceed without event number and run number
+                    # Treat as ntuple if 'EventID' is not found
+                    print("EventID not found in events_data, treating as ntuple.")
+                    event_number = processed_events
+                    run_number = 1
 
             # If we are using a list, check if the event is in our list
             if len(eventList)>0 and (run_number,event_number) not in eventList:
