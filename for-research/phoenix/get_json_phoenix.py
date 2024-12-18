@@ -197,7 +197,7 @@ class Flat_NtupleSchema(BaseSchema):
         self._form['contents'] = self._build_collections(self._form['contents'])
 
     # We don't need ALL of the branches from the ntuple
-    # We only care about the electron and lepton variables
+    # We only care about the electron variables
     def _build_collections(self, branch_forms):
         # Initialize an empty dictionary to store the collections
         output = {}
