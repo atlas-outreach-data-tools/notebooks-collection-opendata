@@ -1,21 +1,22 @@
 name: phoenix
 channels:
+  - conda-forge
   - defaults
 dependencies:
-  - ca-certificates=2024.3.11=hecd8cb5_0
-  - libcxx=14.0.6=h9765a3e_0
-  - libffi=3.3=hb1e8313_2
-  - ncurses=6.4=hcec6c5f_0
-  - openssl=1.1.1w=hca72f7f_0
-  - pip=24.0=py39hecd8cb5_0
-  - python=3.9.12=hdfd78df_1
-  - readline=8.2=hca72f7f_0
-  - setuptools=69.5.1=py39hecd8cb5_0
-  - sqlite=3.45.3=h6c40b1e_0
-  - tk=8.6.14=h4d00af3_0
-  - wheel=0.43.0=py39hecd8cb5_0
-  - xz=5.4.6=h6c40b1e_1
-  - zlib=1.2.13=h4b97444_1
+  - python=3.9
+  - pip
+  - ca-certificates
+  - libcxx
+  - libffi
+  - ncurses
+  - openssl
+  - readline
+  - setuptools==65.5.1
+  - sqlite
+  - tk
+  - wheel
+  - xz
+  - zlib
   - pip:
       - awkward==1.10.5
       - awkward0==0.15.5

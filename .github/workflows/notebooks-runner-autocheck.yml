@@ -1,0 +1,434 @@
+name: Run Jupyter Notebooks
+
+on:
+  push:
+    branches:
+        - 'master'
+        - 'single-test'
+    paths-ignore:
+      - 'README.md'
+      - 'Dockerfile'
+      - '.github/workflows/docker_push.yml'
+  schedule:
+    - cron: '0 0 * * 3'
+
+jobs:
+  find-notebooks:
+    runs-on: ubuntu-latest
+    outputs:
+      notebooks: ${{ steps.get-notebooks.outputs.notebooks }}
+      NOTEBOOKS8_cpp: ${{ steps.get-notebooks.outputs.notebooks8-cpp }}
+      NOTEBOOKS8_python: ${{ steps.get-notebooks.outputs.notebooks8-python }}
+      NOTEBOOKS13_cpp: ${{ steps.get-notebooks.outputs.notebooks13-cpp }}
+      NOTEBOOKS13_python: ${{ steps.get-notebooks.outputs.notebooks13-python }}
+      NOTEBOOKS13_uproot: ${{ steps.get-notebooks.outputs.notebooks13-uproot }}
+      NOTEBOOKS13_rdataframe: ${{ steps.get-notebooks.outputs.notebooks13-rdataframe }}
+      NOTEBOOKS_research: ${{ steps.get-notebooks.outputs.notebooks-research }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.8'
+
+      - name: Get all notebooks
+        id: get-notebooks
+        run: |
+          {
+          NOTEBOOKS=$(find . -name '*.ipynb' -print0 | jq -Rsc 'split("\u0000")[:-1]')
+          if [ -z "$NOTEBOOKS" ]; then
+            echo "No notebooks found"
+            NOTEBOOKS="[]"
+          fi
+          
+          # NOTEBOOKS8_cpp=$(find ./8-TeV-examples/cpp -name '*.ipynb' -print0 | jq -Rsc 'split("\u0000")[:-1]')
+          if [ -z "$NOTEBOOKS8_cpp" ]; then
+            echo "No notebooks found"
+            NOTEBOOKS8_cpp="[]"
+          fi
+          echo "notebooks8-cpp=$NOTEBOOKS8_cpp" >> $GITHUB_OUTPUT
+
+          # NOTEBOOKS8_python=$(find ./8-TeV-examples/python -name '*.ipynb' -print0 | jq -Rsc 'split("\u0000")[:-1]')
+          if [ -z "$NOTEBOOKS8_python" ]; then
+            echo "No notebooks found"
+            NOTEBOOKS8_python="[]"
+          fi
+          echo "notebooks8-python=$NOTEBOOKS8_python" >> $GITHUB_OUTPUT
+
+          NOTEBOOKS13_cpp=$(find ./13-TeV-examples/cpp -name '*.ipynb' -print0 | jq -Rsc 'split("\u0000")[:-1]')
+          if [ -z "$NOTEBOOKS13_cpp" ]; then
+            echo "No notebooks found"
+            NOTEBOOKS13_cpp="[]"
+          fi
+          echo "notebooks13-cpp=$NOTEBOOKS13_cpp" >> $GITHUB_OUTPUT
+
+          NOTEBOOKS13_uproot=$(find ./13-TeV-examples/uproot_python -name '*.ipynb' -print0 | jq -Rsc 'split("\u0000")[:-1]')
+          if [ -z "$NOTEBOOKS13_uproot" ]; then
+            echo "No notebooks found"
+            NOTEBOOKS13_uproot="[]"
+          fi
+          echo "notebooks13-uproot=$NOTEBOOKS13_uproot" >> $GITHUB_OUTPUT
+
+          NOTEBOOKS13_python=$(find ./13-TeV-examples/python -name '*.ipynb' -print0 | jq -Rsc 'split("\u0000")[:-1]')
+          if [ -z "$NOTEBOOKS13_python" ]; then
+            echo "No notebooks found"
+            NOTEBOOKS13_python="[]"
+          fi
+          echo "notebooks13-python=$NOTEBOOKS13_python" >> $GITHUB_OUTPUT
+
+          NOTEBOOKS13_rdataframe=$(find ./13-TeV-examples/rdataframe -name '*.ipynb' -print0 | jq -Rsc 'split("\u0000")[:-1]')
+          if [ -z "$NOTEBOOKS13_rdataframe" ]; then
+            echo "No notebooks found"
+            NOTEBOOKS13_rdataframe="[]"
+          fi
+          echo "notebooks13-rdataframe=$NOTEBOOKS13_rdataframe" >> $GITHUB_OUTPUT
+
+          NOTEBOOKS_research=$(find ./for-research -name '*.ipynb' -print0 | jq -Rsc 'split("\u0000")[:-1]')
+          if [ -z "$NOTEBOOKS_research" ]; then
+            echo "No notebooks found"
+            NOTEBOOKS_research="[]"
+          fi
+          echo "notebooks-research=$NOTEBOOKS_research" >> $GITHUB_OUTPUT
+          
+          cat $GITHUB_OUTPUT
+          echo "Got all notebooks!"
+          }
+
+  run-notebooks-8-cpp:
+    needs: find-notebooks
+    runs-on: ubuntu-22.04
+    container:
+      image: ghcr.io/atlas-outreach-data-tools/notebooks-collection-opendata:latest
+    if: ${{ needs.find-notebooks.result == 'success' && needs.find-notebooks.outputs.NOTEBOOKS8_cpp != '[]' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        notebook: ${{ fromJson(needs.find-notebooks.outputs.NOTEBOOKS8_cpp) }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run notebook with Papermill
+        run: |
+          cd $(dirname ${{ matrix.notebook }})
+          papermill --log-level ERROR $(basename ${{ matrix.notebook }}) /dev/null
+
+      - name: Output result
+        if: always()
+        run: |
+          mkdir -p ./artifacts
+          echo "${{ matrix.notebook }}: ${{ job.status }}" >> ./artifacts/result_run-notebooks-8-cpp-$(basename ${{ matrix.notebook }}).txt
+          cat ./artifacts/result_run-notebooks-8-cpp-$(basename ${{ matrix.notebook }}).txt
+          echo "sanitized_name=$(basename ${{ matrix.notebook }})" >> $GITHUB_ENV
+
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v4.4.0
+        with:
+          name: result_run-notebooks-8-cpp-${{ env.sanitized_name }}.txt
+          path: ./artifacts
+
+
+  run-notebooks-8-python:
+    needs: find-notebooks
+    runs-on: ubuntu-22.04
+    container:
+      image: ghcr.io/atlas-outreach-data-tools/notebooks-collection-opendata:latest
+    if: ${{ needs.find-notebooks.result == 'success' && needs.find-notebooks.outputs.NOTEBOOKS8_python != '[]' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        notebook: ${{ fromJson(needs.find-notebooks.outputs.NOTEBOOKS8_python) }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run notebook with Papermill
+        run: |
+          cd $(dirname ${{ matrix.notebook }})
+          papermill --log-level ERROR $(basename ${{ matrix.notebook }}) /dev/null
+
+      - name: Output result
+        if: always()
+        run: |
+          mkdir -p ./artifacts
+          echo "${{ matrix.notebook }}: ${{ job.status }}" >> ./artifacts/result_run-notebooks-8-python-$(basename ${{ matrix.notebook }}).txt
+          cat ./artifacts/result_run-notebooks-8-python-$(basename ${{ matrix.notebook }}).txt
+          echo "sanitized_name=$(basename ${{ matrix.notebook }})" >> $GITHUB_ENV
+
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v4.4.0
+        with:
+          name: result_run-notebooks-8-python-${{ env.sanitized_name }}.txt
+          path: ./artifacts
+
+  run-notebooks-13-cpp:
+    needs: find-notebooks
+    runs-on: ubuntu-22.04
+    container:
+      image: ghcr.io/atlas-outreach-data-tools/notebooks-collection-opendata:latest
+    if: ${{ needs.find-notebooks.result == 'success' && needs.find-notebooks.outputs.NOTEBOOKS13_cpp != '[]' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        notebook: ${{ fromJson(needs.find-notebooks.outputs.NOTEBOOKS13_cpp) }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run notebook with Papermill
+        run: |
+          cd $(dirname ${{ matrix.notebook }})
+          papermill --log-level ERROR $(basename ${{ matrix.notebook }}) /dev/null
+
+      - name: Output result
+        if: always()
+        run: |
+          mkdir -p ./artifacts
+          echo "${{ matrix.notebook }}: ${{ job.status }}" >> ./artifacts/result_run-notebooks-13-cpp-$(basename ${{ matrix.notebook }}).txt
+          cat ./artifacts/result_run-notebooks-13-cpp-$(basename ${{ matrix.notebook }}).txt
+          echo "sanitized_name=$(basename ${{ matrix.notebook }})" >> $GITHUB_ENV
+
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v4.4.0
+        with:
+          name: result_run-notebooks-13-cpp-${{ env.sanitized_name }}.txt
+          path: ./artifacts
+
+  run-notebooks-13-python:
+    needs: find-notebooks
+    runs-on: ubuntu-22.04
+    container:
+      image: ghcr.io/atlas-outreach-data-tools/notebooks-collection-opendata:latest
+    if: ${{ needs.find-notebooks.result == 'success' && needs.find-notebooks.outputs.NOTEBOOKS13_python != '[]' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        notebook: ${{ fromJson(needs.find-notebooks.outputs.NOTEBOOKS13_python) }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run notebook with Papermill
+        run: |
+          cd $(dirname ${{ matrix.notebook }})
+          papermill --log-level ERROR $(basename ${{ matrix.notebook }}) /dev/null
+
+      - name: Output result
+        if: always()
+        run: |
+          mkdir -p ./artifacts
+          echo "${{ matrix.notebook }}: ${{ job.status }}" >> ./artifacts/result_run-notebooks-13-python-$(basename ${{ matrix.notebook }}).txt
+          cat ./artifacts/result_run-notebooks-13-python-$(basename ${{ matrix.notebook }}).txt
+          echo "sanitized_name=$(basename ${{ matrix.notebook }})" >> $GITHUB_ENV
+
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v4.4.0
+        with:
+          name: result_run-notebooks-13-python-${{ env.sanitized_name }}.txt
+          path: ./artifacts
+
+  run-notebooks-13-uproot:
+    needs: find-notebooks
+    runs-on: ubuntu-22.04
+    container:
+      image: ghcr.io/atlas-outreach-data-tools/notebooks-collection-opendata:latest
+    if: ${{ needs.find-notebooks.result == 'success' && needs.find-notebooks.outputs.NOTEBOOKS13_uproot != '[]' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        notebook: ${{ fromJson(needs.find-notebooks.outputs.NOTEBOOKS13_uproot) }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run notebook with Papermill
+        run: |
+          cd $(dirname ${{ matrix.notebook }})
+          papermill --log-level ERROR $(basename ${{ matrix.notebook }}) /dev/null
+
+      - name: Output result
+        if: always()
+        run: |
+          mkdir -p ./artifacts
+          echo "${{ matrix.notebook }}: ${{ job.status }}" >> ./artifacts/result_run-notebooks-13-uproot-$(basename ${{ matrix.notebook }}).txt
+          cat ./artifacts/result_run-notebooks-13-uproot-$(basename ${{ matrix.notebook }}).txt
+          echo "sanitized_name=$(basename ${{ matrix.notebook }})" >> $GITHUB_ENV
+
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v4.4.0
+        with:
+          name: result_run-notebooks-13-uproot-${{ env.sanitized_name }}.txt
+          path: ./artifacts
+
+  run-notebooks-13-rdataframe:
+    needs: find-notebooks
+    runs-on: ubuntu-22.04
+    container:
+      image: ghcr.io/atlas-outreach-data-tools/notebooks-collection-opendata:latest
+    if: ${{ needs.find-notebooks.result == 'success' && needs.find-notebooks.outputs.NOTEBOOKS13_rdataframe != '[]' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        notebook: ${{ fromJson(needs.find-notebooks.outputs.NOTEBOOKS13_rdataframe) }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run notebook with Papermill
+        run: |
+          cd $(dirname ${{ matrix.notebook }})
+          papermill --log-level ERROR $(basename ${{ matrix.notebook }}) /dev/null
+
+      - name: Output result
+        if: always()
+        run: |
+          mkdir -p ./artifacts
+          echo "${{ matrix.notebook }}: ${{ job.status }}" >> ./artifacts/result_run-notebooks-13-rdataframe-$(basename ${{ matrix.notebook }}).txt
+          cat ./artifacts/result_run-notebooks-13-rdataframe-$(basename ${{ matrix.notebook }}).txt
+          echo "sanitized_name=$(basename ${{ matrix.notebook }})" >> $GITHUB_ENV
+
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v4.4.0
+        with:
+          name: result_run-notebooks-13-rdataframe-${{ env.sanitized_name }}.txt
+          path: ./artifacts
+
+  run-notebooks-research:
+    needs: find-notebooks
+    runs-on: ubuntu-22.04
+    container:
+      image: ghcr.io/atlas-outreach-data-tools/notebooks-collection-opendata:latest
+    if: ${{ needs.find-notebooks.result == 'success' && needs.find-notebooks.outputs.NOTEBOOKS_research != '[]' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        notebook: ${{ fromJson(needs.find-notebooks.outputs.NOTEBOOKS_research) }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run notebook with Papermill
+        run: |
+          cd $(dirname ${{ matrix.notebook }})
+          papermill --log-level ERROR $(basename ${{ matrix.notebook }}) /dev/null
+
+      - name: Output result
+        if: always()
+        run: |
+          mkdir -p ./artifacts
+          echo "${{ matrix.notebook }}: ${{ job.status }}" >> ./artifacts/result_run-notebooks-research-$(basename ${{ matrix.notebook }}).txt
+          cat ./artifacts/result_run-notebooks-research-$(basename ${{ matrix.notebook }}).txt
+          echo "sanitized_name=$(basename ${{ matrix.notebook }})" >> $GITHUB_ENV
+
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v4.4.0
+        with:
+          name: result_run-notebooks-13-research-${{ env.sanitized_name }}.txt
+          path: ./artifacts
+
+  generate-status-report:
+    runs-on: ubuntu-latest
+    needs: [run-notebooks-8-cpp,run-notebooks-8-python,run-notebooks-13-cpp,run-notebooks-13-python,run-notebooks-13-uproot,run-notebooks-13-rdataframe,run-notebooks-research]
+    if: always()
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Create downloaded-artifacts directory
+        run: mkdir -p ./artifacts
+
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4.1.8
+        with:
+          path: ./artifacts
+      
+      - name: Generate status report
+        run: |
+          echo "# Notebook Run Status" > status.md
+          echo "" >> status.md
+
+          JOB_FILES=(
+            "result_run-notebooks-8-cpp.txt"
+            "result_run-notebooks-8-python.txt"
+            "result_run-notebooks-13-cpp.txt"
+            "result_run-notebooks-13-python.txt"
+            "result_run-notebooks-13-uproot.txt"
+            "result_run-notebooks-13-rdataframe.txt"
+            "result_run-notebooks-research.txt"
+          )
+
+          echo "# Status of the Jupyter notebooks" > status.md
+          echo "*This page is created automatically, for more information please visit [our repository](https://github.com/atlas-outreach-data-tools/notebooks-collection-opendata/actions/runs/${{ github.run_id }}).*" >> status.md
+
+          declare -A notebooks
+
+          for file in $(pwd)/artifacts/*/*
+          do
+            if [ -f "$file" ]; then
+              while IFS= read -r line
+              do
+                NOTEBOOK=$(echo "$line" | cut -d: -f1)
+                STATUS=$(echo "$line" | cut -d: -f2 | xargs)
+                if [[ "$STATUS" == "success" ]]; then
+                  OUT="✅"
+                else
+                  OUT="❌"
+                fi
+                prefix="https://github.com/atlas-outreach-data-tools/notebooks-collection-opendata/tree/master/"
+                URL=$(echo "${NOTEBOOK/\.\//"$prefix"}")
+
+                section=$(echo "$NOTEBOOK" | cut -d'/' -f3)
+                if [[ "$section" == "uproot_python" ]]; then
+                  notebooks["uproot"]+="$OUT|[$(basename $NOTEBOOK)]($URL)\n"
+                elif [[ "$section" == "rdataframe" ]]; then
+                  echo "yoooo"
+                  notebooks["RDataFrame"]+="$OUT|[$(basename $NOTEBOOK)]($URL)\n"
+                else
+                  notebooks["$section"]+="$OUT|[$(basename $NOTEBOOK)]($URL)\n"
+                fi
+
+              done < $file
+            fi
+          done
+
+          for section in "${!notebooks[@]}"
+          do
+            echo "### $section" >> status.md
+            echo "| Status | Link |" >> status.md
+            echo "|----------|----------|" >> status.md
+            echo -e "${notebooks[$section]}" >> status.md
+          done
+          echo "*Last update on $(TZ=Europe/Rome date)*" >> status.md
+          cat status.md
+
+      - name: Commit and push to GitLab
+        env:
+          GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
+          GITLAB_USER: ${{ secrets.GITLAB_USER }}
+        run: |
+          git config --global user.name "${GITLAB_USER}"
+          git config --global user.email "${GITLAB_USER}@cern.ch"
+          
+          git clone https://oauth2:${GITLAB_TOKEN}@gitlab.cern.ch/atlas-outreach-data-tools/atlas-open-data-website-v2.git
+          git remote set-url origin https://oauth2:${GITLAB_TOKEN}@gitlab.cern.ch/atlas-outreach-data-tools/atlas-open-data-website-v2.git
+          cd atlas-open-data-website-v2/docs
+          
+          mv ../../status.md status.md
+
+          ls -l status.md
+
+          git checkout -b update_status_${{ github.sha }}
+          git add status.md
+          git commit -m "Update status.md, commit ${{ github.sha }}"
+          git push -u origin update_status_${{ github.sha }}
