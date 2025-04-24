@@ -4,6 +4,7 @@ channels:
 dependencies:
   - python=3.11
   - aiohttp>=3.9.5
+  - atlasopenmagic>0.3.1
   - awkward>=2.6.7
   - awkward-pandas>=2023.8.0
   - coffea~=0.7.0
