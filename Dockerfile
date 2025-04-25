@@ -1,4 +1,4 @@
-FROM jupyter/scipy-notebook:python-3.11
+FROM quay.io/jupyter/scipy-notebook:python-3.11.8
 LABEL author="ATLAS Open Data Team @ CERN 2024"
 LABEL maintainer="Giovanni Guerrieri - giovanni.guerrieri@cern.ch"
 WORKDIR /opt/app
@@ -22,4 +22,3 @@ EXPOSE 8888
 
 # Set the home directory as the working directory and default user
 WORKDIR $HOME
-USER $NB_UID
