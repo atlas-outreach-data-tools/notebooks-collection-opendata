@@ -4,7 +4,6 @@ channels:
 dependencies:
   - python=3.11
   - aiohttp>=3.9.5
-  - atlasopenmagic>0.3.1
   - awkward>=2.6.7
   - awkward-pandas>=2023.8.0
   - coffea~=0.7.0
@@ -25,5 +24,6 @@ dependencies:
   - uproot>=5.3.10
   - uproot3>=3.14.4
   - pip:
+    - atlasopenmagic>=0.3.1
     - jupyterlab_latex>=3.1.0
     - vector>=1.4.1
