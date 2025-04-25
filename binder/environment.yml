@@ -25,5 +25,6 @@ dependencies:
   - uproot3>=3.14.4
   - pip:
     - atlasopenmagic>=0.3.1
+    - fsspec-xrootd>=0.5.1
     - jupyterlab_latex>=3.1.0
     - vector>=1.4.1
