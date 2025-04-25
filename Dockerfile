@@ -6,9 +6,15 @@ WORKDIR /opt/app
 # Copy the environment.yml file into the container
 COPY binder/environment.yml .
 
-RUN conda env update -n base -f environment.yml && \
+# Install mamba
+RUN conda install -n base -c conda-forge mamba && \
+    conda clean -afy
+
+# Use mamba to update environment
+RUN mamba env update -n base -f environment.yml && \
     conda clean -afy && \
     rm -rf /opt/conda/pkgs/*
+
 SHELL ["bash", "-c"]
 
 # Expose port 8888 for Jupyter Lab
