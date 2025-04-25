@@ -20,17 +20,6 @@ SHELL ["bash", "-c"]
 # Expose port 8888 for Jupyter Lab
 EXPOSE 8888
 
-USER root
-# Create a new non-root user
-ARG NB_USER=atlasuser
-ARG NB_UID=1001
-ARG NB_GID=100
-RUN adduser --disabled-password --gecos "" --uid $NB_UID --gid $NB_GID $NB_USER && \
-    mkdir -p /home/$NB_USER && \
-    chown -R $NB_USER:$NB_GID /home/$NB_USER /opt/app
-
-# Switch to the created user
-USER $NB_USER
-
-# Set the home directory as the working directory
-WORKDIR /home/$NB_USER
+# Set the home directory as the working directory and default user
+WORKDIR $HOME
+USER $NB_UID
