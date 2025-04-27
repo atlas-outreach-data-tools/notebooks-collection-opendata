@@ -2,7 +2,7 @@ name: analysis
 channels:
     - conda-forge
 dependencies:
-  - python=3.11
+  - python==3.11
   - aiohttp>=3.9.5
   - awkward>=2.6.7
   - awkward-pandas>=2023.8.0
