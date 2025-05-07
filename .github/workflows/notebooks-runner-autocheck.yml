@@ -72,7 +72,7 @@ jobs:
           fi
           echo "notebooks13-uproot=$NOTEBOOKS13_uproot" >> $GITHUB_OUTPUT
 
-          NOTEBOOKS13_python=$(find ./13-TeV-examples/python -name '*.ipynb' -print0 | jq -Rsc 'split("\u0000")[:-1]')
+          NOTEBOOKS13_python=$(find ./13-TeV-examples/pyroot -name '*.ipynb' -print0 | jq -Rsc 'split("\u0000")[:-1]')
           if [ -z "$NOTEBOOKS13_python" ]; then
             echo "No notebooks found"
             NOTEBOOKS13_python="[]"
