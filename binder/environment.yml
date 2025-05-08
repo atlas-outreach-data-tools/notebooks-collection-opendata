@@ -7,6 +7,7 @@ dependencies:
   - root_base>=6.32.2
   - pip:
     - aiohttp>=3.9.5
+    - atlasopenmagic
     - awkward>=2.6.7
     - awkward-pandas>=2023.8.0
     - coffea~=0.7.0
@@ -25,7 +26,6 @@ dependencies:
     - scikit-learn>=1.5.1
     - uproot>=5.3.10
     - uproot3>=3.14.4
-    - atlasopenmagic>=0.3.1
     - fsspec-xrootd>=0.5.1
     - jupyterlab_latex~=3.1.0
     - vector>=1.4.1
