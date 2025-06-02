@@ -417,30 +417,44 @@ jobs:
           GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
           GITLAB_USER: ${{ secrets.GITLAB_USER }}
         run: |
+          BRANCH="update_status_${{ github.sha }}"
+          TITLE="Automated update of status.md for commit ${{ github.sha }}"
+      
           git config --global user.name "${GITLAB_USER}"
           git config --global user.email "${GITLAB_USER}@cern.ch"
           
           git clone https://oauth2:${GITLAB_TOKEN}@gitlab.cern.ch/atlas-outreach-data-tools/atlas-open-data-website-v2.git
-          git remote set-url origin https://oauth2:${GITLAB_TOKEN}@gitlab.cern.ch/atlas-outreach-data-tools/atlas-open-data-website-v2.git
           cd atlas-open-data-website-v2/docs
           
           mv ../../status.md status.md
-
           ls -l status.md
-
-          git checkout -b update_status_${{ github.sha }}
+      
+          git checkout -b "${BRANCH}"
           git add status.md
           git commit -m "Update status.md, commit ${{ github.sha }}"
-          git push -u origin update_status_${{ github.sha }} --force
-          
+          git push -u origin "${BRANCH}" --force-with-lease
+      
           echo "Opening MR to GitLab..."
-          curl --request POST "https://gitlab.cern.ch/api/v4/projects/atlas-outreach-data-tools%2Fatlas-open-data-website-v2/merge_requests" \
-            --header "PRIVATE-TOKEN: $GITLAB_TOKEN" \
+      
+          RESPONSE=$(curl --silent --write-out "HTTPSTATUS:%{http_code}" \
+            --request POST "https://gitlab.cern.ch/api/v4/projects/atlas-outreach-data-tools%2Fatlas-open-data-website-v2/merge_requests" \
+            --header "PRIVATE-TOKEN: ${GITLAB_TOKEN}" \
             --header "Content-Type: application/json" \
             --data "{
-              \"source_branch\": \"update_status_${{ github.sha }}\",
+              \"source_branch\": \"${BRANCH}\",
               \"target_branch\": \"main\",
-              \"title\": \"Automated update of \`status.md\` for commit ${{ github.sha }}\",
+              \"title\": \"${TITLE}\",
               \"remove_source_branch\": true
-            }"
+            }")
+      
+          HTTP_BODY=$(echo "$RESPONSE" | sed -e 's/HTTPSTATUS\:.*//g')
+          HTTP_STATUS=$(echo "$RESPONSE" | tr -d '\n' | sed -e 's/.*HTTPSTATUS://')
+      
+          if [ "$HTTP_STATUS" -eq 201 ]; then
+            echo "✅ Merge Request created successfully"
+          else
+            echo "❌ Failed to create Merge Request (HTTP $HTTP_STATUS)"
+            echo "Response: $HTTP_BODY"
+            exit 1
+          fi
         
