@@ -431,4 +431,16 @@ jobs:
           git checkout -b update_status_${{ github.sha }}
           git add status.md
           git commit -m "Update status.md, commit ${{ github.sha }}"
-          git push -u origin update_status_${{ github.sha }}
+          git push -u origin update_status_${{ github.sha }} --force
+          
+          echo "Opening MR to GitLab..."
+          curl --request POST "https://gitlab.cern.ch/api/v4/projects/atlas-outreach-data-tools%2Fatlas-open-data-website-v2/merge_requests" \
+            --header "PRIVATE-TOKEN: $GITLAB_TOKEN" \
+            --header "Content-Type: application/json" \
+            --data "{
+              \"source_branch\": \"update_status_${{ github.sha }}\",
+              \"target_branch\": \"main\",
+              \"title\": \"Automated update of \`status.md\` for commit ${{ github.sha }}\",
+              \"remove_source_branch\": true
+            }"
+        
