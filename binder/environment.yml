@@ -2,30 +2,30 @@ name: analysis
 channels:
     - conda-forge
 dependencies:
-  - python=3.11
-  - aiohttp>=3.9.5
-  - awkward>=2.6.7
-  - awkward-pandas>=2023.8.0
-  - coffea~=0.7.0
-  # - dask[distributed]>=2025.2.0
-  - hist>=2.8.0
-  - ipykernel>=6.29.5
-  - jupyter>=1.0.0
   - libmamba>=2.0.4
-  - lmfit>=1.3.2
-  - matplotlib>=3.9.1
-  - metakernel>=0.30.2
-  - notebook<7
-  - numpy>=1.26.4
-  - pandas>=2.2.2
-  - papermill>=2.6.0
-  - pip>=24.2
+  - python=3.11
   - root_base>=6.32.2
-  - scikit-learn>=1.5.1
-  - uproot>=5.3.10
-  - uproot3>=3.14.4
   - pip:
-    - atlasopenmagic>=0.3.1
+    - aiohttp>=3.9.5
+    - atlasopenmagic
+    - awkward>=2.6.7
+    - awkward-pandas>=2023.8.0
+    - coffea~=0.7.0
+    # - dask[distributed]>=2025.2.0
+    - hist>=2.8.0
+    - ipykernel>=6.29.5
+    - jupyter>=1.0.0
+    - lmfit>=1.3.2
+    - matplotlib>=3.9.1
+    - metakernel>=0.30.2
+    - notebook<7
+    - numpy>=1.26.4
+    - pandas>=2.2.2
+    - papermill>=2.6.0
+    - pip>=24.2
+    - scikit-learn>=1.5.1
+    - uproot>=5.3.10
+    - uproot3>=3.14.4
     - fsspec-xrootd>=0.5.1
     - jupyterlab_latex~=3.1.0
     - vector>=1.4.1
