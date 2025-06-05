@@ -33,4 +33,4 @@ To access the notebook interface, open this file in a browser:
 
 For more, please go to: [opendata.atlas.cern/docs/category/choose-your-enviroment](https://opendata.atlas.cern/docs/category/choose-your-enviroment)
 
-@2024
+@2025
