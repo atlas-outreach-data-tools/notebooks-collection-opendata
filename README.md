@@ -10,6 +10,12 @@ For more complex needs, such as running multiple notebooks review the [Binder Do
 
 Note: before starting running the code in the jupyter notebooks, click on the up right button "not trusted" in order to get "trusted" displayed. This should lead the JavaScript to be executed, that is useful to visualise interactive histograms. If that doesn't work, simply go to the top of the notebook, find the cell that contains the line of code `%jsroot` and comment out that.
 
+## Run on Colab
+To execute in Colab:
+[![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/atlas-outreach-data-tools/notebooks-collection-opendata.git)
+
+Much of the functionality is the same as in Binder, but with some subtle differences that are explained in the [Colab Documentation](https://colab.research.google.com).
+
 ## Run on Docker containers
 
 Docker provides a robust platform for developing, sharing, and running applications within containers.
