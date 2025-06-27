@@ -498,6 +498,7 @@ def json_format(files: list[str],
 
             # Add e/gamma clusters in preparation for photons and electrons
             this_event['CaloClusters'] = {}
+            this_event['CaloClusters']['egammaClusters'] = []
             if not ntuple:
                 if 'egammaClusters' in events_data.fields:
                     this_event['CaloClusters']['egammaClusters'] = []
