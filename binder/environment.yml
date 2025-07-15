@@ -6,6 +6,7 @@ dependencies:
   - python=3.11
   - root_base>=6.32.2
   - pip:
+    - fsspec>=2025.7.0
     - aiohttp>=3.9.5
     - atlasopenmagic>=1.0.1
     - awkward>=2.6.7
