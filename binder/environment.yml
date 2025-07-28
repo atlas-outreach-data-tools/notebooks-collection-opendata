@@ -12,6 +12,7 @@ dependencies:
     - awkward-pandas>=2023.8.0
     - coffea~=0.7.0
     # - dask[distributed]>=2025.2.0
+    - fsspec>=2025.7.0
     - hist>=2.8.0
     - ipykernel>=6.29.5
     - jupyter>=1.0.0
