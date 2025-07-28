@@ -11,8 +11,8 @@ Please complete the following sections when you submit your pull request. You ar
 
 <!-- We suggest using bullets (indicated by * or -) and filled checkboxes [x] here -->
 
-* *Lorem ipsum dolor sit amet, consectetur adipiscing.*
-* *Lorem ipsum dolor sit amet, consectetur adipiscing.*
+* *Lorem ipsum dolor sit amet.*
+* *Consectetur adipiscing.*
 
 
 ### What should a reviewer concentrate their feedback on?
