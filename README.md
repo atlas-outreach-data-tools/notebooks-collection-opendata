@@ -18,7 +18,7 @@ To execute in Colab:
 
 Much of the functionality is the same as in Binder, but with some subtle differences that are explained in the [Colab Documentation](https://colab.research.google.com).
 
-### Run on Docker containers
+### Run in Docker containers
 
 Docker provides a robust platform for developing, sharing, and running applications within containers.
 
@@ -54,7 +54,7 @@ When opening a new issue be sure to fill all the information necessary. The issu
 ### 2. Fork the repository
 Make a fork of the repository in the upper right corner of the repository page in GitHub. In this new copy, changes won't affect anyone else's work, and you can make as many changes as you want. 
 
-Make sure to mantain the fork up to date to avoid conflicts when merging. If you already have conflicts, check [GitHub's guide to resolving a merge conflict](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/addressing-merge-conflicts/resolving-a-merge-conflict-on-github).
+Make sure to keep the fork up to date (or develop from a branch based on the main repository's main branch) to avoid conflicts when merging. If you already have conflicts, check [GitHub's guide to resolving a merge conflict](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/addressing-merge-conflicts/resolving-a-merge-conflict-on-github).
 
 ### 3. Make the changes you've discussed
 Please keep the changes targeted to what was discussed. While making your changes, commit often and write explanatory commit messages.
