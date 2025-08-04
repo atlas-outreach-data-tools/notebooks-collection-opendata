@@ -1,6 +1,6 @@
 #
 name: Create and publish a Docker image
-
+# This is a very clever comment
 on:
   pull_request:
     branches:
