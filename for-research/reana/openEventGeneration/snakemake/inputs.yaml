@@ -1,0 +1,7 @@
+input_notebook: OpenEvgenTutorial.ipynb
+input_notebook_delphes: OpenEvgenTutorialDelphes.ipynb
+input_release: '2025r-evgen'
+input_DSID: '301000'
+output_file: results/plot.png
+evgen_file: results/301000.hepmc
+output_file_delphes: results/delphes_output.root

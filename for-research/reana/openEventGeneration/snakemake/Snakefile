@@ -1,0 +1,47 @@
+# Note that if you are working on the analysis development locally, i.e. outside
+# of the REANA platform, you can proceed as follows:
+#
+#   $ mkdir snakemake-local-run
+#   $ cd snakemake-local-run
+#   $ virtualenv ~/.virtualenvs/worldpopulation-snakemake
+#   $ source ~/.virtualenvs/worldpopulation-snakemake/bin/activate
+#   $ pip install snakemake papermill ipykernel pandas matplotlib
+#   $ cp -a ../code ../data .
+#   $ snakemake -s ../workflow/snakemake/Snakefile \
+#               --configfile ../workflow/snakemake/inputs.yaml
+#               --config notebook=code/worldpopulation.ipynb -p --cores 1
+#   $ open results/plot.png
+
+rule all: # Listing the expected final outputs as input for the rule
+    input:
+        config["output_file_delphes"]
+
+rule extract_EVGEN:
+    input:
+        notebook=config["input_notebook"]
+    params:
+        input_release=config["input_release"],
+        input_DSID=config["input_DSID"]
+    output:
+        output_file=config["output_file"],
+        evgen_file=config["evgen_file"]
+    container:
+        "ghcr.io/atlas-outreach-data-tools/notebooks-collection-opendata:latest"
+    shell:
+        "mkdir -p results && papermill {input.notebook} /dev/null -p "
+        "input_release {params.input_release} "
+        "-p input_DSID {params.input_DSID} -p output_file {output.output_file} "
+        "-p evgen_file {output.evgen_file} --log-output --log-level DEBUG --progress-bar"
+
+rule delphes_SIM:
+    input:
+        notebook=config["input_notebook_delphes"],
+        evgen_file=rules.extract_EVGEN.output.evgen_file
+    output:
+        output_file=config["output_file_delphes"]
+    container:
+        "ghcr.io/vre-hub/vre-singleuser-atlasopendata:sha-6788c77"
+    shell:
+        "conda install --channel conda-forge delphes && papermill {input.notebook} /dev/null -p "
+        "evgen_file {input.evgen_file} "
+        "-p output_file {output.output_file} --log-output --log-level DEBUG --progress-bar"
