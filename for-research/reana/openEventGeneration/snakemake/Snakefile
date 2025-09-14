@@ -3,13 +3,13 @@
 #
 #   $ mkdir snakemake-local-run
 #   $ cd snakemake-local-run
-#   $ virtualenv ~/.virtualenvs/worldpopulation-snakemake
-#   $ source ~/.virtualenvs/worldpopulation-snakemake/bin/activate
-#   $ pip install snakemake papermill ipykernel pandas matplotlib
-#   $ cp -a ../code ../data .
-#   $ snakemake -s ../workflow/snakemake/Snakefile \
-#               --configfile ../workflow/snakemake/inputs.yaml
-#               --config notebook=code/worldpopulation.ipynb -p --cores 1
+#   $ python -m venv atlas-env
+#   $ source atlas-env/bin/activate
+#   $ pip install snakemake papermill ipykernel
+#   $ cp -a ../OpenEvgenTutorial.ipynb .
+#   $ snakemake -s ../snakemake/Snakefile \
+#               --configfile ../snakemake/inputs.yaml
+#               --config notebook=OpenEvgenTutorial.ipynb -p --cores 1
 #   $ open results/plot.png
 
 rule all: # Listing the expected final outputs as input for the rule
@@ -40,8 +40,6 @@ rule delphes_SIM:
     output:
         output_file=config["output_file_delphes"]
     container:
-        "ghcr.io/vre-hub/vre-singleuser-atlasopendata:sha-6788c77"
+        "ghcr.io/atlas-outreach-data-tools/notebooks-collection-opendata-delphes:latest"
     shell:
-        "conda install --channel conda-forge delphes && papermill {input.notebook} /dev/null -p "
-        "evgen_file {input.evgen_file} "
-        "-p output_file {output.output_file} --log-output --log-level DEBUG --progress-bar"
+        "DelphesHepMC2 /opt/delphes/cards/delphes_card_ATLAS.tcl {output.output_file} {input.evgen_file} "
