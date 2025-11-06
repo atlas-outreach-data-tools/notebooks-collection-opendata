@@ -14,7 +14,7 @@ Note: before starting running the code in the jupyter notebooks, click on the up
 Much of the functionality is the same as in Binder, but with some subtle differences that are explained in the [Colab Documentation](https://colab.research.google.com).
 
 ### Run on SWAN
-To use SWAN you need a CERN account. Similar to Binder and Colab, but you have access to more memory and other resources; and faster access to the datasets. For more information check out the [SWAN Documentation](https://swan.docs.cern.ch).
+To use SWAN you need a CERN account. Similar to Binder and Colab, but you have access to more memory and other resources, and faster access to the datasets. If you are new to SWAN, you can use the default environment setup to get running. For more information check out the [SWAN Documentation](https://swan.docs.cern.ch).
 
 ### Run in Docker containers
 
