@@ -3,20 +3,18 @@
 A set of multiple notebooks using 8 TeV and 13 TeV ATLAS Open Data datasets.
 
 ## Running the notebooks
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atlas-outreach-data-tools/notebooks-collection-opendata/HEAD)  [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/atlas-outreach-data-tools/notebooks-collection-opendata.git)  [![SWAN](https://swan.web.cern.ch/sites/swan.web.cern.ch/files/pictures/open_in_swan.svg)](https://cern.ch/swanserver/cgi-bin/go?projurl=https://github.com/atlas-outreach-data-tools/notebooks-collection-opendata.git)
 
 ### Run on Binder
-To execute in MyBinder:
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atlas-outreach-data-tools/notebooks-collection-opendata/HEAD)
-
 For more complex needs, such as running multiple notebooks review the [Binder Documentation](https://mybinder.readthedocs.io/en/latest/#) for guidance on setting up a more personalized Binder environment.
 
 Note: before starting running the code in the jupyter notebooks, click on the up right button "not trusted" in order to get "trusted" displayed. This should lead the JavaScript to be executed, that is useful to visualise interactive histograms. If that doesn't work, simply go to the top of the notebook, find the cell that contains the line of code `%jsroot` and comment out that.
 
 ### Run on Colab
-To execute in Colab:
-[![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/atlas-outreach-data-tools/notebooks-collection-opendata.git)
-
 Much of the functionality is the same as in Binder, but with some subtle differences that are explained in the [Colab Documentation](https://colab.research.google.com).
+
+### Run on SWAN
+To use SWAN you need a CERN account. Similar to Binder and Colab, but you have access to more memory and other resources, and faster access to the datasets. If you are new to SWAN, you can use the default environment setup to get running. For more information check out the [SWAN Documentation](https://swan.docs.cern.ch).
 
 ### Run in Docker containers
 
