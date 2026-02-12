@@ -1,0 +1,51 @@
+FROM ubuntu:24.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install dependencies
+RUN apt-get update && apt-get install -yq \
+    cmake \
+    curl \
+    g++ \
+    git \
+    libftgl-dev \
+    libgif-dev \
+    libgl2ps-dev \
+    libglew-dev \
+    libtbb-dev \
+    libvdt-dev \
+    make \
+    python3-dev \
+    rsync \
+    tcl \
+    wget \
+ && rm -rf /var/lib/apt/lists/*
+
+# Install ROOT
+RUN mkdir -p /opt/root \
+ && curl -sL https://root.cern/download/root_v6.36.02.Linux-ubuntu24.04-x86_64-gcc13.3.tar.gz \
+    | tar -C /opt/root --strip-components=1 -zxf -
+
+# Install Pythia8
+RUN curl -sL https://pythia.org/download/pythia83/pythia8315.tgz \
+    | tar -C /opt -zxf - \
+ && cd /opt/pythia8315 \
+ && ./configure --pr
+
+ENV ROOTSYS=/opt/root
+ENV PATH=$ROOTSYS/bin:$PATH
+ENV PYTHONPATH=$ROOTSYS/lib:$PYTHONPATH
+ENV LD_LIBRARY_PATH=$ROOTSYS/lib:$LD_LIBRARY_PATH
+ENV PYTHIA8=/opt/pythia
+ENV LD_LIBRARY_PATH=$PYTHIA8/lib:$LD_LIBRARY_PATH
+
+# Install Delphes
+RUN git clone https://github.com/delphes/delphes /opt/delphes \
+ && cd /opt/delphes \
+ && make -j"$(nproc)" \
+ && rm -rf /opt/delphes/.git
+
+ # Set environment variables
+ENV DELPHES_DIR=/opt/delphes
+ENV PATH=$DELPHES_DIR:$PATH
+ENV LD_LIBRARY_PATH=$DELPHES_DIR:$LD_LIBRARY_PATH
