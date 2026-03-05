@@ -39,7 +39,7 @@ classifiers = [
     "Typing :: Typed",
 ]
 dependencies = [
-  "root_base>=6.32.2",
+  "root>=6.38.02",
   "aiohttp>=3.9.5",
   "atlasopenmagic>=1.2.0",
   "awkward>=2.6.7",
