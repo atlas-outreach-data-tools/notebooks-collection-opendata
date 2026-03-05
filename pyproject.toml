@@ -40,7 +40,6 @@ classifiers = [
 ]
 dependencies = [
   "libmamba>=2.0.4",
-  "python=3.11",
   "root_base>=6.32.2",
   "aiohttp>=3.9.5",
   "atlasopenmagic>=1.2.0",
