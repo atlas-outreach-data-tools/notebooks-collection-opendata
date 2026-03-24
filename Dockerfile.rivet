@@ -110,7 +110,7 @@ ENV LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${DELPHES_PATH}"
 ENV ROOT_INCLUDE_PATH="${DELPHES_PATH}/external"
 
 # 7. Install Python dependencies needed by CheckMATE and AtlasOpenMagic
-RUN pip3 install --break-system-packages future pyhf scipy matplotlib atlasopenmagic jax jaxlib
+RUN pip3 install --break-system-packages --ignore-installed pyhf scipy matplotlib atlasopenmagic jax jaxlib
 
 # Make sure Rivet & CheckMATE bins are in the path
 ENV PATH="/opt/rivet/local/bin:/opt/packages/checkmate2/bin:${PATH}"
