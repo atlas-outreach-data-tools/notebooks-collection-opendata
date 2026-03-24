@@ -1,0 +1,119 @@
+FROM ubuntu:24.04
+
+# Avoid tzdata interactive prompt
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install dependencies for ROOT, CheckMATE, Rivet, and Python
+RUN apt-get update && \
+    apt-get install -y \
+    wget curl git python3-pip \
+    dpkg-dev cmake g++ gcc binutils libx11-dev libxpm-dev \
+    libxft-dev libxext-dev libssl-dev libpcre3-dev \
+    xlibmesa-glu-dev libglew-dev libftgl-dev \
+    libmysqlclient-dev libfftw3-dev libcfitsio-dev \
+    graphviz-dev libavahi-compat-libdnssd-dev \
+    libldap2-dev python3-numpy libxml2-dev libkrb5-dev \
+    libgsl-dev qtbase5-dev qt5-qmake libtbb-dev xvfb \
+    autoconf automake libtool make zlib1g-dev libzip-dev \
+    tcl tcl-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set aliases/alternatives for python
+RUN update-alternatives --install /usr/bin/python python /usr/bin/python3 1
+
+# 1. Install ROOT 6.26 (pre-compiled for Ubuntu 22.04)
+ENV ROOTSYS=/opt/root
+RUN cd /opt && \
+    wget https://root.cern/download/root_v6.26.18.Linux-ubuntu22-x86_64-gcc11.4.tar.gz && \
+    tar -xzf root_v6.26.18.Linux-ubuntu22-x86_64-gcc11.4.tar.gz && \
+    rm root_v6.26.18.Linux-ubuntu22-x86_64-gcc11.4.tar.gz
+
+# 2. Install Rivet 3.1.9
+WORKDIR /opt/rivet
+RUN wget https://herwig.hepforge.org/downloads/herwig-bootstrap && \
+    chmod +x herwig-bootstrap && \
+    python herwig-bootstrap rivet \
+    --without-herwig \
+    --without-thepeg \
+    --without-gsl \
+    --without-boost \
+    --without-lhapdf \
+    --without-pythia \
+    --without-madgraph \
+    --without-njet \
+    --without-vbfnlo \
+    --without-openloops \
+    --without-evtgen \
+    --yoda-version 1.9.5 \
+    --rivet-version 3.1.9
+
+# Establish Environment paths for Delphes, HepMC, Pythia, CheckMATE
+ENV DELPHES_PATH=/opt/DELPHES/delphes
+ENV HEPMC_PATH=/opt/hepmc
+ENV PYTHIA_PATH=/opt/pythia
+ENV CM_PATH=/opt/CHECKMATE
+ENV MG_PATH=/opt/madgraph/MG5_aMC_v3_5_6
+ENV GZIP_PATH=/usr/lib/x86_64-linux-gnu
+
+# 3. Compile Delphes
+# ROOT needs to be in path essentially:
+ENV PATH="${ROOTSYS}/bin:${PATH}"
+ENV LD_LIBRARY_PATH="${ROOTSYS}/lib"
+ENV PYTHONPATH="${ROOTSYS}/lib"
+
+RUN mkdir -p /opt/DELPHES && cd /opt/DELPHES && \
+    git clone https://github.com/delphes/delphes.git && \
+    cd delphes && \
+    ./configure && \
+    make -j$(nproc)
+
+# 4. Compile HepMC
+RUN mkdir -p ${HEPMC_PATH} && cd ${HEPMC_PATH} && \
+    wget https://hepmc.web.cern.ch/hepmc/releases/hepmc2.06.11.tgz && \
+    tar -zxvf hepmc2.06.11.tgz && \
+    cd HepMC-2.06.11/ && \
+    ./bootstrap && \
+    ./configure --with-momentum=GEV --with-length=MM --prefix=${HEPMC_PATH} && \
+    make -j$(nproc) && \
+    make install
+
+# 5. Compile Pythia 8.245 (Required for CheckMATE)
+RUN mkdir -p ${PYTHIA_PATH} && cd ${PYTHIA_PATH} && \
+    wget https://pythia.org/download/pythia82/pythia8245.tgz && \
+    tar -zxvf pythia8245.tgz && \
+    cd pythia8245/ && \
+    ./configure --with-hepmc2=${HEPMC_PATH} --with-gzip-bin=/usr/bin/ && \
+    make -j$(nproc)
+
+# 5.5 Install MadGraph (Required for CheckMATE)
+RUN mkdir -p /opt/madgraph && cd /opt/madgraph && \
+    wget https://launchpad.net/mg5amcnlo/3.0/3.5.x/+download/MG5_aMC_v3.5.6.tar.gz && \
+    tar -xzf MG5_aMC_v3.5.6.tar.gz
+
+# 6. Install CheckMATE
+RUN mkdir -p /opt/packages && cd /opt/packages && \
+    git clone https://github.com/CheckMATE2/checkmate2.git && \
+    cd checkmate2/ && \
+    autoreconf --force --install && \
+    ./configure --prefix=`pwd` \
+    --with-rootsys=$ROOTSYS/ \
+    --with-delphes=${DELPHES_PATH} \
+    --with-pythia=${PYTHIA_PATH}/pythia8245/ \
+    --with-hepmc=${HEPMC_PATH} \
+    --with-gziplib=${GZIP_PATH} \
+    --with-gzipinc=/usr/include/ \
+    --with-madgraph=${MG_PATH} && \
+    make -j$(nproc)
+
+# Add CheckMATE variables needed for runtime
+ENV LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${DELPHES_PATH}"
+ENV ROOT_INCLUDE_PATH="${DELPHES_PATH}/external"
+
+# 7. Install Python dependencies needed by CheckMATE and AtlasOpenMagic
+RUN pip3 install --break-system-packages future pyhf scipy matplotlib atlasopenmagic jax jaxlib
+
+# Make sure Rivet & CheckMATE bins are in the path
+ENV PATH="/opt/rivet/local/bin:/opt/packages/checkmate2/bin:${PATH}"
+
+WORKDIR /workspace
+CMD ["/bin/bash"]
