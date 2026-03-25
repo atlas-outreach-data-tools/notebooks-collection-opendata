@@ -89,12 +89,12 @@ ENV LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${DELPHES_PATH}" \
     ROOT_INCLUDE_PATH="${DELPHES_PATH}/external"
 
 # 7. Python pkgs
-RUN pip3 install --break-system-packages future pyhf scipy matplotlib atlasopenmagic
+RUN pip install --break-system-packages future pyhf scipy matplotlib atlasopenmagic
 
 # JAX (Alma9-compatible; test wheel)
 RUN git clone https://github.com/jax-ml/jax && cd jax && \
     python build/build.py build --wheels=jaxlib --target_cpu_features=default --verbose && \
-    pip3 install dist/*.whl || echo "JAX wheel may need manual download"
+    pip install dist/*.whl || echo "JAX wheel may need manual download"
 
 # Final PATH
 ENV PATH="/opt/rivet/local/bin:/opt/packages/checkmate2/bin:${PATH}"
