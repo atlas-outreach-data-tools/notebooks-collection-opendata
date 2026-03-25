@@ -28,7 +28,7 @@ RUN cd /opt && \
 WORKDIR /opt/rivet
 RUN wget https://herwig.hepforge.org/downloads/herwig-bootstrap && \
     chmod +x herwig-bootstrap && \
-    pythonherwig-bootstrap rivet \
+    python herwig-bootstrap rivet \
     --without-herwig --without-thepeg --without-gsl --without-boost \
     --without-lhapdf --without-pythia --without-madgraph --without-njet \
     --without-vbfnlo --without-openloops --without-evtgen \
@@ -93,7 +93,7 @@ RUN pip3 install --break-system-packages future pyhf scipy matplotlib atlasopenm
 
 # JAX (Alma9-compatible; test wheel)
 RUN git clone https://github.com/jax-ml/jax && cd jax && \
-    pythonbuild/build.py build --wheels=jaxlib --target_cpu_features=default --verbose && \
+    python build/build.py build --wheels=jaxlib --target_cpu_features=default --verbose && \
     pip3 install dist/*.whl || echo "JAX wheel may need manual download"
 
 # Final PATH
