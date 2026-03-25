@@ -16,6 +16,15 @@ Much of the functionality is the same as in Binder, but with some subtle differe
 ### Run on SWAN
 To use SWAN you need a CERN account. Similar to Binder and Colab, but you have access to more memory and other resources, and faster access to the datasets. If you are new to SWAN, you can use the default environment setup to get running. For more information check out the [SWAN Documentation](https://swan.docs.cern.ch).
 
+### Run on GitHub Codespaces
+To use GitHub Codespaces, you need a GitHub account. Codespaces provides an environment with the repository already set up, similar to myBinder.
+
+Click the **Open in GitHub Codespaces** badge above to create a new Codespace for this repository. You can choose the machine resources, with a monthly free quota provided by GitHub.
+
+Once the environment is ready, you will need to install Python and Jupyter extensions. To do this, open a notebook, click **Select Kernel** in the upper-right corner, and choose **Install/Enable suggested extensions (Python + Jupyter)**. After the installation finishes, go again to **Select Kernel → Python Environments...** and choose the Python environment you want to use. Now you are ready to run the notebooks!
+
+For more information, see the [GitHub Codespaces documentation](https://docs.github.com/en/codespaces).
+
 ### Run in Docker containers
 
 Docker provides a robust platform for developing, sharing, and running applications within containers.
