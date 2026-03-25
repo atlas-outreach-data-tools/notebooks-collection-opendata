@@ -1,0 +1,15 @@
+version: 0.9.3
+inputs:
+  files:
+    - ./OpenEvgenTutorial.ipynb
+    - ./OpenEvgenTutorialDelphes.ipynb
+  directories:
+    - snakemake
+  parameters:
+    input: snakemake/inputs.yaml
+workflow:
+  type: snakemake
+  file: snakemake/Snakefile
+outputs:
+  directories:
+    - results
