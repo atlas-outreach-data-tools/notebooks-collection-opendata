@@ -10,7 +10,7 @@ RUN dnf -y install epel-release dnf-plugins-core && \
     mesa-libGLU-devel glew-devel ftgl-devel \
     fftw-devel cfitsio-devel gsl-devel \
     graphviz-devel openldap-devel krb5-devel libxml2-devel \
-    qt5-qtbase-devel tbb-devel zlib-devel && \
+    qt5-qtbase-devel tbb-devel zlib-devel xxhash-libs xxhash-devel && \
     dnf clean all
 
 # Python alias
