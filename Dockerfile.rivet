@@ -88,9 +88,9 @@ RUN cd /opt/packages/checkmate2 && \
     sed -i '/@extraheader@/i #include "atlas_2l_i3hdm_fakes.h"' tools/fritz/include/analysishandler/AnalysisHandlerATLAS_13TeV.h && \
     # Add to handler source
     sed -i '/@@extracode@@/i \  else if(analysisName == "atlas_2l_i3hdm_fakes")\n    a = new Atlas_2l_i3hdm_fakes();' tools/fritz/src/analysishandler/AnalysisHandlerATLAS_13TeV.cc && \
-    # Add to Makefile.am (find last ATLAS_13TeV .cc line and add after it)
-    LINE_NUM=$(grep -n "ATLAS_13TeV.*\.cc" tools/analysis/Makefile.am | tail -1 | cut -d: -f1) && \
-    sed -i "${LINE_NUM}a\\\tinclude/analyses/ATLAS_13TeV/atlas_2l_i3hdm_fakes.h \\\\\n\tsrc/analyses/ATLAS_13TeV/atlas_2l_i3hdm_fakes.cc" tools/analysis/Makefile.am
+    # Add to Makefile.am
+    echo "libanalyses_la_SOURCES += include/analyses/ATLAS_13TeV/atlas_2l_i3hdm_fakes.h \\" >> tools/analysis/Makefile.am && \
+    echo "src/analyses/ATLAS_13TeV/atlas_2l_i3hdm_fakes.cc" >> tools/analysis/Makefile.am
 
 # 6.6 Build CheckMATE with analysis included
 RUN cd /opt/packages/checkmate2 && \
