@@ -73,7 +73,7 @@ RUN mkdir -p /opt/madgraph && cd /opt/madgraph && \
 # 6. CheckMATE
 RUN mkdir -p /opt/packages && cd /opt/packages && \
     git clone https://github.com/CheckMATE2/checkmate2.git && cd checkmate2 && \
-    git checkout 896c30159f28453c91a6d7e553fec74a04f587df && \
+    git checkout b54f77a1abd4c660d7d62ff3908bfd2978953fbc && \
     autoreconf -fiv && \
     ./configure --prefix=`pwd` \
     --with-rootsys=${ROOTSYS} \
