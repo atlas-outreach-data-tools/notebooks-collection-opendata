@@ -73,7 +73,27 @@ RUN mkdir -p /opt/madgraph && cd /opt/madgraph && \
 # 6. CheckMATE
 RUN mkdir -p /opt/packages && cd /opt/packages && \
     git clone https://github.com/CheckMATE2/checkmate2.git && cd checkmate2 && \
-    git checkout b54f77a1abd4c660d7d62ff3908bfd2978953fbc && \
+    git checkout b54f77a1abd4c660d7d62ff3908bfd2978953fbc
+
+# 6.5 Integrate atlas_2l_i3hdm_fakes analysis (before building)
+RUN cd /opt/packages/checkmate2 && \
+    # Copy analysis files
+    git clone https://github.com/rmahbubani/FakeRateEstimation.git /tmp/analysis && \
+    cp /tmp/analysis/atlas_2l_i3hdm_fakes.h tools/analysis/include/analyses/ATLAS_13TeV/ && \
+    cp /tmp/analysis/atlas_2l_i3hdm_fakes.cc tools/analysis/src/analyses/ATLAS_13TeV/ && \
+    cp /tmp/analysis/atlas_2l_i3hdm_fakes_var.j data/analysis_info/ATLAS_13TeV/ && \
+    # Update analysis registry
+    echo "atlas_2l_i3hdm_fakes 1    dilepton fakes                       300.0            no" >> data/analysis_info/ATLAS_13TeV_analysis.txt && \
+    # Add to handler header
+    sed -i '/@extraheader@/i #include "atlas_2l_i3hdm_fakes.h"' tools/fritz/include/analysishandler/AnalysisHandlerATLAS_13TeV.h && \
+    # Add to handler source
+    sed -i '/@@extracode@@/i \  else if(analysisName == "atlas_2l_i3hdm_fakes")\n    a = new Atlas_2l_i3hdm_fakes();' tools/fritz/src/analysishandler/AnalysisHandlerATLAS_13TeV.cc && \
+    # Add to Makefile.am (find last ATLAS_13TeV .cc line and add after it)
+    LINE_NUM=$(grep -n "ATLAS_13TeV.*\.cc" tools/analysis/Makefile.am | tail -1 | cut -d: -f1) && \
+    sed -i "${LINE_NUM}a\\\tinclude/analyses/ATLAS_13TeV/atlas_2l_i3hdm_fakes.h \\\\\n\tsrc/analyses/ATLAS_13TeV/atlas_2l_i3hdm_fakes.cc" tools/analysis/Makefile.am
+
+# 6.6 Build CheckMATE with analysis included
+RUN cd /opt/packages/checkmate2 && \
     autoreconf -fiv && \
     ./configure --prefix=`pwd` \
     --with-rootsys=${ROOTSYS} \
@@ -83,14 +103,14 @@ RUN mkdir -p /opt/packages && cd /opt/packages && \
     --with-gziplib=${GZIP_PATH} \
     --with-gzipinc=/usr/include \
     --with-madgraph=${MG_PATH} && \
-    make -j$(nproc)
+    make -j$(nproc) && make install
 
-# CheckMATE extras
+# CheckMATE extras (analysis already integrated and compiled above)
 ENV LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${DELPHES_PATH}" \
     ROOT_INCLUDE_PATH="${DELPHES_PATH}/external"
 
 # 7. Python pkgs
-RUN pip install --break-system-packages future pyhf scipy matplotlib atlasopenmagic
+RUN pip install --break-system-packages future pyhf scipy matplotlib spey spey_pyhf atlasopenmagic
 
 # # JAX (Alma9-compatible; test wheel)
 # RUN git clone https://github.com/jax-ml/jax && cd jax && \
