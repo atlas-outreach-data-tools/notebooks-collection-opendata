@@ -83,7 +83,7 @@ RUN cd /opt/packages/checkmate2 && \
     cp /tmp/analysis/atlas_2l_i3hdm_fakes.cc tools/analysis/src/analyses/ATLAS_13TeV/ && \
     cp /tmp/analysis/atlas_2l_i3hdm_fakes_var.j data/analysis_info/ATLAS_13TeV/ && \
     # Update analysis registry
-    echo "atlas_2l_i3hdm_fakes 1    dilepton fakes                       300.0            no" >> data/analysis_info/ATLAS_13TeV_analysis.txt && \
+    echo "atlas_2l_i3hdm_fakes 1    dilepton fakes                       300.0            no" >> data/analysis_info/ATLAS_13TeV_analyses.txt && \
     # Add to handler header
     sed -i '/@extraheader@/i #include "atlas_2l_i3hdm_fakes.h"' tools/fritz/include/analysishandler/AnalysisHandlerATLAS_13TeV.h && \
     # Add to handler source
