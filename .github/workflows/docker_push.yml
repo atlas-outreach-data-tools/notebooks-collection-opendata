@@ -1,70 +1,124 @@
 #
-name: Create and publish a Docker image
+name: Create and publish Docker images
 
 on:
   pull_request:
     branches:
       - 'master'
     paths:
-      - 'Dockerfile'
+      - 'Dockerfile*'
+      - 'Dockerfile.rivet'
       - 'binder/environment.yml'
       - '.github/workflows/docker_push.yml'
 
-# Defines two custom environment variables for the workflow. These are used for the Container registry domain, and a name for the Docker image that this workflow builds.
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
 
-# There is a single job in this workflow. It's configured to run on the latest available version of Ubuntu.
 jobs:
-  build-and-push-image:
+  build-matrix-from-changed-files:
     runs-on: ubuntu-latest
-    # Sets the permissions granted to the `GITHUB_TOKEN` for the actions in this job.
+    name: Build matrix from changed Dockerfiles
+    outputs:
+      environments: ${{ steps.set-matrix.outputs.environments }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Run changed-files to get modified files
+        id: changed-files
+        uses: tj-actions/changed-files@v44
+        with:
+          files: |
+            Dockerfile*
+            binder/environment.yml
+
+      - name: Build matrix array
+        id: set-matrix
+        run: |
+          declare -A seen_envs
+          environments=()
+
+          for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
+            echo "$file was changed"
+
+            if [[ "$file" == "binder/environment.yml" ]] || [[ "$(basename "$file")" == "Dockerfile" ]]; then
+              env_name="base"
+            else
+              # Extract suffix: e.g. Dockerfile.rivet -> rivet
+              env_name=$(basename "$file" | sed 's/Dockerfile\.//')
+            fi
+
+            # Skip if it's already seen
+            if [[ -n "${seen_envs[$env_name]}" ]]; then
+              echo " - $env_name already added, skipping"
+              continue
+            fi
+
+            echo " - $env_name is a new build target, adding it"
+            seen_envs[$env_name]=1
+            environments+=("\"${env_name}\"")
+          done
+
+          # Create comma-separated list formatted as JSON array
+          ENVS_LIST="[$(IFS=,; echo "${environments[*]}")]"
+          echo "environments=$ENVS_LIST" >> $GITHUB_OUTPUT
+
+          echo "The final list is: ${ENVS_LIST}"
+
+  build-and-push-images:
+    needs: build-matrix-from-changed-files
+    if: ${{ needs.build-matrix-from-changed-files.outputs.environments != '[]' && needs.build-matrix-from-changed-files.outputs.environments != '' }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        environment: ${{ fromJson(needs.build-matrix-from-changed-files.outputs.environments) }}
     permissions:
       contents: read
       packages: write
       attestations: write
       id-token: write
-      # 
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      # Uses the `docker/login-action` action to log in to the Container registry registry using the account and password that will publish the packages. Once published, the packages are scoped to the account defined here.
-      - name: Log in to the Container registry
+
+      - name: Log in to Container registry
         uses: docker/login-action@v3.3.0
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      # This step uses [docker/metadata-action](https://github.com/docker/metadata-action#about) to extract tags and labels that will be applied to the specified image. The `id` "meta" allows the output of this step to be referenced in a subsequent step. The `images` value provides the base name for the tags and labels.
+      
       - name: Extract metadata (tags, labels) for Docker
         id: meta
         uses: docker/metadata-action@v5.5.0
         with:
           flavor: |
-            latest=true
-          tags: |
-            type=sha
+            latest=false
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-      # This step uses the `docker/build-push-action` action to build the image, based on your repository's `Dockerfile`. If the build succeeds, it pushes the image to GitHub Packages.
-      # It uses the `context` parameter to define the build's context as the set of files located in the specified path. For more information, see "[Usage](https://github.com/docker/build-push-action#usage)" in the README of the `docker/build-push-action` repository.
-      # It uses the `tags` and `labels` parameters to tag and label the image with the output from the "meta" step.
-      
-      - name: Build and push Docker image - base
+          tags: |
+            type=sha,prefix=${{ matrix.environment }}-
+            type=raw,value=${{ matrix.environment }}-latest,enable=${{ matrix.environment != 'base' }}
+            type=raw,value=latest,enable=${{ matrix.environment == 'base' }}
+            
+      - name: Build and push image
         id: push
         uses: docker/build-push-action@v6.0.0
         with:
           context: .
-          file: Dockerfile
+          file: ${{ matrix.environment == 'base' && 'Dockerfile' || format('Dockerfile.{0}', matrix.environment) }}
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
       
-      # This step generates an artifact attestation for the image, which is an unforgeable statement about where and how it was built. It increases supply chain security for people who consume the image. For more information, see "[AUTOTITLE](/actions/security-guides/using-artifact-attestations-to-establish-provenance-for-builds)." 
-      - name: Generate artifact attestation
+      - name: Generate image attestation
         uses: actions/attest-build-provenance@v1
         with:
-          subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}
+          subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           subject-digest: ${{ steps.push.outputs.digest }}
           push-to-registry: true
-      
