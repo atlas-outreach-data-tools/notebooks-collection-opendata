@@ -1,0 +1,49 @@
+version: 0.9.4
+
+# Single REANA specification that can execute ANY notebook in this repository.
+#
+# The notebook to run is selected through the `notebook` input parameter.
+# When launching via the "Run on REANA" button, override it with the
+# `parameters` query argument of the /launch URL, e.g.:
+#
+#   https://reana.cern.ch/launch
+#     ?url=https://github.com/atlas-outreach-data-tools/notebooks-collection-opendata
+#     &specification=reana.yaml
+#     &name=HZZAnalysis
+#     &parameters=%7B%22notebook%22%3A%2213-TeV-examples%2Fuproot_python%2FHZZAnalysis.ipynb%22%7D
+#
+# where `parameters` is the URL-encoded JSON
+#   {"notebook": "13-TeV-examples/uproot_python/HZZAnalysis.ipynb"}
+
+inputs:
+  parameters:
+    # Path (relative to the repo root) of the notebook to execute.
+    # This default is overridden per-analysis via the launch URL.
+    notebook: 13-TeV-examples/uproot_python/HZZAnalysis.ipynb
+    # Name of the executed (output) notebook written to the workspace.
+    output: result.ipynb
+  directories:
+    # Everything the notebooks might need at run time: the notebooks
+    # themselves, their helper modules (e.g. infofile.py) and images.
+    - 13-TeV-examples
+    - 8-TeV-examples
+    - for-research
+    - images
+
+workflow:
+  type: serial
+  specification:
+    steps:
+      - name: run-notebook
+        # Prebuilt image published by .github/workflows/docker_push.yml.
+        # It already contains papermill + all analysis dependencies.
+        environment: 'ghcr.io/atlas-outreach-data-tools/notebooks-collection-opendata:latest'
+        commands:
+          # Execute the notebook in-place using its own directory as the
+          # working directory so relative imports/paths keep working.
+          - papermill "${notebook}" "${output}" --cwd "$(dirname ${notebook})"
+
+outputs:
+  files:
+    # The fully executed notebook (plots rendered inline).
+    - result.ipynb
