@@ -1,10 +1,9 @@
 version: 0.9.4
 
-# Single REANA specification that can execute ANY notebook in this repository.
+# Generic REANA specification for the uproot_python notebooks.
 #
-# The notebook to run is selected through the `notebook` input parameter.
-# When launching via the "Run on REANA" button, override it with the
-# `parameters` query argument of the /launch URL, e.g.:
+# The notebook to run is selected through the `notebook` input parameter,
+# which the /launch URL overrides with its `parameters` argument:
 #
 #   https://reana.cern.ch/launch
 #     ?url=https://github.com/atlas-outreach-data-tools/notebooks-collection-opendata
@@ -14,20 +13,19 @@ version: 0.9.4
 #
 # where `parameters` is the URL-encoded JSON
 #   {"notebook": "13-TeV-examples/uproot_python/HZZAnalysis.ipynb"}
+#
+# Notebooks with other needs (more memory, other files) have their own
+# specification, for example reana-openevgen.yaml.
 
 inputs:
   parameters:
-    # Path (relative to the repo root) of the notebook to execute.
-    # This default is overridden per-analysis via the launch URL.
+    # Notebook to execute (path relative to the repository root).
     notebook: 13-TeV-examples/uproot_python/HZZAnalysis.ipynb
-    # Name of the executed (output) notebook written to the workspace.
+    # Executed notebook, written to the workspace.
     output: result.ipynb
   directories:
-    # Everything the notebooks might need at run time: the notebooks
-    # themselves, their helper modules (e.g. infofile.py) and images.
-    - 13-TeV-examples
-    - 8-TeV-examples
-    - for-research
+    # Notebooks, helper modules (infofile.py) and images.
+    - 13-TeV-examples/uproot_python
     - images
 
 workflow:
@@ -36,14 +34,14 @@ workflow:
     steps:
       - name: run-notebook
         # Prebuilt image published by .github/workflows/docker_push.yml.
-        # It already contains papermill + all analysis dependencies.
         environment: 'ghcr.io/atlas-outreach-data-tools/notebooks-collection-opendata:latest'
         commands:
-          # Execute the notebook in-place using its own directory as the
-          # working directory so relative imports/paths keep working.
-          - papermill "${notebook}" "${output}" --cwd "$(dirname ${notebook})"
+          # $$ stops REANA from expanding the shell substitution as a
+          # workflow parameter. --cwd keeps the notebook's relative paths valid.
+          - papermill "${notebook}" "${output}" --cwd "$$(dirname "${notebook}")"
+          - jupyter nbconvert --to html "${output}"
 
 outputs:
   files:
-    # The fully executed notebook (plots rendered inline).
     - result.ipynb
+    - result.html
