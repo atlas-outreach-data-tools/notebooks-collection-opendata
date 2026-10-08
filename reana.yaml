@@ -1,0 +1,47 @@
+version: 0.9.4
+
+# Generic REANA specification for the uproot_python notebooks.
+#
+# The notebook to run is selected through the `notebook` input parameter,
+# which the /launch URL overrides with its `parameters` argument:
+#
+#   https://reana.cern.ch/launch
+#     ?url=https://github.com/atlas-outreach-data-tools/notebooks-collection-opendata
+#     &specification=reana.yaml
+#     &name=HZZAnalysis
+#     &parameters=%7B%22notebook%22%3A%2213-TeV-examples%2Fuproot_python%2FHZZAnalysis.ipynb%22%7D
+#
+# where `parameters` is the URL-encoded JSON
+#   {"notebook": "13-TeV-examples/uproot_python/HZZAnalysis.ipynb"}
+#
+# Notebooks with other needs (more memory, other files) have their own
+# specification, for example reana-openevgen.yaml.
+
+inputs:
+  parameters:
+    # Notebook to execute (path relative to the repository root).
+    notebook: 13-TeV-examples/uproot_python/HZZAnalysis.ipynb
+    # Executed notebook, written to the workspace.
+    output: result.ipynb
+  directories:
+    # Notebooks, helper modules (infofile.py) and images.
+    - 13-TeV-examples/uproot_python
+    - images
+
+workflow:
+  type: serial
+  specification:
+    steps:
+      - name: run-notebook
+        # Prebuilt image published by .github/workflows/docker_push.yml.
+        environment: 'ghcr.io/atlas-outreach-data-tools/notebooks-collection-opendata:latest'
+        commands:
+          # $$ stops REANA from expanding the shell substitution as a
+          # workflow parameter. --cwd keeps the notebook's relative paths valid.
+          - papermill "${notebook}" "${output}" --cwd "$$(dirname "${notebook}")"
+          - jupyter nbconvert --to html "${output}"
+
+outputs:
+  files:
+    - result.ipynb
+    - result.html
