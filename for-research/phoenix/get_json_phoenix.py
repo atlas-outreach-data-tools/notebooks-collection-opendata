@@ -202,7 +202,15 @@ class Flat_NtupleSchema(BaseSchema):
         # Initialize an empty dictionary to store the collections
         output = {}
 
-        # Event information - None stored in the ntuple by default
+        # Event information
+        # For data, the relevant event identifiers are run number and event number
+        # For MC, the relevant event identifiers are mc channel number (DSID) and MC event number
+        possible_branches = {
+            'event_number': 'eventNumber',
+            'run_number': 'runNumber',
+            'mc_event_number': 'eventNumber',
+            'channel_number': 'runNumber'
+        }
 
         # Jets, small R and large R - just need the 4-vectors
         for jetCollection in ['jet', 'largeRJet']:
@@ -307,10 +315,10 @@ def json_format(files: list[str],
                     eventList += [ ( int(cut_line.split(',')[0].strip()),int(cut_line.split(',')[1].strip()) ) ]
                 else:
                     print(f'Could not parse {cut_line} in {eventListFile} as run, event pair')
-                if ntuple:
-                    print('FYI: When running on ntuples, run numbers are not available, and event numbers correspond to TTree entry numbers')
-                    # Modify the event list accordingly
-                    eventList = [ (1,x[1]) for x in eventList ]
+                #if ntuple:
+                #    print('FYI: When running on ntuples, run numbers are not available, and event numbers correspond to TTree entry numbers')
+                #    # Modify the event list accordingly
+                #    eventList = [ (1,x[1]) for x in eventList ]
     print(f'Will attempt to output {(len(eventList) if len(eventList)>0 else events)} events')
 
     # Check if this is MC - will do this in not the most elegant way, but can avoid a user setting anything
@@ -330,13 +338,13 @@ def json_format(files: list[str],
     for input_file_name in files:
         # Open the input file using uproot and grab the tree we want
         input_file = uproot.open(input_file_name)
-        ntuple = True if 'analysis' in input_file else False
-        if ntuple and eventListFile is not None:
-            print('FYI: When running on ntuples, run numbers are not available, and event numbers correspond to TTree entry numbers')
-            # Modify the event list accordingly
-            eventList = [ (1,x[1]) for x in eventList ]
-        if ntuple:
-            isMC = 1
+        ntuple = any("analysis" in key.lower() for key in input_file.keys(cycle=False))
+        #if ntuple and eventListFile is not None:
+        #    print('FYI: When running on ntuples, run numbers are not available, and event numbers correspond to TTree entry numbers')
+        #    # Modify the event list accordingly
+        #    eventList = [ (1,x[1]) for x in eventList ]
+        #if ntuple:
+        #    isMC = 1
         tree_name = 'analysis' if ntuple else 'CollectionTree'
         collection_tree = input_file[tree_name]
 
