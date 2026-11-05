@@ -342,18 +342,13 @@ def json_format(files: list[str],
         # Open the input file using uproot and grab the tree we want
         input_file = uproot.open(input_file_name)
         ntuple = any("analysis" in key.lower() for key in input_file.keys(cycle=False))
-        #if ntuple and eventListFile is not None:
-        #    print('FYI: When running on ntuples, run numbers are not available, and event numbers correspond to TTree entry numbers')
-        #    # Modify the event list accordingly
-        #    eventList = [ (1,x[1]) for x in eventList ]
-        #if ntuple:
-        #    isMC = 1
+        
         tree_name = 'analysis' if ntuple else 'CollectionTree'
         collection_tree = input_file[tree_name]
 
         # Check if we're running on MC simulation or data. Not super elegant, but very functional.
         if isMC<0:
-            isMC = 'TruthMuons' in collection_tree.keys()
+            isMC = ('TruthMuons' in collection_tree.keys() or "truth_muon_eta" in collection_tree.keys())
 
         # Not all our track collections have all info. Let's check which ones have the extra info we might want.
         trkCollectionsWithNdofChi2 = []
