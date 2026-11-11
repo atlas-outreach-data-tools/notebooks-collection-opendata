@@ -1,10 +1,8 @@
 name: Python package
 
-on: 
+on:
   push:
   pull_request:
-  schedule:
-    - cron: '* * 1 * *' # runs CI on 1st day of each month
 
 jobs:
 
@@ -14,11 +12,16 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@master
-    - name: Run Ensure Clean Notebook
-      uses: ResearchSoftwareActions/EnsureCleanNotebooksAction@1.1
+      uses: actions/checkout@v4
+    - name: Set up Python
+      uses: actions/setup-python@v5
       with:
-        disable-checks: outputs,execution_count
+        python-version: '3.12'
+    # Fails if any notebook breaks the output policy in .pre-commit-config.yaml.
+    # Fix locally with: pre-commit run --all-files
+    - name: Check notebook outputs follow the policy
+      uses: pre-commit/action@v3.0.1
+
 
 #  codacy-analysis-cli:
 #    name: Codacy Analysis CLI
