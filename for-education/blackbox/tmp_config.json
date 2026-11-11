@@ -1,0 +1,24 @@
+{
+    "samples": {
+        "signal": {
+            "dsids": []
+        },
+        "background": {
+            "dsids": []
+        }
+    },
+
+    "variables": [
+        "lep_pt",
+        "lep_eta",
+        "lep_phi",
+        "lep_e"
+    ],
+
+    "options": {
+        "lumi": 36,
+        "signal_scale_factor": 10,
+        "skim": "noskim",
+        "checkpoint_dir": "blackbox_checkpoint"
+    }
+}
