@@ -1,0 +1,26 @@
+# Notebook output policy (see issue #80):
+#   - figures are kept
+#   - short text outputs (about 1-2 lines) are kept
+#   - long text outputs, tracebacks and warnings are removed
+#   - execution counts, cell ids and run-specific metadata are reset to avoid diff noise
+# To keep a long output on purpose, add the `keep_output` tag to that cell.
+#
+# Setup once per clone:   pip install pre-commit && pre-commit install
+# Clean all notebooks:    pre-commit run --all-files
+repos:
+  - repo: https://github.com/kynan/nbstripout
+    rev: 0.9.1
+    hooks:
+      - id: nbstripout
+        # The options taking several values come first: pre-commit appends the
+        # file names after these args, so the last option must take one value.
+        args:
+          - --keep-output-type
+          - display_data
+          - --drop-output-type
+          - error
+          - stream:stderr
+          - --extra-keys
+          - metadata.widgets cell.metadata.ExecuteTime cell.metadata.scrolled cell.metadata.collapsed
+          - --max-size
+          - "200"

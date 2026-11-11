@@ -68,6 +68,15 @@ Please keep the changes targeted to what was discussed. While making your change
 
 Please do not re-write history! That is, please do not use the rebase command to edit previous commit messages, combine multiple commits into one, or delete or revert commits that are no longer necessary.
 
+To keep notebook diffs easy to review, notebooks are committed with figures and short outputs only (about 1-2 lines of text); long text outputs, errors and warnings are removed. This is checked automatically on every PR. Set it up once in your clone so it is applied when you commit:
+
+```bash
+pip install pre-commit
+pre-commit install
+```
+
+You can also clean all notebooks at any time with `pre-commit run --all-files`. If a long output really needs to stay, add the `keep_output` tag to that cell.
+
 ### 4. Submit a pull request
 Once you are done with your changes, open a PR. We encourage you to open a PR as early in your contributing process as possible so that everyone can see what is being worked on.
 
