@@ -13,10 +13,14 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v4
-    # Fails if any notebook still has outputs or execution counts.
-    # Fix locally with: nbstripout <notebook>.ipynb
-    - name: Check notebooks are stripped
-      uses: kynan/nbstripout@0.9.1
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+    # Fails if any notebook breaks the output policy in .pre-commit-config.yaml.
+    # Fix locally with: pre-commit run --all-files
+    - name: Check notebook outputs follow the policy
+      uses: pre-commit/action@v3.0.1
 
 
 #  codacy-analysis-cli:
