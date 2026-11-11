@@ -1,10 +1,8 @@
 name: Python package
 
-on: 
+on:
   push:
   pull_request:
-  schedule:
-    - cron: '* * 1 * *' # runs CI on 1st day of each month
 
 jobs:
 
@@ -14,11 +12,12 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@master
-    - name: Run Ensure Clean Notebook
-      uses: ResearchSoftwareActions/EnsureCleanNotebooksAction@1.1
-      with:
-        disable-checks: outputs,execution_count
+      uses: actions/checkout@v4
+    # Fails if any notebook still has outputs or execution counts.
+    # Fix locally with: nbstripout <notebook>.ipynb
+    - name: Check notebooks are stripped
+      uses: kynan/nbstripout@0.9.1
+
 
 #  codacy-analysis-cli:
 #    name: Codacy Analysis CLI
