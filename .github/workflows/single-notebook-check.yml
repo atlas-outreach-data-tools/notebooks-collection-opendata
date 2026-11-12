@@ -23,8 +23,8 @@ jobs:
         id: changed-notebooks
         run: |
           echo "Current Branch: ${{ github.ref }}"
-          git fetch origin master
-          DIFF=$(git diff --name-only origin/master...HEAD | grep ipynb || true)
+          git fetch origin main
+          DIFF=$(git diff --name-only origin/main...HEAD | grep ipynb || true)
           if [ -z "$DIFF" ]; then
             echo "No notebooks found"
             echo "notebooks=[]" >> $GITHUB_OUTPUT
