@@ -1,0 +1,30 @@
+# Papermill parameters used when running notebooks in CI.
+#
+# Some notebooks take longer than the 6h limit of GitHub-hosted runners when
+# processing the full dataset. For those, CI overrides the variables defined in
+# the notebook cell tagged `parameters`, so that only a fraction of the data is
+# processed. Readers running the notebooks themselves still get the defaults
+# written in the notebook.
+#
+# Keys are notebook paths relative to the repository root; values are the
+# parameters passed to papermill (equivalent to `papermill -p name value`).
+# Notebooks not listed here run with their own defaults.
+#
+# Every notebook listed here must contain a cell tagged `parameters` that
+# defines all the parameters given, otherwise CI fails (papermill would
+# otherwise inject the values at the top, where the notebook overwrites them).
+#
+# Pick values small enough to stay well within the runner limit, but large
+# enough that fits and plots still have events to work with.
+
+# Timed out (>6h) on full data
+13-TeV-examples/uproot_python/HyyAnalysis.ipynb:
+  fraction: 0.05
+13-TeV-examples/uproot_python/WZ3l_Analysis.ipynb:
+  fraction: 0.05
+13-TeV-examples/uproot_python/ttbar_analysis.ipynb:
+  fraction: 0.02
+
+# Slow (>1h) on full data
+13-TeV-examples/uproot_python/NCB.ipynb:
+  stop_early: 1000
