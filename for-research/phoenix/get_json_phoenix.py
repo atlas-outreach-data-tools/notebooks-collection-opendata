@@ -40,13 +40,13 @@ def create_collection(branch_forms, possible_branches, collection_name, vector_t
     # Loop over possible branches and check if they exist in the input branch forms
     # If they do, add them to the branch_dict
     for key, branch_name in possible_branches.items():
-        if branch_name in branch_forms:
+        if branch_name in branch_forms.keys():
             branch_dict[key] = branch_forms[branch_name]
 
     # If additional branches are provided, check if they exist and add them as well
     if additional_branches:
         for key, branch_name in additional_branches.items():
-            if branch_name in branch_forms:
+            if branch_name in branch_forms.keys():
                 branch_dict[key] = branch_forms[branch_name]
 
     # If we found any valid branches, return a zipped form (possibly with a vector type)
@@ -202,7 +202,19 @@ class Flat_NtupleSchema(BaseSchema):
         # Initialize an empty dictionary to store the collections
         output = {}
 
-        # Event information - None stored in the ntuple by default
+        # Event information
+        # For data, the relevant event identifiers are run number and event number
+        # For MC, the relevant event identifiers are mc channel number (DSID) and MC event number
+        possible_branches = {
+            'event_number': 'eventNumber',
+            'run_number': 'runNumber',
+            'mc_event_number': 'eventNumber',
+            'channel_number': 'channelNumber'
+        }
+
+        event_id = create_collection(branch_forms, possible_branches, 'EventID')
+        if event_id:
+            output['EventID'] = event_id
 
         # Jets, small R and large R - just need the 4-vectors
         for jetCollection in ['jet', 'largeRJet']:
@@ -299,7 +311,6 @@ def json_format(files: list[str],
                 cut_line = the_line.split('#')[0].strip()
                 if len(cut_line.strip())==0:
                     continue
-
                 # See if we used a few obvious dividers
                 if len(cut_line.split())==2:
                     eventList += [ ( int(cut_line.split()[0].strip()),int(cut_line.split()[1].strip()) ) ]
@@ -307,10 +318,10 @@ def json_format(files: list[str],
                     eventList += [ ( int(cut_line.split(',')[0].strip()),int(cut_line.split(',')[1].strip()) ) ]
                 else:
                     print(f'Could not parse {cut_line} in {eventListFile} as run, event pair')
-                if ntuple:
-                    print('FYI: When running on ntuples, run numbers are not available, and event numbers correspond to TTree entry numbers')
-                    # Modify the event list accordingly
-                    eventList = [ (1,x[1]) for x in eventList ]
+                #if ntuple:
+                #    print('FYI: When running on ntuples, run numbers are not available, and event numbers correspond to TTree entry numbers')
+                #    # Modify the event list accordingly
+                #    eventList = [ (1,x[1]) for x in eventList ]
     print(f'Will attempt to output {(len(eventList) if len(eventList)>0 else events)} events')
 
     # Check if this is MC - will do this in not the most elegant way, but can avoid a user setting anything
@@ -330,19 +341,14 @@ def json_format(files: list[str],
     for input_file_name in files:
         # Open the input file using uproot and grab the tree we want
         input_file = uproot.open(input_file_name)
-        ntuple = True if 'analysis' in input_file else False
-        if ntuple and eventListFile is not None:
-            print('FYI: When running on ntuples, run numbers are not available, and event numbers correspond to TTree entry numbers')
-            # Modify the event list accordingly
-            eventList = [ (1,x[1]) for x in eventList ]
-        if ntuple:
-            isMC = 1
+        ntuple = any("analysis" in key.lower() for key in input_file.keys(cycle=False))
+        
         tree_name = 'analysis' if ntuple else 'CollectionTree'
         collection_tree = input_file[tree_name]
 
         # Check if we're running on MC simulation or data. Not super elegant, but very functional.
         if isMC<0:
-            isMC = 'TruthMuons' in collection_tree.keys()
+            isMC = ('TruthMuons' in collection_tree.keys() or "truth_muon_eta" in collection_tree.keys())
 
         # Not all our track collections have all info. Let's check which ones have the extra info we might want.
         trkCollectionsWithNdofChi2 = []
@@ -363,7 +369,9 @@ def json_format(files: list[str],
         # Now turn warnings back on
         warnings.resetwarnings()
 
+
         for processed_events in range(len(events_data)):
+
             # Output in case we're far enough along
             if (processed_events+1)%100==0:
                 print(f'Processed {processed_events} events so far')
@@ -372,25 +380,21 @@ def json_format(files: list[str],
             if skip>0:
                 skip -= 1
                 continue
+            
+            if 'EventID' in events_data.fields:
+                event_id = events_data['EventID'][processed_events]
+                # Some MCs have mc_event_number zero for all event, this results in the script running forever
+                # Let's avoid that
+                event_number = event_id.mc_event_number if (isMC>0 and event_id.mc_event_number!=0) else event_id.event_number
 
-            if ntuple:
+                # In MC simulation, the run number indicates the conditions used for simulation
+                # The channel number is the dataset ID, which is more intuitive
+                run_number = event_id.channel_number if isMC>0 else event_id.run_number
+            else:
+                # Treat as ntuple if 'EventID' is not found
+                print("EventID not found in events_data, treating as ntuple.")
                 event_number = processed_events
                 run_number = 1
-            else:
-                if 'EventID' in events_data.fields:
-                    event_id = events_data['EventID'][processed_events]
-                    # Some MCs have mc_event_number zero for all event, this results in the script running forever
-                    # Let's avoid that
-                    event_number = event_id.mc_event_number if (isMC>0 and event_id.mc_event_number!=0) else event_id.event_number
-
-                    # In MC simulation, the run number indicates the conditions used for simulation
-                    # The channel number is the dataset ID, which is more intuitive
-                    run_number = event_id.channel_number if isMC>0 else event_id.run_number
-                else:
-                    # Treat as ntuple if 'EventID' is not found
-                    print("EventID not found in events_data, treating as ntuple.")
-                    event_number = processed_events
-                    run_number = 1
 
             # If we are using a list, check if the event is in our list
             if len(eventList)>0 and (run_number,event_number) not in eventList:
