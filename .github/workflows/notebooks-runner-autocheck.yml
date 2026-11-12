@@ -101,6 +101,7 @@ jobs:
   run-notebooks-8-cpp:
     needs: find-notebooks
     runs-on: ubuntu-22.04
+    timeout-minutes: 120
     container:
       image: ghcr.io/atlas-outreach-data-tools/notebooks-collection-opendata:latest
     if: ${{ needs.find-notebooks.result == 'success' && needs.find-notebooks.outputs.NOTEBOOKS8_cpp != '[]' }}
@@ -114,8 +115,9 @@ jobs:
 
       - name: Run notebook with Papermill
         run: |
+          python .github/scripts/ci_params.py "${{ matrix.notebook }}" "$RUNNER_TEMP/ci-params.yml"
           cd $(dirname ${{ matrix.notebook }})
-          papermill --log-level ERROR $(basename ${{ matrix.notebook }}) /dev/null
+          papermill --log-level ERROR -f "$RUNNER_TEMP/ci-params.yml" $(basename ${{ matrix.notebook }}) /dev/null
 
       - name: Output result
         if: always()
@@ -136,6 +138,7 @@ jobs:
   run-notebooks-8-python:
     needs: find-notebooks
     runs-on: ubuntu-22.04
+    timeout-minutes: 120
     container:
       image: ghcr.io/atlas-outreach-data-tools/notebooks-collection-opendata:latest
     if: ${{ needs.find-notebooks.result == 'success' && needs.find-notebooks.outputs.NOTEBOOKS8_python != '[]' }}
@@ -149,8 +152,9 @@ jobs:
 
       - name: Run notebook with Papermill
         run: |
+          python .github/scripts/ci_params.py "${{ matrix.notebook }}" "$RUNNER_TEMP/ci-params.yml"
           cd $(dirname ${{ matrix.notebook }})
-          papermill --log-level ERROR $(basename ${{ matrix.notebook }}) /dev/null
+          papermill --log-level ERROR -f "$RUNNER_TEMP/ci-params.yml" $(basename ${{ matrix.notebook }}) /dev/null
 
       - name: Output result
         if: always()
@@ -170,6 +174,7 @@ jobs:
   run-notebooks-13-cpp:
     needs: find-notebooks
     runs-on: ubuntu-22.04
+    timeout-minutes: 120
     container:
       image: ghcr.io/atlas-outreach-data-tools/notebooks-collection-opendata:latest
     if: ${{ needs.find-notebooks.result == 'success' && needs.find-notebooks.outputs.NOTEBOOKS13_cpp != '[]' }}
@@ -183,8 +188,9 @@ jobs:
 
       - name: Run notebook with Papermill
         run: |
+          python .github/scripts/ci_params.py "${{ matrix.notebook }}" "$RUNNER_TEMP/ci-params.yml"
           cd $(dirname ${{ matrix.notebook }})
-          papermill --log-level ERROR $(basename ${{ matrix.notebook }}) /dev/null
+          papermill --log-level ERROR -f "$RUNNER_TEMP/ci-params.yml" $(basename ${{ matrix.notebook }}) /dev/null
 
       - name: Output result
         if: always()
@@ -204,6 +210,7 @@ jobs:
   run-notebooks-13-python:
     needs: find-notebooks
     runs-on: ubuntu-22.04
+    timeout-minutes: 120
     container:
       image: ghcr.io/atlas-outreach-data-tools/notebooks-collection-opendata:latest
     if: ${{ needs.find-notebooks.result == 'success' && needs.find-notebooks.outputs.NOTEBOOKS13_python != '[]' }}
@@ -217,8 +224,9 @@ jobs:
 
       - name: Run notebook with Papermill
         run: |
+          python .github/scripts/ci_params.py "${{ matrix.notebook }}" "$RUNNER_TEMP/ci-params.yml"
           cd $(dirname ${{ matrix.notebook }})
-          papermill --log-level ERROR $(basename ${{ matrix.notebook }}) /dev/null
+          papermill --log-level ERROR -f "$RUNNER_TEMP/ci-params.yml" $(basename ${{ matrix.notebook }}) /dev/null
 
       - name: Output result
         if: always()
@@ -238,6 +246,7 @@ jobs:
   run-notebooks-13-uproot:
     needs: find-notebooks
     runs-on: ubuntu-22.04
+    timeout-minutes: 120
     container:
       image: ghcr.io/atlas-outreach-data-tools/notebooks-collection-opendata:latest
     if: ${{ needs.find-notebooks.result == 'success' && needs.find-notebooks.outputs.NOTEBOOKS13_uproot != '[]' }}
@@ -251,8 +260,9 @@ jobs:
 
       - name: Run notebook with Papermill
         run: |
+          python .github/scripts/ci_params.py "${{ matrix.notebook }}" "$RUNNER_TEMP/ci-params.yml"
           cd $(dirname ${{ matrix.notebook }})
-          papermill --log-level ERROR $(basename ${{ matrix.notebook }}) /dev/null
+          papermill --log-level ERROR -f "$RUNNER_TEMP/ci-params.yml" $(basename ${{ matrix.notebook }}) /dev/null
 
       - name: Output result
         if: always()
@@ -272,6 +282,7 @@ jobs:
   run-notebooks-13-rdataframe:
     needs: find-notebooks
     runs-on: ubuntu-22.04
+    timeout-minutes: 120
     container:
       image: ghcr.io/atlas-outreach-data-tools/notebooks-collection-opendata:latest
     if: ${{ needs.find-notebooks.result == 'success' && needs.find-notebooks.outputs.NOTEBOOKS13_rdataframe != '[]' }}
@@ -285,8 +296,9 @@ jobs:
 
       - name: Run notebook with Papermill
         run: |
+          python .github/scripts/ci_params.py "${{ matrix.notebook }}" "$RUNNER_TEMP/ci-params.yml"
           cd $(dirname ${{ matrix.notebook }})
-          papermill --log-level ERROR $(basename ${{ matrix.notebook }}) /dev/null
+          papermill --log-level ERROR -f "$RUNNER_TEMP/ci-params.yml" $(basename ${{ matrix.notebook }}) /dev/null
 
       - name: Output result
         if: always()
@@ -306,6 +318,7 @@ jobs:
   run-notebooks-research:
     needs: find-notebooks
     runs-on: ubuntu-22.04
+    timeout-minutes: 120
     container:
       image: ghcr.io/atlas-outreach-data-tools/notebooks-collection-opendata:latest
     if: ${{ needs.find-notebooks.result == 'success' && needs.find-notebooks.outputs.NOTEBOOKS_research != '[]' }}
@@ -319,8 +332,9 @@ jobs:
 
       - name: Run notebook with Papermill
         run: |
+          python .github/scripts/ci_params.py "${{ matrix.notebook }}" "$RUNNER_TEMP/ci-params.yml"
           cd $(dirname ${{ matrix.notebook }})
-          papermill --log-level ERROR $(basename ${{ matrix.notebook }}) /dev/null
+          papermill --log-level ERROR -f "$RUNNER_TEMP/ci-params.yml" $(basename ${{ matrix.notebook }}) /dev/null
 
       - name: Output result
         if: always()
