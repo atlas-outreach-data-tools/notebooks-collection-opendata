@@ -1,0 +1,33 @@
+{
+    "samples": {
+        "signal": {
+            "dsids": [301209]
+        },
+        "background": {
+            "dsids": [700323, 700324, 700325, 700470, 700471, 700472, 410219, 700589, 700602, 601624, 601628]
+        }
+    },
+
+    "variables": [
+        "lep_pt",
+        "lep_eta",
+        "lep_phi",
+        "lep_e",
+        "lep_n",
+
+        "jet_pt",
+        "jet_eta",
+        "jet_phi",
+        "jet_e",
+        "jet_n",
+
+        "met"
+    ],
+
+    "options": {
+        "lumi": 11,
+        "signal_scale_factor": 1000,
+        "skim": "noskim",
+        "checkpoint_dir": "Zprime_blackbox_checkpoint"
+    }
+}
