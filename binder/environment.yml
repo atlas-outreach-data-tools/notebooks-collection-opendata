@@ -25,7 +25,7 @@ dependencies:
     - papermill>=2.6.0
     - pip>=24.2
     - scikit-learn>=1.5.1
-    - uproot==5.7.7  # 5.7.8 batches basket-key reads that EOS XRootD rejects ("Read vector is invalid")
+    - uproot==5.7.5  # 5.7.6-5.7.7: XRootD offset TypeError; 5.7.8: EOS rejects batched basket-key reads
     - uproot3>=3.14.4
     - fsspec-xrootd>=0.5.1
     - jupyterlab_latex~=3.1.0
