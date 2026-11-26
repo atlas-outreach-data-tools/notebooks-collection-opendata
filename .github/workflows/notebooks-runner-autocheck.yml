@@ -3,7 +3,7 @@ name: Run Jupyter Notebooks
 on:
   push:
     branches:
-        - 'master'
+        - 'main'
         - 'single-test'
     paths-ignore:
       - 'README.md'
@@ -11,6 +11,7 @@ on:
       - '.github/workflows/docker_push.yml'
   schedule:
     - cron: '0 0 * * 3'
+  workflow_dispatch:
 
 jobs:
   find-notebooks:
@@ -385,7 +386,7 @@ jobs:
                 else
                   OUT="❌"
                 fi
-                prefix="https://github.com/atlas-outreach-data-tools/notebooks-collection-opendata/tree/master/"
+                prefix="https://github.com/atlas-outreach-data-tools/notebooks-collection-opendata/tree/main/"
                 URL=$(echo "${NOTEBOOK/\.\//"$prefix"}")
 
                 section=$(echo "$NOTEBOOK" | cut -d'/' -f3)
