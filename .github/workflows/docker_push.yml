@@ -4,7 +4,7 @@ name: Create and publish a Docker image
 on:
   pull_request:
     branches:
-      - 'master'
+      - 'main'
     paths:
       - 'Dockerfile'
       - 'binder/environment.yml'
