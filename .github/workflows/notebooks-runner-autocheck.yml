@@ -28,7 +28,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -110,7 +110,7 @@ jobs:
         notebook: ${{ fromJson(needs.find-notebooks.outputs.NOTEBOOKS8_cpp) }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Run notebook with Papermill
         run: |
@@ -145,7 +145,7 @@ jobs:
         notebook: ${{ fromJson(needs.find-notebooks.outputs.NOTEBOOKS8_python) }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Run notebook with Papermill
         run: |
@@ -179,7 +179,7 @@ jobs:
         notebook: ${{ fromJson(needs.find-notebooks.outputs.NOTEBOOKS13_cpp) }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Run notebook with Papermill
         run: |
@@ -213,7 +213,7 @@ jobs:
         notebook: ${{ fromJson(needs.find-notebooks.outputs.NOTEBOOKS13_python) }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Run notebook with Papermill
         run: |
@@ -247,7 +247,7 @@ jobs:
         notebook: ${{ fromJson(needs.find-notebooks.outputs.NOTEBOOKS13_uproot) }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Run notebook with Papermill
         run: |
@@ -281,7 +281,7 @@ jobs:
         notebook: ${{ fromJson(needs.find-notebooks.outputs.NOTEBOOKS13_rdataframe) }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Run notebook with Papermill
         run: |
@@ -315,7 +315,7 @@ jobs:
         notebook: ${{ fromJson(needs.find-notebooks.outputs.NOTEBOOKS_research) }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Run notebook with Papermill
         run: |
@@ -343,7 +343,7 @@ jobs:
     if: always()
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Create downloaded-artifacts directory
         run: mkdir -p ./artifacts
