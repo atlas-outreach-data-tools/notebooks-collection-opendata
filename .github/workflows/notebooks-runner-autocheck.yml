@@ -28,7 +28,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -110,7 +110,7 @@ jobs:
         notebook: ${{ fromJson(needs.find-notebooks.outputs.NOTEBOOKS8_cpp) }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Run notebook with Papermill
         run: |
@@ -127,7 +127,7 @@ jobs:
 
       - name: Upload results
         if: always()
-        uses: actions/upload-artifact@v4.4.0
+        uses: actions/upload-artifact@v7.0.2
         with:
           name: result_run-notebooks-8-cpp-${{ env.sanitized_name }}.txt
           path: ./artifacts
@@ -145,7 +145,7 @@ jobs:
         notebook: ${{ fromJson(needs.find-notebooks.outputs.NOTEBOOKS8_python) }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Run notebook with Papermill
         run: |
@@ -162,7 +162,7 @@ jobs:
 
       - name: Upload results
         if: always()
-        uses: actions/upload-artifact@v4.4.0
+        uses: actions/upload-artifact@v7.0.2
         with:
           name: result_run-notebooks-8-python-${{ env.sanitized_name }}.txt
           path: ./artifacts
@@ -179,7 +179,7 @@ jobs:
         notebook: ${{ fromJson(needs.find-notebooks.outputs.NOTEBOOKS13_cpp) }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Run notebook with Papermill
         run: |
@@ -196,7 +196,7 @@ jobs:
 
       - name: Upload results
         if: always()
-        uses: actions/upload-artifact@v4.4.0
+        uses: actions/upload-artifact@v7.0.2
         with:
           name: result_run-notebooks-13-cpp-${{ env.sanitized_name }}.txt
           path: ./artifacts
@@ -213,7 +213,7 @@ jobs:
         notebook: ${{ fromJson(needs.find-notebooks.outputs.NOTEBOOKS13_python) }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Run notebook with Papermill
         run: |
@@ -230,7 +230,7 @@ jobs:
 
       - name: Upload results
         if: always()
-        uses: actions/upload-artifact@v4.4.0
+        uses: actions/upload-artifact@v7.0.2
         with:
           name: result_run-notebooks-13-python-${{ env.sanitized_name }}.txt
           path: ./artifacts
@@ -247,7 +247,7 @@ jobs:
         notebook: ${{ fromJson(needs.find-notebooks.outputs.NOTEBOOKS13_uproot) }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Run notebook with Papermill
         run: |
@@ -264,7 +264,7 @@ jobs:
 
       - name: Upload results
         if: always()
-        uses: actions/upload-artifact@v4.4.0
+        uses: actions/upload-artifact@v7.0.2
         with:
           name: result_run-notebooks-13-uproot-${{ env.sanitized_name }}.txt
           path: ./artifacts
@@ -281,7 +281,7 @@ jobs:
         notebook: ${{ fromJson(needs.find-notebooks.outputs.NOTEBOOKS13_rdataframe) }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Run notebook with Papermill
         run: |
@@ -298,7 +298,7 @@ jobs:
 
       - name: Upload results
         if: always()
-        uses: actions/upload-artifact@v4.4.0
+        uses: actions/upload-artifact@v7.0.2
         with:
           name: result_run-notebooks-13-rdataframe-${{ env.sanitized_name }}.txt
           path: ./artifacts
@@ -315,7 +315,7 @@ jobs:
         notebook: ${{ fromJson(needs.find-notebooks.outputs.NOTEBOOKS_research) }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Run notebook with Papermill
         run: |
@@ -332,7 +332,7 @@ jobs:
 
       - name: Upload results
         if: always()
-        uses: actions/upload-artifact@v4.4.0
+        uses: actions/upload-artifact@v7.0.2
         with:
           name: result_run-notebooks-13-research-${{ env.sanitized_name }}.txt
           path: ./artifacts
@@ -343,14 +343,14 @@ jobs:
     if: always()
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Create downloaded-artifacts directory
         run: mkdir -p ./artifacts
 
 
       - name: Download all artifacts
-        uses: actions/download-artifact@v4.1.8
+        uses: actions/download-artifact@v8.0.2
         with:
           path: ./artifacts
       
