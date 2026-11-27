@@ -1,0 +1,35 @@
+name: blackbox
+
+python: 3.11.11
+
+pip:
+  - atlasopenmagic==1.10.0
+  - awkward==2.13.0
+  - awkward_cpp==56
+  - certifi==2026.7.22
+  - charset-normalizer==3.5.1
+  - contourpy==1.3.3
+  - cramjam==2.12.1
+  - cycler==0.12.1
+  - fonttools==4.63.0
+  - fsspec==2026.7.0
+  - fsspec_xrootd==0.5.5
+  - idna==3.19
+  - importlib_metadata==9.0.0
+  - kiwisolver==1.5.0
+  - matplotlib==3.11.1
+  - numpy==2.4.6
+  - packaging==26.3
+  - pillow==12.3.0
+  - pyarrow==25.0.1
+  - pyparsing==3.3.2
+  - python-dateutil==2.9.0.post0
+  - PyYAML==6.0.3
+  - requests==2.34.2
+  - six==1.17.0
+  - tqdm==4.70.0
+  - uproot==5.7.6
+  - urllib3==2.7.0
+  - xrootd==6.1.1
+  - xxhash==4.0.1
+  - zipp==4.1.0
