@@ -101,7 +101,6 @@ jobs:
   run-notebooks-8-cpp:
     needs: find-notebooks
     runs-on: ubuntu-22.04
-    timeout-minutes: 120
     container:
       image: ghcr.io/atlas-outreach-data-tools/notebooks-collection-opendata:latest
     if: ${{ needs.find-notebooks.result == 'success' && needs.find-notebooks.outputs.NOTEBOOKS8_cpp != '[]' }}
@@ -138,7 +137,6 @@ jobs:
   run-notebooks-8-python:
     needs: find-notebooks
     runs-on: ubuntu-22.04
-    timeout-minutes: 120
     container:
       image: ghcr.io/atlas-outreach-data-tools/notebooks-collection-opendata:latest
     if: ${{ needs.find-notebooks.result == 'success' && needs.find-notebooks.outputs.NOTEBOOKS8_python != '[]' }}
@@ -174,7 +172,6 @@ jobs:
   run-notebooks-13-cpp:
     needs: find-notebooks
     runs-on: ubuntu-22.04
-    timeout-minutes: 120
     container:
       image: ghcr.io/atlas-outreach-data-tools/notebooks-collection-opendata:latest
     if: ${{ needs.find-notebooks.result == 'success' && needs.find-notebooks.outputs.NOTEBOOKS13_cpp != '[]' }}
@@ -210,7 +207,6 @@ jobs:
   run-notebooks-13-python:
     needs: find-notebooks
     runs-on: ubuntu-22.04
-    timeout-minutes: 120
     container:
       image: ghcr.io/atlas-outreach-data-tools/notebooks-collection-opendata:latest
     if: ${{ needs.find-notebooks.result == 'success' && needs.find-notebooks.outputs.NOTEBOOKS13_python != '[]' }}
@@ -246,7 +242,6 @@ jobs:
   run-notebooks-13-uproot:
     needs: find-notebooks
     runs-on: ubuntu-22.04
-    timeout-minutes: 120
     container:
       image: ghcr.io/atlas-outreach-data-tools/notebooks-collection-opendata:latest
     if: ${{ needs.find-notebooks.result == 'success' && needs.find-notebooks.outputs.NOTEBOOKS13_uproot != '[]' }}
@@ -282,7 +277,6 @@ jobs:
   run-notebooks-13-rdataframe:
     needs: find-notebooks
     runs-on: ubuntu-22.04
-    timeout-minutes: 120
     container:
       image: ghcr.io/atlas-outreach-data-tools/notebooks-collection-opendata:latest
     if: ${{ needs.find-notebooks.result == 'success' && needs.find-notebooks.outputs.NOTEBOOKS13_rdataframe != '[]' }}
@@ -318,7 +312,6 @@ jobs:
   run-notebooks-research:
     needs: find-notebooks
     runs-on: ubuntu-22.04
-    timeout-minutes: 120
     container:
       image: ghcr.io/atlas-outreach-data-tools/notebooks-collection-opendata:latest
     if: ${{ needs.find-notebooks.result == 'success' && needs.find-notebooks.outputs.NOTEBOOKS_research != '[]' }}
