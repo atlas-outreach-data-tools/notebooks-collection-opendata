@@ -1,4 +1,5 @@
-FROM quay.io/jupyter/scipy-notebook:python-3.11.8
+# Keep the Python version in line with binder/environment.yml.
+FROM quay.io/jupyter/scipy-notebook:python-3.13.18
 LABEL author="ATLAS Open Data Team @ CERN 2024"
 LABEL maintainer="Giovanni Guerrieri - giovanni.guerrieri@cern.ch"
 WORKDIR /opt/app
@@ -14,6 +15,10 @@ RUN conda install -n base -c conda-forge mamba && \
 RUN mamba env update -n base -f environment.yml && \
     conda clean -afy && \
     rm -rf /opt/conda/pkgs/*
+
+# Fail the build if the compiled packages don't load with the installed NumPy,
+# rather than letting the notebooks fail in CI.
+RUN python -c "import numpy, scipy.spatial, matplotlib.pyplot, pandas, sklearn, numba, lmfit, awkward, uproot, vector, ROOT; print('numpy', numpy.__version__)"
 
 # Expose port 8888 for Jupyter Lab
 EXPOSE 8888
