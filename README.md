@@ -3,7 +3,7 @@
 A set of multiple notebooks using 8 TeV and 13 TeV ATLAS Open Data datasets.
 
 ## Running the notebooks
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atlas-outreach-data-tools/notebooks-collection-opendata/HEAD)  [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/atlas-outreach-data-tools/notebooks-collection-opendata.git)  [![SWAN](https://swan.web.cern.ch/sites/swan.web.cern.ch/files/pictures/open_in_swan.svg)](https://cern.ch/swanserver/cgi-bin/go?projurl=https://github.com/atlas-outreach-data-tools/notebooks-collection-opendata.git) [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/atlas-outreach-data-tools/notebooks-collection-opendata)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atlas-outreach-data-tools/notebooks-collection-opendata/HEAD)  [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/atlas-outreach-data-tools/notebooks-collection-opendata.git)  [![SWAN](https://swan.web.cern.ch/sites/swan.web.cern.ch/files/pictures/open_in_swan.svg)](https://cern.ch/swanserver/cgi-bin/go?projurl=https://github.com/atlas-outreach-data-tools/notebooks-collection-opendata.git) [![Open in GitHub Codespaces](https://img.shields.io/badge/open-GH_Codespaces-blue?logo=github)](https://codespaces.new/atlas-outreach-data-tools/notebooks-collection-opendata)
 
 ### Run on Binder
 For more complex needs, such as running multiple notebooks review the [Binder Documentation](https://mybinder.readthedocs.io/en/latest/#) for guidance on setting up a more personalized Binder environment.
