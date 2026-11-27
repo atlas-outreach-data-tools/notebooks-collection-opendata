@@ -252,7 +252,7 @@ class Flat_NtupleSchema(BaseSchema):
             'z0': 'lep_z0',
             'lep_type': 'lep_type',
             'charge': 'lep_charge',
-            'tight': 'lep_isTight'
+            'tight': 'lep_isTightID'
         }
         leptons = create_collection(branch_forms, possible_branches, 'Leptons', 'PtEtaPhiELorentzVector')
         if leptons:

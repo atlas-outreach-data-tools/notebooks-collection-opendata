@@ -1,12 +1,16 @@
 name: Check Jupyter Notebook
 
 on:
-  push:
+  # On pull requests the paths filter looks at the whole PR diff, so the check
+  # also runs after pushes that change no notebooks themselves (e.g. merging main).
+  pull_request:
     paths:
       - 13-TeV-examples/**/*.ipynb
       - 8-TeV-examples/**/*.ipynb
       - for-research/**/*.ipynb
       - .github/workflows/single-notebook-check.yml
+  # Manual runs check the notebooks the chosen branch changes compared with main.
+  workflow_dispatch:
 
 jobs:
   detect-changes:
@@ -15,7 +19,7 @@ jobs:
       notebooks: ${{ steps.changed-notebooks.outputs.notebooks }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
@@ -23,8 +27,8 @@ jobs:
         id: changed-notebooks
         run: |
           echo "Current Branch: ${{ github.ref }}"
-          git fetch origin master
-          DIFF=$(git diff --name-only origin/master...HEAD | grep ipynb || true)
+          git fetch origin main
+          DIFF=$(git diff --name-only origin/main...HEAD | grep ipynb || true)
           if [ -z "$DIFF" ]; then
             echo "No notebooks found"
             echo "notebooks=[]" >> $GITHUB_OUTPUT
@@ -48,7 +52,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Set up Jupyter kernel
         run: |
