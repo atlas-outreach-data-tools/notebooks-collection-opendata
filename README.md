@@ -3,7 +3,7 @@
 A set of multiple notebooks using 8 TeV and 13 TeV ATLAS Open Data datasets.
 
 ## Running the notebooks
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atlas-outreach-data-tools/notebooks-collection-opendata/HEAD)  [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/atlas-outreach-data-tools/notebooks-collection-opendata.git)  [![SWAN](https://swan.web.cern.ch/sites/swan.web.cern.ch/files/pictures/open_in_swan.svg)](https://cern.ch/swanserver/cgi-bin/go?projurl=https://github.com/atlas-outreach-data-tools/notebooks-collection-opendata.git)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atlas-outreach-data-tools/notebooks-collection-opendata/HEAD)  [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/atlas-outreach-data-tools/notebooks-collection-opendata.git)  [![SWAN](https://swan.web.cern.ch/sites/swan.web.cern.ch/files/pictures/open_in_swan.svg)](https://cern.ch/swanserver/cgi-bin/go?projurl=https://github.com/atlas-outreach-data-tools/notebooks-collection-opendata.git) [![Open in GitHub Codespaces](https://img.shields.io/badge/open-GH_Codespaces-blue?logo=github)](https://codespaces.new/atlas-outreach-data-tools/notebooks-collection-opendata)
 
 ### Run on Binder
 For more complex needs, such as running multiple notebooks review the [Binder Documentation](https://mybinder.readthedocs.io/en/latest/#) for guidance on setting up a more personalized Binder environment.
@@ -15,6 +15,15 @@ Much of the functionality is the same as in Binder, but with some subtle differe
 
 ### Run on SWAN
 To use SWAN you need a CERN account. Similar to Binder and Colab, but you have access to more memory and other resources, and faster access to the datasets. If you are new to SWAN, you can use the default environment setup to get running. For more information check out the [SWAN Documentation](https://swan.docs.cern.ch).
+
+### Run on GitHub Codespaces
+To use GitHub Codespaces, you need a GitHub account. Codespaces provides an environment with the repository already set up, similar to myBinder.
+
+Click the **Open in GitHub Codespaces** badge above to create a new Codespace for this repository. You can choose the machine resources, with a monthly free quota provided by GitHub.
+
+Once the environment is ready, you will need to install Python and Jupyter extensions. To do this, open a notebook, click **Select Kernel** in the upper-right corner, and choose **Install/Enable suggested extensions (Python + Jupyter)**. After the installation finishes, go again to **Select Kernel → Python Environments...** and choose the Python environment you want to use. Now you are ready to run the notebooks!
+
+For more information, see the [GitHub Codespaces documentation](https://docs.github.com/en/codespaces).
 
 ### Run in Docker containers
 
@@ -58,6 +67,15 @@ Make sure to keep the fork up to date (or develop from a branch based on the mai
 Please keep the changes targeted to what was discussed. While making your changes, commit often and write explanatory commit messages.
 
 Please do not re-write history! That is, please do not use the rebase command to edit previous commit messages, combine multiple commits into one, or delete or revert commits that are no longer necessary.
+
+To keep notebook diffs easy to review, notebooks are committed with figures and short outputs only (about 1-2 lines of text); long text outputs, errors and warnings are removed. This is checked automatically on every PR. Set it up once in your clone so it is applied when you commit:
+
+```bash
+pip install pre-commit
+pre-commit install
+```
+
+You can also clean all notebooks at any time with `pre-commit run --all-files`. If a long output really needs to stay, add the `keep_output` tag to that cell.
 
 ### 4. Submit a pull request
 Once you are done with your changes, open a PR. We encourage you to open a PR as early in your contributing process as possible so that everyone can see what is being worked on.

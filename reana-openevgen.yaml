@@ -1,0 +1,40 @@
+version: 0.9.4
+
+# REANA specification that executes OpenEvgenTutorial with papermill.
+#
+# Launch with:
+#   https://reana.cern.ch/launch
+#     ?url=https://github.com/atlas-outreach-data-tools/notebooks-collection-opendata
+#     &specification=reana-openevgen.yaml
+#     &name=OpenEvgenTutorial
+
+inputs:
+  parameters:
+    # Notebook to execute (path relative to the repository root).
+    notebook: for-research/OpenEvgenTutorial.ipynb
+    # Executed notebook and its HTML export, written to the workspace.
+    output: result.ipynb
+  files:
+    - for-research/OpenEvgenTutorial.ipynb
+workflow:
+  type: serial
+  specification:
+    steps:
+      - name: run-notebook
+        # Prebuilt image published by .github/workflows/docker_push.yml.
+        environment: 'ghcr.io/atlas-outreach-data-tools/notebooks-collection-opendata:latest'
+        # OpenEvgen was OOMKilled at the 3Gi site default.
+        kubernetes_memory_limit: '8Gi'
+        commands:
+          # $$ stops REANA from expanding the shell substitution as a
+          # workflow parameter. --cwd keeps the notebook's relative paths valid.
+          - >-
+            conda run --no-capture-output -n base
+            papermill "${notebook}" "${output}"
+            --cwd "$$(dirname "${notebook}")"
+          - jupyter nbconvert --to html "${output}"
+
+outputs:
+  files:
+    - result.ipynb
+    - result.html
