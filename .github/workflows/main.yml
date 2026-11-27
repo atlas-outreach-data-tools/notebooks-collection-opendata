@@ -16,7 +16,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v7
       with:
-        python-version: '3.12'
+        python-version: '3.13'
     # Fails if any notebook breaks the output policy in .pre-commit-config.yaml.
     # Fix locally with: pre-commit run --all-files
     - name: Check notebook outputs follow the policy
