@@ -15,15 +15,29 @@
 # otherwise inject the values at the top, where the notebook overwrites them).
 #
 # Pick values small enough to stay well within the runner limit, but large
-# enough that fits and plots still have events to work with.
+# enough that fits and plots still have events to work with. The timings below
+# are for the main processing cell, reading over XRootD on GitHub runners
+# (November 2026); the PR check logs each notebook's output, so the per-file
+# times printed by the notebooks show how far a slow job got.
 
-# Timed out (>6h) on full data
-13-TeV-examples/uproot_python/HyyAnalysis.ipynb:
+# Main loop did not finish in 6h at fraction 1 (cancelled after 5h20).
+# An earlier cell reading one ttbar file in full (~40 min) is not affected.
+13-TeV-examples/uproot_python/HZZAnalysis.ipynb:
   fraction: 0.05
+# Main loop did not finish in 6h at the notebook's fraction 0.25 (cancelled after 5h40).
+13-TeV-examples/uproot_python/Hmumu.ipynb:
+  fraction: 0.01
+# Main loop did not finish in 2h at fraction 0.05.
+13-TeV-examples/uproot_python/HyyAnalysis.ipynb:
+  fraction: 0.01
+# Main loop took 1h30 at fraction 0.05.
 13-TeV-examples/uproot_python/WZ3l_Analysis.ipynb:
   fraction: 0.05
 13-TeV-examples/uproot_python/ttbar_analysis.ipynb:
   fraction: 0.02
+# Reads one unskimmed Z->mumu file in full twice: 2h20 + 2h50 at fraction 1.
+13-TeV-examples/uproot_python/detector_acceptance_and_efficiency.ipynb:
+  fraction: 0.1
 
 # Slow (>1h) on full data
 13-TeV-examples/uproot_python/NCB.ipynb:
