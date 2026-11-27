@@ -3,8 +3,19 @@ channels:
     - conda-forge
 dependencies:
   - libmamba>=2.0.4
-  - python=3.11
+  # Keep in line with the Python version of the base image in the Dockerfile.
+  - python=3.13
   - root_base>=6.32.2
+  # Packages with compiled code built against NumPy are installed with conda,
+  # so that conda keeps them consistent with the NumPy it installs. Installing
+  # them with pip can upgrade NumPy behind conda's back and break the base
+  # image's conda packages (e.g. "_ARRAY_API not found").
+  - numpy>=2.2
+  - scipy
+  - pandas>=2.2.2
+  - matplotlib-base>=3.9.1
+  - scikit-learn>=1.5.1
+  - numba
   - pip:
     - aiohttp>=3.9.5
     - atlasopenmagic>=1.11.1
@@ -17,16 +28,12 @@ dependencies:
     - ipykernel>=6.29.5
     - jupyter>=1.0.0
     - lmfit>=1.3.2
-    - matplotlib>=3.9.1
     - metakernel>=0.30.2
-    - notebook<7
-    - numpy>=1.26.4
-    - pandas>=2.2.2
+    - notebook>=7
     - papermill>=2.6.0
     - pip>=24.2
-    - scikit-learn>=1.5.1
     - uproot==5.7.5  # 5.7.6-5.7.7: XRootD offset TypeError; 5.7.8: EOS rejects batched basket-key reads
     - uproot3>=3.14.4
     - fsspec-xrootd>=0.5.1
-    - jupyterlab_latex~=3.1.0
+    - jupyterlab_latex>=4
     - vector>=1.4.1

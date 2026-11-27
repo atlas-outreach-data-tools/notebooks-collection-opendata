@@ -7,3 +7,10 @@ updates:
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 10
+
+  # Base image in the Dockerfile. A new Python minor version (e.g. 3.14) also
+  # needs the python pin in binder/environment.yml changed in the same PR.
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
