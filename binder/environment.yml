@@ -7,9 +7,7 @@ dependencies:
   - python=3.13
   - root_base>=6.32.2
   # Packages with compiled code built against NumPy are installed with conda,
-  # so that conda keeps them consistent with the NumPy it installs. Installing
-  # them with pip can upgrade NumPy behind conda's back and break the base
-  # image's conda packages (e.g. "_ARRAY_API not found").
+  # so that conda keeps them consistent with the NumPy it installs. 
   - numpy>=2.2
   - scipy
   - pandas>=2.2.2
