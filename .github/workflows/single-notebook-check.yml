@@ -1,21 +1,25 @@
 name: Check Jupyter Notebook
 
 on:
-  push:
+  # On pull requests the paths filter looks at the whole PR diff, so the check
+  # also runs after pushes that change no notebooks themselves (e.g. merging main).
+  pull_request:
     paths:
       - 13-TeV-examples/**/*.ipynb
       - 8-TeV-examples/**/*.ipynb
       - for-research/**/*.ipynb
       - .github/workflows/single-notebook-check.yml
+  # Manual runs check the notebooks the chosen branch changes compared with main.
+  workflow_dispatch:
 
 jobs:
   detect-changes:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     outputs:
       notebooks: ${{ steps.changed-notebooks.outputs.notebooks }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
@@ -36,7 +40,7 @@ jobs:
 
   run-notebooks:
     needs: detect-changes
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     if: ${{ needs.detect-changes.outputs.notebooks != '[]' }}
     strategy:
       fail-fast: false
@@ -48,7 +52,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Set up Jupyter kernel
         run: |
