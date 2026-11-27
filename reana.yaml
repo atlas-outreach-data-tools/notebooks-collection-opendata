@@ -24,7 +24,7 @@ inputs:
     # Executed notebook, written to the workspace.
     output: result.ipynb
   directories:
-    # Notebooks, helper modules (infofile.py) and images.
+    # Notebooks and images.
     - 13-TeV-examples/uproot_python
     - images
 
