@@ -19,7 +19,7 @@ dependencies:
     - atlasopenmagic>=1.11.1
     - awkward>=2.6.7
     - awkward-pandas>=2023.8.0
-    - coffea~=0.7.0
+    - coffea[dask]>=2026.11.0  # processor.Runner + DaskExecutor, used in CoffeaHZZAnalysis
     # - dask[distributed]>=2025.2.0
     - fsspec>=2025.7.0
     - hist>=2.8.0
@@ -31,7 +31,6 @@ dependencies:
     - papermill>=2.6.0
     - pip>=24.2
     - uproot==5.7.5  # 5.7.6-5.7.7: XRootD offset TypeError; 5.7.8: EOS rejects batched basket-key reads
-    - uproot3>=3.14.4
     - fsspec-xrootd>=0.5.1
     - jupyterlab_latex>=4
     - vector>=1.4.1
