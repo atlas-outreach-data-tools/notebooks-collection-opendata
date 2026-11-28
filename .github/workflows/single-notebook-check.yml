@@ -14,7 +14,7 @@ on:
 
 jobs:
   detect-changes:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     outputs:
       notebooks: ${{ steps.changed-notebooks.outputs.notebooks }}
     steps:
@@ -40,7 +40,7 @@ jobs:
 
   run-notebooks:
     needs: detect-changes
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     if: ${{ needs.detect-changes.outputs.notebooks != '[]' }}
     strategy:
       fail-fast: false
