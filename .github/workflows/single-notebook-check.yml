@@ -9,6 +9,8 @@ on:
       - 8-TeV-examples/**/*.ipynb
       - for-research/**/*.ipynb
       - .github/workflows/single-notebook-check.yml
+      - .github/ci-parameters.yml
+      - .github/scripts/ci_params.py
   # Manual runs check the notebooks the chosen branch changes compared with main.
   workflow_dispatch:
 
@@ -67,5 +69,6 @@ jobs:
 
       - name: Run notebook with Papermill
         run: |
+          python .github/scripts/ci_params.py "${{ matrix.notebook }}" "$RUNNER_TEMP/ci-params.yml"
           cd $(dirname ${{ matrix.notebook }})
-          papermill $(basename ${{ matrix.notebook }}) /dev/null
+          papermill --log-output -f "$RUNNER_TEMP/ci-params.yml" $(basename ${{ matrix.notebook }}) /dev/null

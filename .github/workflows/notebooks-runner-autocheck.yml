@@ -114,8 +114,9 @@ jobs:
 
       - name: Run notebook with Papermill
         run: |
+          python .github/scripts/ci_params.py "${{ matrix.notebook }}" "$RUNNER_TEMP/ci-params.yml"
           cd $(dirname ${{ matrix.notebook }})
-          papermill --log-level ERROR $(basename ${{ matrix.notebook }}) /dev/null
+          papermill --log-level ERROR -f "$RUNNER_TEMP/ci-params.yml" $(basename ${{ matrix.notebook }}) /dev/null
 
       - name: Output result
         if: always()
@@ -149,8 +150,9 @@ jobs:
 
       - name: Run notebook with Papermill
         run: |
+          python .github/scripts/ci_params.py "${{ matrix.notebook }}" "$RUNNER_TEMP/ci-params.yml"
           cd $(dirname ${{ matrix.notebook }})
-          papermill --log-level ERROR $(basename ${{ matrix.notebook }}) /dev/null
+          papermill --log-level ERROR -f "$RUNNER_TEMP/ci-params.yml" $(basename ${{ matrix.notebook }}) /dev/null
 
       - name: Output result
         if: always()
@@ -183,8 +185,9 @@ jobs:
 
       - name: Run notebook with Papermill
         run: |
+          python .github/scripts/ci_params.py "${{ matrix.notebook }}" "$RUNNER_TEMP/ci-params.yml"
           cd $(dirname ${{ matrix.notebook }})
-          papermill --log-level ERROR $(basename ${{ matrix.notebook }}) /dev/null
+          papermill --log-level ERROR -f "$RUNNER_TEMP/ci-params.yml" $(basename ${{ matrix.notebook }}) /dev/null
 
       - name: Output result
         if: always()
@@ -217,8 +220,9 @@ jobs:
 
       - name: Run notebook with Papermill
         run: |
+          python .github/scripts/ci_params.py "${{ matrix.notebook }}" "$RUNNER_TEMP/ci-params.yml"
           cd $(dirname ${{ matrix.notebook }})
-          papermill --log-level ERROR $(basename ${{ matrix.notebook }}) /dev/null
+          papermill --log-level ERROR -f "$RUNNER_TEMP/ci-params.yml" $(basename ${{ matrix.notebook }}) /dev/null
 
       - name: Output result
         if: always()
@@ -251,8 +255,9 @@ jobs:
 
       - name: Run notebook with Papermill
         run: |
+          python .github/scripts/ci_params.py "${{ matrix.notebook }}" "$RUNNER_TEMP/ci-params.yml"
           cd $(dirname ${{ matrix.notebook }})
-          papermill --log-level ERROR $(basename ${{ matrix.notebook }}) /dev/null
+          papermill --log-level ERROR -f "$RUNNER_TEMP/ci-params.yml" $(basename ${{ matrix.notebook }}) /dev/null
 
       - name: Output result
         if: always()
@@ -285,8 +290,9 @@ jobs:
 
       - name: Run notebook with Papermill
         run: |
+          python .github/scripts/ci_params.py "${{ matrix.notebook }}" "$RUNNER_TEMP/ci-params.yml"
           cd $(dirname ${{ matrix.notebook }})
-          papermill --log-level ERROR $(basename ${{ matrix.notebook }}) /dev/null
+          papermill --log-level ERROR -f "$RUNNER_TEMP/ci-params.yml" $(basename ${{ matrix.notebook }}) /dev/null
 
       - name: Output result
         if: always()
@@ -319,8 +325,9 @@ jobs:
 
       - name: Run notebook with Papermill
         run: |
+          python .github/scripts/ci_params.py "${{ matrix.notebook }}" "$RUNNER_TEMP/ci-params.yml"
           cd $(dirname ${{ matrix.notebook }})
-          papermill --log-level ERROR $(basename ${{ matrix.notebook }}) /dev/null
+          papermill --log-level ERROR -f "$RUNNER_TEMP/ci-params.yml" $(basename ${{ matrix.notebook }}) /dev/null
 
       - name: Output result
         if: always()
